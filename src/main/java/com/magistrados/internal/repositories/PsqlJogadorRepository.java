@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 
 public class PsqlJogadorRepository implements JogadorRepository {
 
@@ -158,5 +160,32 @@ public class PsqlJogadorRepository implements JogadorRepository {
             e.printStackTrace();
         }
         return jogador;
+    }
+
+    @Override
+    public Set<Jogador> findAllByTeamId(Long timeId) {
+        final Set<Jogador> jogadores = new HashSet<>();
+        try (final Connection con = this.connectionProvider.getConnection()) {
+            final String sql = "SELECT * FROM volei_jogadores WHERE id_time = ?";
+            final PreparedStatement st = con.prepareStatement(sql);
+            st.setLong(1, timeId);
+            final ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                final Jogador jogador = new Jogador();
+                jogador.setId(rs.getLong("id"));
+                jogador.setNome(rs.getString("nome"));
+                jogador.setTimeId(rs.getLong("id_time"));
+                jogador.setNumeroJogador(rs.getInt("numero"));
+                jogador.setQuantidadeBloqueios(rs.getInt("bloqueios"));
+                jogador.setQuantidadeDefesas(rs.getInt("defesas"));
+                jogador.setQuantidadePontos(rs.getInt("pontos_feitos"));
+                jogador.setQuantidadeSaques(rs.getInt("saques"));
+                jogadores.add(jogador);
+            }
+            st.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return jogadores;
     }
 }

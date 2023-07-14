@@ -1,8 +1,12 @@
 package com.magistrados.models;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class Time {
     private Long id;
     private String nomeTime;
+    private Set<Jogador> jogadores = new HashSet<>();
 
     public Time(){
     }
@@ -30,5 +34,13 @@ public class Time {
 
     public String getNomeTime(){
         return this.nomeTime;
+    }
+
+    public Set<Jogador> getJogadores() {
+        return jogadores;
+    }
+
+    public void setJogadores(Set<Jogador> jogadores) {
+        this.jogadores = jogadores;
     }
 }

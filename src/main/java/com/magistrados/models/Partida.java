@@ -2,7 +2,9 @@ package com.magistrados.models;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Partida {
     private Long id;
@@ -11,7 +13,7 @@ public class Partida {
     private Time timeA, timeB;
     private Long idTimeA, idTimeB;
     private int quantidadeSets;
-    private List<Set> sets = new ArrayList<>();
+    private Set<GameSet> gameSets = new HashSet<>();
     private String vencedor;
 
     public Partida(){
@@ -38,8 +40,8 @@ public class Partida {
         return id;
     }
 
-    public Set getSetByOrder(int order) {
-        return this.sets.stream().filter(set -> set.getOrdem() == order).findFirst().orElse(null);
+    public GameSet getSetByOrder(int order) {
+        return this.gameSets.stream().filter(gameSet -> gameSet.getOrdem() == order).findFirst().orElse(null);
     }
 
     public void setDateTime(LocalDateTime dateTime){
@@ -102,8 +104,12 @@ public class Partida {
         return quantidadeSets;
     }
 
-    public List<Set> getSets(){
-        return sets;
+    public Set<GameSet> getGameSets() {
+        return gameSets;
+    }
+
+    public void setGameSets(Set<GameSet> gameSets) {
+        this.gameSets = gameSets;
     }
 
     public String getVencedor() {

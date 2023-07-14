@@ -1,6 +1,6 @@
 package com.magistrados.models;
 
-public class Set {
+public class GameSet {
     private Long id;
     private Partida partida;
     private Long idPartida;
@@ -12,10 +12,10 @@ public class Set {
     private boolean finalizado = false;
     private String vencedor;
 
-    public Set(){
+    public GameSet(){
     }
 
-    public Set(Long id, Partida partida, Long idPartida, int ordem){
+    public GameSet(Long id, Partida partida, Long idPartida, int ordem){
         this.id = id;
         this.partida = partida;
         this.idPartida = idPartida;

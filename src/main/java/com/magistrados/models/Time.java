@@ -20,6 +20,31 @@ public class Time {
         this.derrotas = derrotas;
     }
 
+
+    public void addVitoria(){
+        this.vitorias++;
+    }
+
+    public void addDerrota(){
+        this.derrotas++;
+    }
+
+    public Integer getVitorias() {
+        return vitorias;
+    }
+
+    public void setVitorias(Integer vitorias) {
+        this.vitorias = vitorias;
+    }
+
+    public Integer getDerrotas() {
+        return derrotas;
+    }
+
+    public void setDerrotas(Integer derrotas) {
+        this.derrotas = derrotas;
+    }
+
     public boolean isCreated() {
         return this.id != null && this.id != 0;
     }

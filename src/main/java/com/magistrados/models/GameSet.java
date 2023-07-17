@@ -17,8 +17,7 @@ public class GameSet {
     public GameSet(){
     }
 
-    public GameSet(Long id, Partida partida, Long idPartida, int ordem){
-        this.id = id;
+    public GameSet(Partida partida, Long idPartida, int ordem){
         this.partida = partida;
         this.idPartida = idPartida;
         this.ordem = ordem;

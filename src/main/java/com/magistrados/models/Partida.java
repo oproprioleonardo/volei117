@@ -1,5 +1,7 @@
 package com.magistrados.models;
 
+import com.magistrados.managers.enums.TeamID;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -15,6 +17,7 @@ public class Partida {
     private int quantidadeSets;
     private Set<GameSet> gameSets = new HashSet<>();
     private String vencedor;
+    private boolean finalizada = false;
 
     public Partida(){
     }
@@ -24,7 +27,12 @@ public class Partida {
         this.local = local;
         this.timeA = timeA;
         this.timeB = timeB;
-        this.quantidadeSets = quantidadeSets;
+        setQuantidadeSets(quantidadeSets);
+        this.vencedor = vencedor;
+    }
+
+    public void finalizarPartida(String vencedor){
+        this.finalizada = true;
         this.vencedor = vencedor;
     }
 
@@ -97,7 +105,11 @@ public class Partida {
     }
 
     public void setQuantidadeSets(int quantidadeSets){
-        this.quantidadeSets = quantidadeSets;
+        //caso passe uma quantidade par de sets, aumenta um, voltando um impar
+        this.quantidadeSets = quantidadeSets % 2 == 1 ? quantidadeSets : quantidadeSets + 1;
+        for(int i = 1; i <= quantidadeSets; i++){
+            this.gameSets.add(new GameSet(this, this.id, i));
+        }
     }
 
     public int getQuantidadeSets(){
@@ -119,4 +131,9 @@ public class Partida {
     public void setVencedor(String vencedor) {
         this.vencedor = vencedor;
     }
+
+    public boolean isFinalizada(){
+        return finalizada;
+    }
+
 }

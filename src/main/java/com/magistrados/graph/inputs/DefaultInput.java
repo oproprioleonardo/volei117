@@ -12,7 +12,7 @@ import java.awt.event.FocusEvent;
 public class DefaultInput extends JTextField{
     private Border defaultBorder = BorderFactory.createLineBorder(new Color(74, 76, 80));
     public DefaultInput( int sizeX, int sizeY) {
-        Font font = new Font("Roboto", Font.ITALIC, 20);
+        Font font = new Font("Roboto", Font.PLAIN, 20);
         this.setFont(font);
         this.setMinimumSize(new Dimension(sizeX, sizeY));
         this.setMaximumSize(new Dimension(sizeX, sizeY));
@@ -21,7 +21,7 @@ public class DefaultInput extends JTextField{
         this.setOpaque(true);
         this.setBorder(defaultBorder);
 
-        this.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        this.setCursor(new Cursor(Cursor.TEXT_CURSOR));
          // Salva a borda padrão no construtor
         addFocusListener(new FocusAdapter() {
             @Override

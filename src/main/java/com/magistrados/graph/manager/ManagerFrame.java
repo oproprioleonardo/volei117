@@ -25,10 +25,19 @@ public class ManagerFrame extends JFrame {
         buttonPanel.setBackground(Color.decode("#171717"));
         // Criando botões
         this.createButton(buttonPanel, "Gerenciar Jogadores", e -> {
+
+
+
+
+
         }, false);
         this.createButton(buttonPanel, "Gerenciar Times", e -> {
+
+
         }, true);
         this.createButton(buttonPanel, "Gerenciar Partidas", e -> {
+
+
         }, true);
 
         // Criando um painel de preenchimento com EmptyBorder

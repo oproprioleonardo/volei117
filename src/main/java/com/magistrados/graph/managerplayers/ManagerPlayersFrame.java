@@ -2,6 +2,8 @@ package com.magistrados.graph.managerplayers;
 
 
 import com.magistrados.graph.buttons.DefaultButton;
+import com.magistrados.graph.inputs.DefaultInput;
+import com.magistrados.graph.labels.DefaultLabel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,6 +13,7 @@ public class ManagerPlayersFrame extends JFrame {
 
     private JPanel inputPanel;
     private JPanel buttonsPanel;
+    private Font font = new Font("Roboto", Font.BOLD, 20);
 
 
     public ManagerPlayersFrame() throws HeadlessException {
@@ -27,6 +30,7 @@ public class ManagerPlayersFrame extends JFrame {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         buttonPanel.setBackground(Color.decode("#171717"));
+
         // Criando botões
         this.createButton(buttonPanel, "Adicionar Jogador(a)", e -> {
 
@@ -58,34 +62,27 @@ public class ManagerPlayersFrame extends JFrame {
         // Criando o painel input com BorderLayout
         inputPanel = new JPanel();
         inputPanel.setLayout(new BorderLayout());
+        inputPanel.setBackground(Color.decode("#171717"));
 
         //declarando Jlabels
-        JLabel labelIdJogador = new JLabel("ID do Jogador(a):");
-        JLabel labelIdTime = new JLabel("ID do Time:");
-        JLabel labelNome = new JLabel("Nome: ");
-        JLabel labelNumeroJogador = new JLabel("Número do Jogador:");
-        JLabel labelBloqueiosFeitos = new JLabel("Número de Bloqueios Feitos: ");
-        JLabel labelDefesasFeitas = new JLabel("Número de Defesas Feitas: ");
-        JLabel labelSaquesFeitos = new JLabel("Número de Saques Feitos: ");
-        JLabel labelPontosFeitos = new JLabel("Número de Pontos Feitos: ");
+        JLabel labelIdJogador = createLabel(font,"ID do Jogador(a):");
+        JLabel labelIdTime =  createLabel(font,"ID do Time:");
+        JLabel labelNome = createLabel(font, "Nome: ");
+        JLabel labelNumeroJogador = createLabel(font, "Número do Jogador: ");
+        JLabel labelBloqueiosFeitos = createLabel(font, "Número de Bloqueios Feitos: ");
+        JLabel labelDefesasFeitas = createLabel(font, "Número de Defesas Feitas: ");
+        JLabel labelSaquesFeitos = createLabel(font, "Número de Saques Feitos: ");
+        JLabel labelPontosFeitos = createLabel(font, "Número de Pontos Feitos: ");
 
         //declarando JTextField
-        JTextField campoIdJogador = new JTextField();
-        campoIdJogador.setPreferredSize(new Dimension(300, 40));
-        JTextField campoIdTime = new JTextField();
-        campoIdTime.setPreferredSize(new Dimension(300, 40));
-        JTextField campoNome = new JTextField();
-        campoNome.setPreferredSize(new Dimension(300, 40));
-        JTextField campoNumeroJogador = new JTextField();
-        campoNumeroJogador.setPreferredSize(new Dimension(300, 40));
-        JTextField campoBloqueiosFeitos = new JTextField();
-        campoBloqueiosFeitos.setPreferredSize(new Dimension(300, 40));
-        JTextField campoDefesasFeitas = new JTextField();
-        campoDefesasFeitas.setPreferredSize(new Dimension(300, 40));
-        JTextField campoSaquesFeitos = new JTextField();
-        campoSaquesFeitos.setPreferredSize(new Dimension(300, 40));
-        JTextField campoPontosFeitos = new JTextField();
-        campoPontosFeitos.setPreferredSize(new Dimension(300, 40));
+        JTextField campoIdJogador = createInput(300,40);
+        JTextField campoIdTime =  createInput(300,40);
+        JTextField campoNome = createInput(300,40);
+        JTextField campoNumeroJogador = createInput(300,40);
+        JTextField campoBloqueiosFeitos = createInput(300,40);
+        JTextField campoDefesasFeitas = createInput(300,40);
+        JTextField campoSaquesFeitos = createInput(300,40);
+        JTextField campoPontosFeitos = createInput(300,40);
 
         // Configuração do GroupLayout
         GroupLayout layout = new GroupLayout(inputPanel);
@@ -104,7 +101,7 @@ public class ManagerPlayersFrame extends JFrame {
                 .addComponent(labelDefesasFeitas)
                 .addComponent(labelSaquesFeitos)
                 .addComponent(labelPontosFeitos));
-        hGroup.addGroup(layout.createParallelGroup()  // <-- Adicionei esta linha
+        hGroup.addGroup(layout.createParallelGroup()
                 .addComponent(campoIdJogador)
                 .addComponent(campoIdTime)
                 .addComponent(campoNome)
@@ -112,32 +109,40 @@ public class ManagerPlayersFrame extends JFrame {
                 .addComponent(campoBloqueiosFeitos)
                 .addComponent(campoDefesasFeitas)
                 .addComponent(campoSaquesFeitos)
-                .addComponent(campoPontosFeitos));  // <-- Adicionei esta linha
+                .addComponent(campoPontosFeitos));
         layout.setHorizontalGroup(hGroup);
 
         // Configuração das verticais
         GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
+        vGroup.addGap(40);
         vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 .addComponent(labelIdJogador)
                 .addComponent(campoIdJogador));
+        vGroup.addGap(20);
         vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 .addComponent(labelIdTime)
                 .addComponent(campoIdTime));
+        vGroup.addGap(20);
         vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 .addComponent(labelNome)
                 .addComponent(campoNome));
+        vGroup.addGap(20);
         vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 .addComponent(labelNumeroJogador)
                 .addComponent(campoNumeroJogador));
+        vGroup.addGap(20);
         vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 .addComponent(labelBloqueiosFeitos)
                 .addComponent(campoBloqueiosFeitos));
+        vGroup.addGap(20);
         vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 .addComponent(labelDefesasFeitas)
                 .addComponent(campoDefesasFeitas));
+        vGroup.addGap(20);
         vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 .addComponent(labelSaquesFeitos)
                 .addComponent(campoSaquesFeitos));
+        vGroup.addGap(20);
         vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 .addComponent(labelPontosFeitos)
                 .addComponent(campoPontosFeitos));
@@ -155,4 +160,14 @@ public class ManagerPlayersFrame extends JFrame {
         final DefaultButton button = new DefaultButton(text, listener);
         panel.add(button);
     }
+    private DefaultInput createInput(int sizeX, int sizeY) {
+        final DefaultInput input = new DefaultInput(sizeX, sizeY);
+        return input;
+    }
+    private DefaultLabel createLabel(Font font, String text) {
+        final DefaultLabel label = new DefaultLabel(font, text);
+        return label;
+    }
+
+
 }

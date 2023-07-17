@@ -23,6 +23,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 import javax.swing.*;
 
 public class ApplicationModule {
+    //teste
 
 
     public ApplicationModule() {

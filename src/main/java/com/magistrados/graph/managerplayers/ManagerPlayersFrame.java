@@ -1,7 +1,7 @@
-package com.magistrados.graph.menagerPlayers;
+package com.magistrados.graph.managerplayers;
 
 
-import com.magistrados.graph.menagerMenuInicial.buttons.DefaultButton;
+import com.magistrados.graph.buttons.DefaultButton;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +15,7 @@ public class ManagerPlayersFrame extends JFrame {
 
     public ManagerPlayersFrame() throws HeadlessException {
         super("Gerenciador de Jogadores");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setResizable(false);
         this.setLayout(new BorderLayout());
 
@@ -46,13 +46,13 @@ public class ManagerPlayersFrame extends JFrame {
         }, true);
         // Criando um painel de preenchimento com EmptyBorder
         JPanel paddingPanel = new JPanel(new BorderLayout());
-        paddingPanel.setBorder(BorderFactory.createEmptyBorder(100, 300, 100, 300));
+        paddingPanel.setBorder(BorderFactory.createEmptyBorder(100, 25, 100, 25));
         paddingPanel.add(buttonPanel, BorderLayout.CENTER);
         paddingPanel.setBackground(Color.decode("#171717"));
 
         // Adicionando o painel de preenchimento (com os botões) ao centro do painel principal
         buttonsPanel.add(paddingPanel, BorderLayout.CENTER);
-        this.add(buttonsPanel, BorderLayout.WEST);
+        this.add(buttonsPanel, BorderLayout.EAST);
 
         //input
         // Criando o painel input com BorderLayout
@@ -71,13 +71,21 @@ public class ManagerPlayersFrame extends JFrame {
 
         //declarando JTextField
         JTextField campoIdJogador = new JTextField();
+        campoIdJogador.setPreferredSize(new Dimension(300, 40));
         JTextField campoIdTime = new JTextField();
+        campoIdTime.setPreferredSize(new Dimension(300, 40));
         JTextField campoNome = new JTextField();
+        campoNome.setPreferredSize(new Dimension(300, 40));
         JTextField campoNumeroJogador = new JTextField();
+        campoNumeroJogador.setPreferredSize(new Dimension(300, 40));
         JTextField campoBloqueiosFeitos = new JTextField();
+        campoBloqueiosFeitos.setPreferredSize(new Dimension(300, 40));
         JTextField campoDefesasFeitas = new JTextField();
+        campoDefesasFeitas.setPreferredSize(new Dimension(300, 40));
         JTextField campoSaquesFeitos = new JTextField();
+        campoSaquesFeitos.setPreferredSize(new Dimension(300, 40));
         JTextField campoPontosFeitos = new JTextField();
+        campoPontosFeitos.setPreferredSize(new Dimension(300, 40));
 
         // Configuração do GroupLayout
         GroupLayout layout = new GroupLayout(inputPanel);
@@ -96,15 +104,15 @@ public class ManagerPlayersFrame extends JFrame {
                 .addComponent(labelDefesasFeitas)
                 .addComponent(labelSaquesFeitos)
                 .addComponent(labelPontosFeitos));
-        hGroup.addGroup(layout.createParallelGroup()
+        hGroup.addGroup(layout.createParallelGroup()  // <-- Adicionei esta linha
                 .addComponent(campoIdJogador)
                 .addComponent(campoIdTime)
                 .addComponent(campoNome)
                 .addComponent(campoNumeroJogador)
                 .addComponent(campoBloqueiosFeitos)
                 .addComponent(campoDefesasFeitas)
-                .addComponent(labelSaquesFeitos)
-                .addComponent(labelPontosFeitos));
+                .addComponent(campoSaquesFeitos)
+                .addComponent(campoPontosFeitos));  // <-- Adicionei esta linha
         layout.setHorizontalGroup(hGroup);
 
         // Configuração das verticais
@@ -136,10 +144,11 @@ public class ManagerPlayersFrame extends JFrame {
         layout.setVerticalGroup(vGroup);
 
         //adicionando inputPanel
-        this.add(inputPanel, BorderLayout.CENTER);
+        this.add(inputPanel, BorderLayout.WEST);
 
         //empilha tudo
         this.pack();
+        this.setLocationRelativeTo(null);
     }
     private void createButton(JPanel panel, String text, ActionListener listener, boolean space) {
         if (space) panel.add(Box.createRigidArea(new Dimension(0, 50)));

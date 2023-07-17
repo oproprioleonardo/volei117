@@ -7,7 +7,7 @@ import com.magistrados.api.repositories.PartidaRepository;
 import com.magistrados.api.repositories.TimeRepository;
 import com.magistrados.config.DatabaseConfig;
 import com.magistrados.config.DatabaseName;
-import com.magistrados.graph.menagerMenuInicial.MenuInicial;
+import com.magistrados.graph.menuinicial.MenuInicial;
 import com.magistrados.internal.database.HikariMysqlConnectionProvider;
 import com.magistrados.internal.database.HikariPostgresConnectionProvider;
 import com.magistrados.internal.repositories.PsqlGameSetRepository;

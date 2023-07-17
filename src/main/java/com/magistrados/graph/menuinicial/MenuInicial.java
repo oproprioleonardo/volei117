@@ -1,7 +1,7 @@
-package com.magistrados.graph.menagerMenuInicial;
+package com.magistrados.graph.menuinicial;
 
-import com.magistrados.graph.menagerMenuInicial.buttons.DefaultButton;
-import com.magistrados.graph.menagerPlayers.ManagerPlayersFrame;
+import com.magistrados.graph.buttons.DefaultButton;
+import com.magistrados.graph.managerplayers.ManagerPlayersFrame;
 
 import javax.swing.*;
 import java.awt.*;

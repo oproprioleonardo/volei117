@@ -5,6 +5,7 @@ CREATE TABLE volei_sets
     ordem      int                   not null,
     pontos_a   int                   not null default 0,
     pontos_b   int                   not null default 0,
+    iniciado   bool                           default false,
     finalizado bool                           default false,
     vencedor   varchar
 );

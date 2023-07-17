@@ -6,14 +6,18 @@ import java.util.Set;
 public class Time {
     private Long id;
     private String nomeTime;
+    private Integer vitorias;
+    private Integer derrotas;
     private Set<Jogador> jogadores = new HashSet<>();
 
     public Time(){
     }
 
-    public Time(Long id, String nomeTime){
+    public Time(Long id, String nomeTime, Integer vitorias, Integer derrotas){
         this.id = id;
         this.nomeTime = nomeTime;
+        this.vitorias = vitorias;
+        this.derrotas = derrotas;
     }
 
     public boolean isCreated() {

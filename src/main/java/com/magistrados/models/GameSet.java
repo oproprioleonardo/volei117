@@ -1,6 +1,7 @@
 package com.magistrados.models;
 
 public class GameSet {
+
     private Long id;
     private Partida partida;
     private Long idPartida;
@@ -9,6 +10,7 @@ public class GameSet {
     private int pontosTimeA = 0;
     // time b;
     private int pontosTimeB = 0;
+    private boolean iniciado = false;
     private boolean finalizado = false;
     private String vencedor;
 
@@ -101,5 +103,13 @@ public class GameSet {
 
     public void setIdPartida(Long idPartida) {
         this.idPartida = idPartida;
+    }
+
+    public boolean isIniciado() {
+        return iniciado;
+    }
+
+    public void setIniciado(boolean iniciado) {
+        this.iniciado = iniciado;
     }
 }

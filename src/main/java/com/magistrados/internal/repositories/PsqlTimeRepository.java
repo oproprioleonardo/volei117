@@ -20,9 +20,11 @@ public class PsqlTimeRepository implements TimeRepository {
     @Override
     public void create(Time time) {
         try (final Connection con = this.connectionProvider.getConnection()) {
-            final PreparedStatement st = con.prepareStatement("insert into volei_times (nome)" +
-                    " values (?)");
+            final PreparedStatement st = con.prepareStatement("insert into volei_times (nome,vitorias,derrotas)" +
+                    " values (?,?,?)");
             st.setString(1, time.getNomeTime());
+            st.setInt(2, time.getVitorias());
+            st.setInt(3, time.getDerrotas());
 
             int affectedRows = st.executeUpdate();
 
@@ -52,6 +54,8 @@ public class PsqlTimeRepository implements TimeRepository {
             if (rs.next()) {
                 time.setId(rs.getLong("id"));
                 time.setNomeTime(rs.getString("nome"));
+                time.setVitorias(rs.getInt("vitorias"));
+                time.setDerrotas(rs.getInt("derrotas"));
             }
             rs.close();
             st.close();
@@ -65,9 +69,11 @@ public class PsqlTimeRepository implements TimeRepository {
     public void update(Time time) {
         try (final Connection con = this.connectionProvider.getConnection()) {
             final PreparedStatement st = con.prepareStatement("update volei_times " +
-                    "set nome=? where id=?");
+                    "set nome = ?, vitorias = ?, derrotas = ? where id = ?");
             st.setString(1, time.getNomeTime());
-            st.setLong(2, time.getId());
+            st.setInt(2, time.getVitorias());
+            st.setInt(3, time.getDerrotas());
+            st.setLong(4, time.getId());
             st.executeUpdate();
             st.close();
         } catch (Exception e) {
@@ -104,6 +110,8 @@ public class PsqlTimeRepository implements TimeRepository {
             if (rs.next()) {
                 time.setId(rs.getLong("id"));
                 time.setNomeTime(rs.getString("nome"));
+                time.setVitorias(rs.getInt("vitorias"));
+                time.setDerrotas(rs.getInt("derrotas"));
             }
             rs.close();
             st.close();

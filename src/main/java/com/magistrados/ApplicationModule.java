@@ -7,7 +7,7 @@ import com.magistrados.api.repositories.PartidaRepository;
 import com.magistrados.api.repositories.TimeRepository;
 import com.magistrados.config.DatabaseConfig;
 import com.magistrados.config.DatabaseName;
-import com.magistrados.graph.manager.ManagerFrame;
+import com.magistrados.graph.menagerMenuInicial.MenuInicial;
 import com.magistrados.internal.database.HikariMysqlConnectionProvider;
 import com.magistrados.internal.database.HikariPostgresConnectionProvider;
 import com.magistrados.internal.repositories.PsqlGameSetRepository;
@@ -41,8 +41,8 @@ public class ApplicationModule {
         
 
 
-        final JFrame managerFrame = this.providesManagerFrame();
-        managerFrame.setVisible(true);
+        final JFrame menuInicial = this.providesMenuInicial();
+        menuInicial.setVisible(true);
     }
 
     private Dotenv providesDotenv() {
@@ -81,7 +81,7 @@ public class ApplicationModule {
         return new PsqlGameSetRepository(connectionProvider);
     }
 
-    private JFrame providesManagerFrame() {
-        return new ManagerFrame();
+    private JFrame providesMenuInicial() {
+        return new MenuInicial();
     }
 }

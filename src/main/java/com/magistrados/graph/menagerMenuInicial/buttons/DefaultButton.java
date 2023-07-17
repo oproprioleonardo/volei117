@@ -1,4 +1,4 @@
-package com.magistrados.graph.manager.buttons;
+package com.magistrados.graph.menagerMenuInicial.buttons;
 
 import com.magistrados.graph.listeners.SmoothColorTransitionMouseListener;
 

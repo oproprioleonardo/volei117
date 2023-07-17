@@ -1,17 +1,18 @@
-package com.magistrados.graph.manager;
+package com.magistrados.graph.menagerMenuInicial;
 
-import com.magistrados.graph.manager.buttons.DefaultButton;
+import com.magistrados.graph.menagerMenuInicial.buttons.DefaultButton;
+import com.magistrados.graph.menagerPlayers.ManagerPlayersFrame;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-public class ManagerFrame extends JFrame {
+public class MenuInicial extends JFrame {
 
     private JPanel mainPanel;
 
-    public ManagerFrame() throws HeadlessException {
-        super("Vôlei - Gerenciador de partidas");
+    public MenuInicial() throws HeadlessException {
+        super("Menu Inicial");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
 
@@ -25,10 +26,8 @@ public class ManagerFrame extends JFrame {
         buttonPanel.setBackground(Color.decode("#171717"));
         // Criando botões
         this.createButton(buttonPanel, "Gerenciar Jogadores", e -> {
-
-
-
-
+            final JFrame gerenciarJogadores = new ManagerPlayersFrame();
+            gerenciarJogadores.setVisible(true);
 
         }, false);
         this.createButton(buttonPanel, "Gerenciar Times", e -> {

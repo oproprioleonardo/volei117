@@ -1,15 +1,19 @@
 package com.magistrados.models;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class Jogador {
     private Long id;
     private String nome;
     private Long timeId;
-    private Time time;
     private Integer numeroJogador;
     private Integer quantidadeBloqueios = 0;
     private Integer quantidadeSaques = 0;
     private Integer quantidadeDefesas = 0;
     private Integer quantidadePontos = 0;
+    private Time time;
+    private Set<MatchPlayerStats> matchPlayerStats = new HashSet<>();
 
     public Jogador() {
     }
@@ -117,5 +121,17 @@ public class Jogador {
 
     public void setQuantidadePontos(Integer quantidadePontos) {
         this.quantidadePontos = quantidadePontos;
+    }
+
+    public Set<MatchPlayerStats> getMatchPlayerStats() {
+        return matchPlayerStats;
+    }
+
+    public void setMatchPlayerStats(Set<MatchPlayerStats> matchPlayerStats) {
+        this.matchPlayerStats = matchPlayerStats;
+    }
+
+    public void addMatchPlayerStats(MatchPlayerStats matchPlayerStats){
+        this.matchPlayerStats.add(matchPlayerStats);
     }
 }

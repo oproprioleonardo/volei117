@@ -1,34 +1,40 @@
 package com.magistrados.services;
 
 import com.magistrados.api.repositories.JogadorRepository;
-import com.magistrados.api.repositories.TimeRepository;
 import com.magistrados.models.Jogador;
-import com.magistrados.models.Time;
 
 import java.util.Set;
 
 public class JogadorService {
 
     private final JogadorRepository jogadorRepository;
+    private final MatchPlayerStatsService matchPlayerStatsService;
 
-    public JogadorService(JogadorRepository jogadorRepository) {
+    public JogadorService(JogadorRepository jogadorRepository, MatchPlayerStatsService matchPlayerStatsService) {
         this.jogadorRepository = jogadorRepository;
+        this.matchPlayerStatsService = matchPlayerStatsService;
     }
 
     public void registrarJogador(Jogador jogador) {
         this.jogadorRepository.create(jogador);
+        jogador.getMatchPlayerStats().forEach(matchPlayerStatsService::createMatchPlayerStats);
     }
 
     public void salvarJogador(Jogador jogador) {
         this.jogadorRepository.save(jogador);
+        jogador.getMatchPlayerStats().forEach(matchPlayerStatsService::saveMatchPlayerStats);
     }
 
     public Jogador buscarJogador(String nome) {
-        return this.jogadorRepository.findByName(nome);
+        final Jogador jogador = this.jogadorRepository.findByName(nome);
+        jogador.setMatchPlayerStats(this.matchPlayerStatsService.findByPlayerId(jogador.getId()));
+        return jogador;
     }
 
     public Set<Jogador> buscarJogadores(Long idTime) {
-        return this.jogadorRepository.findAllByTeamId(idTime);
+        Set<Jogador> allByTeamId = this.jogadorRepository.findAllByTeamId(idTime);
+        allByTeamId.forEach(jogador -> jogador.setMatchPlayerStats(this.matchPlayerStatsService.findByPlayerId(jogador.getId())));
+        return allByTeamId;
     }
 
 }

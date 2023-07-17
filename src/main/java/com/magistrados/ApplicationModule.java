@@ -1,23 +1,14 @@
 package com.magistrados;
 
 import com.magistrados.api.database.ConnectionProvider;
-import com.magistrados.api.repositories.GameSetRepository;
-import com.magistrados.api.repositories.JogadorRepository;
-import com.magistrados.api.repositories.PartidaRepository;
-import com.magistrados.api.repositories.TimeRepository;
+import com.magistrados.api.repositories.*;
 import com.magistrados.config.DatabaseConfig;
 import com.magistrados.config.DatabaseName;
 import com.magistrados.graph.menuinicial.MenuInicial;
 import com.magistrados.internal.database.HikariMysqlConnectionProvider;
 import com.magistrados.internal.database.HikariPostgresConnectionProvider;
-import com.magistrados.internal.repositories.PsqlGameSetRepository;
-import com.magistrados.internal.repositories.PsqlJogadorRepository;
-import com.magistrados.internal.repositories.PsqlPartidaRepository;
-import com.magistrados.internal.repositories.PsqlTimeRepository;
-import com.magistrados.services.GameSetService;
-import com.magistrados.services.JogadorService;
-import com.magistrados.services.PartidaService;
-import com.magistrados.services.TimeService;
+import com.magistrados.internal.repositories.*;
+import com.magistrados.services.*;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import javax.swing.*;
@@ -31,14 +22,14 @@ public class ApplicationModule {
         final ConnectionProvider connectionProvider = this.providesConnectionProvider(config);
         final TimeRepository timeRepository = this.providesTimeRepository(connectionProvider);
         final JogadorRepository jogadorRepository = this.providesJogadorRepository(connectionProvider);
+        final MatchPlayerStatsRepository matchPlayerStatsRepository = this.providesPlayerStatsRepository(connectionProvider);
         final PartidaRepository partidaRepository = this.providesPartidaRepository(connectionProvider);
         final GameSetRepository gameSetRepository = this.providesGameSetRepository(connectionProvider);
-        final JogadorService jogadorService = new JogadorService(jogadorRepository);
+        final MatchPlayerStatsService statsService = new MatchPlayerStatsService(matchPlayerStatsRepository);
+        final JogadorService jogadorService = new JogadorService(jogadorRepository, statsService);
         final TimeService timeService = new TimeService(timeRepository, jogadorService);
         final GameSetService gameSetService = new GameSetService(gameSetRepository);
         final PartidaService partidaService = new PartidaService(partidaRepository, gameSetService, timeService);
-
-        
 
 
         final JFrame menuInicial = this.providesMenuInicial();
@@ -71,6 +62,10 @@ public class ApplicationModule {
 
     private JogadorRepository providesJogadorRepository(ConnectionProvider connectionProvider) {
         return new PsqlJogadorRepository(connectionProvider);
+    }
+
+    private MatchPlayerStatsRepository providesPlayerStatsRepository(ConnectionProvider connectionProvider) {
+        return new PsqlMatchPlayerStatsRepository(connectionProvider);
     }
 
     private PartidaRepository providesPartidaRepository(ConnectionProvider connectionProvider) {

@@ -3,6 +3,7 @@ package com.magistrados.graph.screens.menuinicial;
 import com.magistrados.graph.buttons.DefaultButton;
 import com.magistrados.graph.screens.managerplayers.ManagerPlayersFrame;
 import com.magistrados.graph.screens.managertimes.ManagerTimesFrame;
+import com.magistrados.graph.screens.partidas.StartPartidaRequestsFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,7 +37,12 @@ public class MenuInicial extends JFrame {
             gerenciarTimes.setVisible(true);
 
         }, true);
-        this.createButton(buttonPanel, "Gerenciar Partidas", e -> {
+        this.createButton(buttonPanel, "Iniciar Partida", e -> {
+            final JFrame startPartidasFrameRequests = new StartPartidaRequestsFrame();
+            startPartidasFrameRequests.setVisible(true);
+
+        }, true);
+        this.createButton(buttonPanel, "Visualizar Partidas", e -> {
 
 
         }, true);

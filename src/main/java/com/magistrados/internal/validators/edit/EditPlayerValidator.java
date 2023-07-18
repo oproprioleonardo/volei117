@@ -11,9 +11,6 @@ public class EditPlayerValidator extends Validator<EditPlayer> {
 
     @Override
     public void validate(EditPlayer object) throws ValidationException {
-        if (!object.id().isBlank() && NumberUtils.toLong(object.id(), 0) < 1) {
-            this.addError("ID do jogador", ErrorMessage.NOT_ID);
-        }
         if (object.nome().isBlank()) {
             this.addError("nome do jogador", ErrorMessage.NOT_NULLABLE);
         }

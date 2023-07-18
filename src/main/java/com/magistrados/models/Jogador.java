@@ -1,5 +1,8 @@
 package com.magistrados.models;
 
+import com.magistrados.models.create.CreatePlayer;
+import com.magistrados.models.edit.EditPlayer;
+
 import java.util.HashSet;
 import java.util.Set;
 

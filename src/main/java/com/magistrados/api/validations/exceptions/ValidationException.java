@@ -36,7 +36,7 @@ public class ValidationException extends RuntimeException {
         final Date now = new Date();
         final String name = crashPath + "CRASH_REPORT_" + dateFormat.format(now) + ".txt";
         final String errorList = this.errors.stream().map(fieldError -> " - " + fieldError.getMessage() + "\n").collect(Collectors.joining());
-        final String content = this.getMessage() + "\n\nValidações que deram erro:\n" + errorList;
+        final String content = this.getMessage() + "\n\nErros:\n" + errorList;
 
         try {
             final FileWriter fileWriter = new FileWriter(name);

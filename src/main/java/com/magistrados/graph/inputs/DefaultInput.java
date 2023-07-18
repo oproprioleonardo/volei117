@@ -10,8 +10,9 @@ import java.awt.event.FocusEvent;
 public class DefaultInput extends JTextField {
     private Border defaultBorder = BorderFactory.createLineBorder(new Color(74, 76, 80));
 
-    public DefaultInput(int sizeX, int sizeY) {
+    public DefaultInput(int sizeX, int sizeY, String... text) {
         Font font = new Font("Roboto", Font.PLAIN, 20);
+        this.setText(String.join(" ", text));
         this.setFont(font);
         this.setMinimumSize(new Dimension(sizeX, sizeY));
         this.setMaximumSize(new Dimension(sizeX, sizeY));

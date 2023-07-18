@@ -32,7 +32,7 @@ public class ApplicationModule {
         final PartidaService partidaService = new PartidaService(partidaRepository, gameSetService, timeService);
 
 
-        final JFrame menuInicial = this.providesMenuInicial();
+        final JFrame menuInicial = this.providesMenuInicial(jogadorService);
         menuInicial.setVisible(true);
     }
 
@@ -76,7 +76,7 @@ public class ApplicationModule {
         return new PsqlGameSetRepository(connectionProvider);
     }
 
-    private JFrame providesMenuInicial() {
-        return new MenuInicial();
+    private JFrame providesMenuInicial(JogadorService jogadorService) {
+        return new MenuInicial(jogadorService);
     }
 }

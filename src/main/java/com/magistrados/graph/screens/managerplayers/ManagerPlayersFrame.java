@@ -1,9 +1,20 @@
 package com.magistrados.graph.screens.managerplayers;
 
 
+import com.magistrados.api.validations.exceptions.ValidationException;
 import com.magistrados.graph.buttons.DefaultButton;
 import com.magistrados.graph.inputs.DefaultInput;
 import com.magistrados.graph.labels.DefaultLabel;
+import com.magistrados.internal.validators.create.CreatePlayerValidator;
+import com.magistrados.internal.validators.edit.EditPlayerValidator;
+import com.magistrados.internal.validators.find.FindPlayerValidator;
+import com.magistrados.internal.validators.remove.RemovePlayerValidator;
+import com.magistrados.models.Jogador;
+import com.magistrados.models.create.CreatePlayer;
+import com.magistrados.models.edit.EditPlayer;
+import com.magistrados.models.find.FindPlayer;
+import com.magistrados.models.remove.RemovePlayer;
+import com.magistrados.services.JogadorService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,87 +22,105 @@ import java.awt.event.ActionListener;
 
 public class ManagerPlayersFrame extends JFrame {
 
+    private final Font font = new Font("Roboto", Font.BOLD, 20);
+    private final JogadorService jogadorService;
     private JPanel inputPanel;
+    private JPanel mainPanel;
     private JPanel buttonsPanel;
-    private Font font = new Font("Roboto", Font.BOLD, 20);
+    private JPanel paddingPanel;
+    private JPanel formPanel;
+    private JPanel operationPanel;
+    private JLabel labelIdJogador;
+    private JLabel labelIdTime;
+    private JLabel labelNome;
+    private JLabel labelNumeroJogador;
+    private JLabel labelBloqueiosFeitos;
+    private JLabel labelDefesasFeitas;
+    private JLabel labelSaquesFeitos;
+    private JLabel labelPontosFeitos;
+    private JTextField campoIdJogador;
+    private JTextField campoIdTime;
+    private JTextField campoNome;
+    private JTextField campoNumeroJogador;
+    private JTextField campoBloqueiosFeitos;
+    private JTextField campoDefesasFeitas;
+    private JTextField campoSaquesFeitos;
+    private JTextField campoPontosFeitos;
+    private GroupLayout layout;
+    private GroupLayout.SequentialGroup hGroup;
+    private GroupLayout.SequentialGroup vGroup;
 
-
-    public ManagerPlayersFrame() throws HeadlessException {
+    public ManagerPlayersFrame(JogadorService jogadorService) throws HeadlessException {
         super("Gerenciador de Jogadores");
+        this.jogadorService = jogadorService;
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setResizable(false);
         this.setLayout(new BorderLayout());
+        this.initComponents();
+        this.pack();
+        this.setLocationRelativeTo(null);
+    }
 
-        //buttons
-        buttonsPanel = new JPanel();
-        buttonsPanel.setLayout(new BorderLayout());
+    public void initComponents() {
+        //declarando Jlabels
+        labelIdJogador = createLabel(font, "ID do Jogador(a):");
+        labelIdTime = createLabel(font, "ID do Time:");
+        labelNome = createLabel(font, "Nome: ");
+        labelNumeroJogador = createLabel(font, "Número do Jogador: ");
+        labelBloqueiosFeitos = createLabel(font, "Número de Bloqueios Feitos: ");
+        labelDefesasFeitas = createLabel(font, "Número de Defesas Feitas: ");
+        labelSaquesFeitos = createLabel(font, "Número de Saques Feitos: ");
+        labelPontosFeitos = createLabel(font, "Número de Pontos Feitos: ");
 
-        // Criando painel com box layout para ficar um botão debaixo do outro
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-        buttonPanel.setBackground(Color.decode("#171717"));
-
-        // Criando botões CRUD
-        this.createButton(buttonPanel, "Adicionar Jogador(a)", e -> {
-
-
-        }, false);
-        this.createButton(buttonPanel, "Visualizar Jogador(a)", e -> {
-
-
-        }, true);
-        this.createButton(buttonPanel, "Editar Jogador(a)", e -> {
-
-
-        }, true);
-        this.createButton(buttonPanel, "Remover Jogador(a)", e -> {
+        //declarando JTextField
+        campoIdJogador = createInput(300, 40);
+        campoIdTime = createInput(300, 40);
+        campoNome = createInput(300, 40);
+        campoNumeroJogador = createInput(300, 40);
+        campoBloqueiosFeitos = createInput(300, 40, "0");
+        campoDefesasFeitas = createInput(300, 40, "0");
+        campoSaquesFeitos = createInput(300, 40, "0");
+        campoPontosFeitos = createInput(300, 40, "0");
 
 
-        }, true);
+        // lado leste (botões)
+        mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+
         // Criando um painel de preenchimento com EmptyBorder
-        JPanel paddingPanel = new JPanel(new BorderLayout());
-        paddingPanel.setBorder(BorderFactory.createEmptyBorder(100, 25, 100, 25));
-        paddingPanel.add(buttonPanel, BorderLayout.CENTER);
+        paddingPanel = new JPanel(new BorderLayout());
+        paddingPanel.setBorder(BorderFactory.createEmptyBorder(50, 25, 50, 25));
         paddingPanel.setBackground(Color.decode("#171717"));
 
-        // Adicionando o painel de preenchimento (com os botões) ao centro do painel principal
-        buttonsPanel.add(paddingPanel, BorderLayout.CENTER);
-        this.add(buttonsPanel, BorderLayout.EAST);
+        // Form panel
+        formPanel = new JPanel(new BorderLayout());
+        formPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 70));
+        formPanel.setBackground(Color.decode("#171717"));
 
-        //input
-        // Criando o painel input com BorderLayout
+        // Operations panel
+        operationPanel = new JPanel(new BorderLayout());
+        operationPanel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
+        operationPanel.setBackground(Color.decode("#171717"));
+
+        // Criando painel com box layout para ficar um botão debaixo do outro
+        buttonsPanel = new JPanel();
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
+        buttonsPanel.setBackground(Color.decode("#171717"));
+
+        // Criando painel de inputs com group layout
         inputPanel = new JPanel();
         inputPanel.setLayout(new BorderLayout());
         inputPanel.setBackground(Color.decode("#171717"));
 
-        //declarando Jlabels
-        JLabel labelIdJogador = createLabel(font,"ID do Jogador(a):");
-        JLabel labelIdTime =  createLabel(font,"ID do Time:");
-        JLabel labelNome = createLabel(font, "Nome: ");
-        JLabel labelNumeroJogador = createLabel(font, "Número do Jogador: ");
-        JLabel labelBloqueiosFeitos = createLabel(font, "Número de Bloqueios Feitos: ");
-        JLabel labelDefesasFeitas = createLabel(font, "Número de Defesas Feitas: ");
-        JLabel labelSaquesFeitos = createLabel(font, "Número de Saques Feitos: ");
-        JLabel labelPontosFeitos = createLabel(font, "Número de Pontos Feitos: ");
-
-        //declarando JTextField
-        JTextField campoIdJogador = createInput(300,40);
-        JTextField campoIdTime =  createInput(300,40);
-        JTextField campoNome = createInput(300,40);
-        JTextField campoNumeroJogador = createInput(300,40);
-        JTextField campoBloqueiosFeitos = createInput(300,40);
-        JTextField campoDefesasFeitas = createInput(300,40);
-        JTextField campoSaquesFeitos = createInput(300,40);
-        JTextField campoPontosFeitos = createInput(300,40);
-
         // Configuração do GroupLayout
-        GroupLayout layout = new GroupLayout(inputPanel);
+        layout = new GroupLayout(inputPanel);
         inputPanel.setLayout(layout);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
 
+
         // Configuração das horizontais
-        GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
+        hGroup = layout.createSequentialGroup();
         hGroup.addGroup(layout.createParallelGroup()
                 .addComponent(labelIdJogador)
                 .addComponent(labelIdTime)
@@ -113,7 +142,7 @@ public class ManagerPlayersFrame extends JFrame {
         layout.setHorizontalGroup(hGroup);
 
         // Configuração das verticais
-        GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
+        vGroup = layout.createSequentialGroup();
         vGroup.addGap(40);
         vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 .addComponent(labelIdJogador)
@@ -148,26 +177,141 @@ public class ManagerPlayersFrame extends JFrame {
                 .addComponent(campoPontosFeitos));
         layout.setVerticalGroup(vGroup);
 
-        //adicionando inputPanel
-        this.add(inputPanel, BorderLayout.WEST);
+        // Criando botões CRUD
+        this.createButton(buttonsPanel, "Adicionar Jogador(a)", this.adicionarJogadorListener(), false);
+        this.createButton(buttonsPanel, "Visualizar Jogador(a)", e -> {
+        }, true);
+        this.createButton(buttonsPanel, "Editar Jogador(a)", this.editarJogadorListener(), true);
+        this.createButton(buttonsPanel, "Remover Jogador(a)", this.removerJogadorListener(), true);
+        this.createButton(buttonsPanel, "Limpar tudo", this.cleanFieldsListener(), true);
 
-        //empilha tudo
-        this.pack();
-        this.setLocationRelativeTo(null);
+        // os inputs ficam dentro do form panel
+        formPanel.add(inputPanel, BorderLayout.CENTER);
+        // os botões ficam dentro do operations panel
+        operationPanel.add(buttonsPanel, BorderLayout.CENTER);
+
+        // no padding panel ficam o formPanel e o buttonsPanel
+        paddingPanel.add(operationPanel, BorderLayout.EAST);
+        paddingPanel.add(formPanel, BorderLayout.WEST);
+
+        // no painel principal fica o paddingPanel
+        mainPanel.add(paddingPanel, BorderLayout.CENTER);
+
+        this.add(mainPanel, BorderLayout.CENTER);
     }
+
     private void createButton(JPanel panel, String text, ActionListener listener, boolean space) {
         if (space) panel.add(Box.createRigidArea(new Dimension(0, 50)));
         final DefaultButton button = new DefaultButton(text, listener);
         panel.add(button);
     }
-    private DefaultInput createInput(int sizeX, int sizeY) {
-        final DefaultInput input = new DefaultInput(sizeX, sizeY);
-        return input;
+
+    private DefaultInput createInput(int sizeX, int sizeY, String... text) {
+        return new DefaultInput(sizeX, sizeY, text);
     }
+
     private DefaultLabel createLabel(Font font, String text) {
-        final DefaultLabel label = new DefaultLabel(font, text);
-        return label;
+        return new DefaultLabel(font, text);
     }
 
+    private ActionListener cleanFieldsListener() {
+        return e -> this.cleanFields();
+    }
 
+    private ActionListener editarJogadorListener() {
+        return e -> {
+            final EditPlayer editPlayer = new EditPlayer(
+                    this.campoNome.getText(),
+                    this.campoIdTime.getText(),
+                    this.campoNumeroJogador.getText(),
+                    this.campoBloqueiosFeitos.getText(),
+                    this.campoSaquesFeitos.getText(),
+                    this.campoDefesasFeitas.getText(),
+                    this.campoPontosFeitos.getText()
+            );
+
+            try {
+                new EditPlayerValidator().validate(editPlayer);
+            } catch (ValidationException ex) {
+                ex.printOnFile();
+                return;
+            }
+
+            this.jogadorService.editarJogador(Long.valueOf(this.campoIdJogador.getText()), editPlayer);
+        };
+    }
+
+    private ActionListener removerJogadorListener() {
+        return e -> {
+            final RemovePlayer removePlayer = new RemovePlayer(
+                    this.campoIdJogador.getText(),
+                    this.campoIdTime.getText(),
+                    this.campoNumeroJogador.getText(),
+                    this.campoNome.getText()
+            );
+
+            try {
+                new RemovePlayerValidator().validate(removePlayer);
+            } catch (ValidationException ex) {
+                ex.printOnFile();
+                return;
+            }
+
+            this.jogadorService.deletarJogador(removePlayer);
+            this.cleanFields();
+        };
+    }
+
+    private ActionListener adicionarJogadorListener() {
+        return e -> {
+            final CreatePlayer createPlayer = new CreatePlayer(
+                    this.campoNome.getText(),
+                    this.campoIdTime.getText(),
+                    this.campoNumeroJogador.getText(),
+                    this.campoBloqueiosFeitos.getText(),
+                    this.campoSaquesFeitos.getText(),
+                    this.campoDefesasFeitas.getText(),
+                    this.campoPontosFeitos.getText()
+            );
+            try {
+                new CreatePlayerValidator().validate(createPlayer);
+            } catch (ValidationException ex) {
+                ex.printOnFile();
+                return;
+            }
+
+            final Jogador jogador = this.jogadorService.criarJogador(createPlayer);
+            this.campoIdJogador.setText(jogador.getId().toString());
+        };
+    }
+
+    private ActionListener buscarJogadorListener() {
+        return e -> {
+            final FindPlayer findPlayer = new FindPlayer(
+                    this.campoIdJogador.getText(),
+                    this.campoIdTime.getText(),
+                    this.campoNome.getText(),
+                    this.campoNumeroJogador.getText()
+            );
+            try {
+                new FindPlayerValidator().validate(findPlayer);
+            } catch (ValidationException ex) {
+                ex.printOnFile();
+                return;
+            }
+
+            final Jogador jogador = this.jogadorService.buscarJogador(findPlayer.id());
+        };
+    }
+
+    public void cleanFields() {
+        this.campoIdJogador.setText("");
+        this.campoNome.setText("");
+        this.campoIdTime.setText("");
+        this.campoNumeroJogador.setText("");
+        this.campoBloqueiosFeitos.setText("");
+        this.campoSaquesFeitos.setText("");
+        this.campoDefesasFeitas.setText("");
+        this.campoPontosFeitos.setText("");
+    }
 }

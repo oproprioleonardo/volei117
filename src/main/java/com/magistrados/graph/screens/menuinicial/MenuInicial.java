@@ -3,6 +3,7 @@ package com.magistrados.graph.screens.menuinicial;
 import com.magistrados.graph.buttons.DefaultButton;
 import com.magistrados.graph.screens.managerplayers.ManagerPlayersFrame;
 import com.magistrados.graph.screens.managertimes.ManagerTimesFrame;
+import com.magistrados.services.JogadorService;
 import com.magistrados.graph.screens.partidas.StartPartidaRequestsFrame;
 
 import javax.swing.*;
@@ -13,7 +14,7 @@ public class MenuInicial extends JFrame {
 
     private JPanel mainPanel;
 
-    public MenuInicial() throws HeadlessException {
+    public MenuInicial(JogadorService jogadorService) throws HeadlessException {
         super("Menu Inicial");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
@@ -28,7 +29,7 @@ public class MenuInicial extends JFrame {
         buttonPanel.setBackground(Color.decode("#171717"));
         // Criando botões
         this.createButton(buttonPanel, "Gerenciar Jogadores", e -> {
-            final JFrame gerenciarJogadores = new ManagerPlayersFrame();
+            final JFrame gerenciarJogadores = new ManagerPlayersFrame(jogadorService);
             gerenciarJogadores.setVisible(true);
 
         }, false);

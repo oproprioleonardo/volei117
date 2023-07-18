@@ -11,6 +11,17 @@ import java.awt.event.ActionListener;
 public class ManagerTimesFrame extends JFrame {
     private JPanel inputPanel;
     private JPanel buttonsPanel;
+    private JPanel buttonPanel;
+    private JPanel paddingPanel;
+    private JLabel labelIdTime;
+    private JLabel labelVitoriasTime;
+    private JLabel labelVitorias;
+    private JLabel labelDerrotas;
+    private JTextField campoIdTime;
+    private JTextField campoNomeTime;
+    private JTextField campoVitorias;
+    private JTextField campoDerrotas;
+
     Font font = new Font("Roboto", Font.BOLD, 20);
 
     public ManagerTimesFrame() throws HeadlessException {
@@ -19,14 +30,51 @@ public class ManagerTimesFrame extends JFrame {
         this.setResizable(false);
         this.setLayout(new BorderLayout());
 
-        //buttons
+
+        //empilha tudo
+        this.pack();
+        this.setLocationRelativeTo(null);
+
+    }
+
+    public void initComponents(){
+        //Criando Jlabels
+        labelIdTime =  createLabel(font,"ID do Time:");
+        labelVitoriasTime = createLabel(font, "Nome do Time: ");
+        labelVitorias = createLabel(font, "Número de Vitórias: ");
+        labelDerrotas = createLabel(font,"Número de Derrotas:");
+
+
+        //Criando JTextField
+        campoIdTime = createInput(300,40);
+        campoNomeTime =  createInput(300,40);
+        campoVitorias = createInput(300,40);
+        campoDerrotas = createInput(300,40);
+
+
+        //Criando Painéis com seus repectivos layouts
         buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new BorderLayout());
 
-        // Criando painel com box layout para ficar um botão debaixo do outro
-        JPanel buttonPanel = new JPanel();
+        buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         buttonPanel.setBackground(Color.decode("#171717"));
+
+        paddingPanel = new JPanel(new BorderLayout());
+        paddingPanel.setBorder(BorderFactory.createEmptyBorder(100, 25, 100, 25));
+        paddingPanel.setBackground(Color.decode("#171717"));
+
+        inputPanel = new JPanel();
+        inputPanel.setLayout(new BorderLayout());
+        inputPanel.setBackground(Color.decode("#171717"));
+
+
+        // Adicionando o painel de preenchimento (com os botões) ao centro do painel principal
+        this.add(buttonsPanel, BorderLayout.EAST);
+        this.add(inputPanel, BorderLayout.WEST);
+        buttonsPanel.add(paddingPanel, BorderLayout.CENTER);
+        paddingPanel.add(buttonPanel, BorderLayout.CENTER);
+
 
         // Criando botões CRUD
         this.createButton(buttonPanel, "Adicionar Time", e -> {
@@ -46,33 +94,6 @@ public class ManagerTimesFrame extends JFrame {
 
         }, true);
 
-        // Criando um painel de preenchimento com EmptyBorder
-        JPanel paddingPanel = new JPanel(new BorderLayout());
-        paddingPanel.setBorder(BorderFactory.createEmptyBorder(100, 25, 100, 25));
-        paddingPanel.add(buttonPanel, BorderLayout.CENTER);
-        paddingPanel.setBackground(Color.decode("#171717"));
-
-        // Adicionando o painel de preenchimento (com os botões) ao centro do painel principal
-        buttonsPanel.add(paddingPanel, BorderLayout.CENTER);
-        this.add(buttonsPanel, BorderLayout.EAST);
-
-        //input
-        // Criando o painel input com BorderLayout
-        inputPanel = new JPanel();
-        inputPanel.setLayout(new BorderLayout());
-        inputPanel.setBackground(Color.decode("#171717"));
-
-        //declarando Jlabels
-        JLabel labelIdTime =  createLabel(font,"ID do Time:");
-        JLabel labelVitoriasTime = createLabel(font, "Nome do Time: ");
-        JLabel labelVitorias = createLabel(font, "Número de Vitórias: ");
-        JLabel labelDerrotas = createLabel(font,"Número de Derrotas:");
-
-        //declarando JTextField
-        JTextField campoIdTime = createInput(300,40);
-        JTextField campoNomeTime =  createInput(300,40);
-        JTextField campoVitorias = createInput(300,40);
-        JTextField campoDerrotas = createInput(300,40);
 
         // Configuração do GroupLayout
         GroupLayout layout = new GroupLayout(inputPanel);
@@ -80,8 +101,7 @@ public class ManagerTimesFrame extends JFrame {
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
 
-        // Configuração das horizontais
-        GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
+        GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup(); // Configuração das horizontais
         hGroup.addGroup(layout.createParallelGroup()
                 .addComponent(labelIdTime)
                 .addComponent(labelVitoriasTime)
@@ -94,8 +114,7 @@ public class ManagerTimesFrame extends JFrame {
                 .addComponent(campoDerrotas));
         layout.setHorizontalGroup(hGroup);
 
-        // Configuração das verticais
-        GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
+        GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup(); // Configuração das verticais
         vGroup.addGap(110);
         vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 .addComponent(labelIdTime)
@@ -113,14 +132,6 @@ public class ManagerTimesFrame extends JFrame {
                 .addComponent(labelDerrotas)
                 .addComponent(campoDerrotas));
         layout.setVerticalGroup(vGroup);
-
-        //adicionando inputPanel
-        this.add(inputPanel, BorderLayout.WEST);
-
-        //empilha tudo
-        this.pack();
-        this.setLocationRelativeTo(null);
-
     }
     private void createButton(JPanel panel, String text, ActionListener listener, boolean space) {
         if (space) panel.add(Box.createRigidArea(new Dimension(0, 50)));

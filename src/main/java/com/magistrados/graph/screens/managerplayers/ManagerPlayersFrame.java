@@ -65,12 +65,12 @@ public class ManagerPlayersFrame extends JFrame {
         //declarando Jlabels
         labelIdJogador = createLabel(font, "ID do Jogador(a):");
         labelIdTime = createLabel(font, "ID do Time:");
-        labelNome = createLabel(font, "Nome: ");
-        labelNumeroJogador = createLabel(font, "Número do Jogador: ");
-        labelBloqueiosFeitos = createLabel(font, "Número de Bloqueios Feitos: ");
-        labelDefesasFeitas = createLabel(font, "Número de Defesas Feitas: ");
-        labelSaquesFeitos = createLabel(font, "Número de Saques Feitos: ");
-        labelPontosFeitos = createLabel(font, "Número de Pontos Feitos: ");
+        labelNome = createLabel(font, "Nome:");
+        labelNumeroJogador = createLabel(font, "Número do Jogador:");
+        labelBloqueiosFeitos = createLabel(font, "Número de Bloqueios Feitos:");
+        labelDefesasFeitas = createLabel(font, "Número de Defesas Feitas:");
+        labelSaquesFeitos = createLabel(font, "Número de Saques Feitos:");
+        labelPontosFeitos = createLabel(font, "Número de Pontos Feitos:");
 
         //declarando JTextField
         campoIdJogador = createInput(300, 40);

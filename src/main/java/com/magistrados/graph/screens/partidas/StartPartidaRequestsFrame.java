@@ -10,72 +10,78 @@ import java.awt.event.ActionListener;
 
 public class StartPartidaRequestsFrame extends JFrame {
     private JPanel inputPanel;
+    private JPanel mainPanel;
+    private JPanel buttonEmptySpacePanel;
     private JPanel buttonsPanel;
-
+    private JPanel paddingPanel;
+    private JLabel labelIdTime1;
+    private JLabel labelIdTime2;
+    private JLabel labelData;
+    private JLabel labelHorario;
+    private JLabel labelLocal;
+    private JTextField campoIdTime1;
+    private JTextField campoIdTime2;
+    private JTextField campoData;
+    private JTextField campoHorario;
+    private JTextField campoLocal;
     Font font = new Font("Roboto", Font.BOLD, 20);
+
     public StartPartidaRequestsFrame() throws HeadlessException{
         super("Iniciar Partida - Requerimentos");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setResizable(false);
         this.setLayout(new BorderLayout());
+        initComponents();
+        //empilha tudo
+        this.pack();
+        this.setLocationRelativeTo(null);
+    }
 
-        //declarando Jlabels
-        JLabel labelIdTime1 =  createLabel(font,"ID do 1º Time:");
-        JLabel labelIdTime2 = createLabel(font, "ID do 2º Time: ");
-        JLabel labelData = createLabel(font, "Data: ");
-        JLabel labelHorario = createLabel(font,"Horário: ");
-        JLabel labelLocal = createLabel(font,"Local: ");
+    public void initComponents(){
+        //Criando Jlabels
+        labelIdTime1 =  createLabel(font,"ID do 1º Time:");
+        labelIdTime2 = createLabel(font, "ID do 2º Time:");
+        labelData = createLabel(font, "Data:");
+        labelHorario = createLabel(font,"Horário:");
+        labelLocal = createLabel(font,"Local:");
 
-        //declarando JTextField
-        JTextField campoIdTime1 = createInput(300,40);
-        JTextField campoIdTime2 =  createInput(300,40);
-        JTextField campoData = createInput(300,40);
-        JTextField campoHorario = createInput(300,40);
-        JTextField campoLocal = createInput(300,40);
+        //Criando JTextField
+        campoIdTime1 = createInput(300,40);
+        campoIdTime2 =  createInput(300,40);
+        campoData = createInput(300,40);
+        campoHorario = createInput(300,40);
+        campoLocal = createInput(300,40);
 
+        //Criando Painéis
+        mainPanel = new JPanel();
+        mainPanel.setBackground(Color.decode("#171717"));
 
+        buttonEmptySpacePanel = new JPanel();
+        buttonEmptySpacePanel.setBackground(Color.decode("#171717"));
 
-
-
-        //buttons
         buttonsPanel = new JPanel();
-        buttonsPanel.setLayout(new BorderLayout());
+        buttonsPanel.setBackground(Color.decode("#171717"));
 
-        // Criando painel com box layout para ficar um botão debaixo do outro
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-        buttonPanel.setBackground(Color.decode("#171717"));
-
-        JPanel eastAreaWithBorder = new JPanel(new BorderLayout());
-        eastAreaWithBorder.add(buttonPanel, BorderLayout.CENTER);
-        eastAreaWithBorder.setBorder(BorderFactory.createEmptyBorder(100, 25, 100, 25));
-        eastAreaWithBorder.setBackground(Color.decode("#171717"));
-
-        // Criando botões CRUD
-        this.createButton(buttonPanel, "Iniciar", e -> {
-
-
-        }, false);
-        this.createButton(buttonPanel, "Voltar", e -> {
-
-
-        }, true);
-
-        // Criando um painel de preenchimento com EmptyBorder
-        JPanel paddingPanel = new JPanel(new BorderLayout());
-        paddingPanel.setBorder(BorderFactory.createEmptyBorder(100, 25, 100, 25));
-        paddingPanel.add(eastAreaWithBorder, BorderLayout.EAST);
+        paddingPanel = new JPanel();
         paddingPanel.setBackground(Color.decode("#171717"));
 
-        // Adicionando o painel de preenchimento (com os botões) ao centro do painel principal
-        buttonsPanel.add(paddingPanel, BorderLayout.CENTER);
-        this.add(buttonsPanel, BorderLayout.CENTER);
-
-        //input
-        // Criando o painel input com BorderLayout
         inputPanel = new JPanel();
-        inputPanel.setLayout(new BorderLayout());
         inputPanel.setBackground(Color.decode("#171717"));
+
+
+        // Configurações do Layout
+        mainPanel.setLayout(new BorderLayout());
+
+        buttonEmptySpacePanel.setLayout(new BoxLayout(buttonEmptySpacePanel, BoxLayout.Y_AXIS));
+
+        buttonsPanel.setLayout(new BorderLayout());
+        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(100, 25, 100, 25));
+
+        paddingPanel.setLayout(new BorderLayout());
+        paddingPanel.setBorder(BorderFactory.createEmptyBorder(100, 25, 100, 25));
+
+        inputPanel.setLayout(new BorderLayout());
+
 
         // Configuração do GroupLayout
         GroupLayout layout = new GroupLayout(inputPanel);
@@ -83,20 +89,7 @@ public class StartPartidaRequestsFrame extends JFrame {
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
 
-
-        // Criando um painel de preenchimento com EmptyBorder
-        /*JPanel paddingPanel2 = new JPanel(new BorderLayout());
-        paddingPanel2.setBorder(BorderFactory.createEmptyBorder(100, 25, 100, 25));
-        paddingPanel2.add(inputPanel, BorderLayout.CENTER);
-        paddingPanel2.setBackground(Color.decode("#171717"));
-
-        formPanel.add(paddingPanel2, BorderLayout.CENTER);
-        this.add(formPanel, BorderLayout.WEST);*/
-
-        paddingPanel.add(inputPanel, BorderLayout.WEST);
-
-        // Configuração das horizontais
-        GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
+        GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup(); // Configuração das horizontais
         hGroup.addGroup(layout.createParallelGroup()
                 .addComponent(labelIdTime1)
                 .addComponent(labelIdTime2)
@@ -111,8 +104,7 @@ public class StartPartidaRequestsFrame extends JFrame {
                 .addComponent(campoLocal));
         layout.setHorizontalGroup(hGroup);
 
-        // Configuração das verticais
-        GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
+        GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup(); // Configuração das verticais
         vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 .addComponent(labelIdTime1)
                 .addComponent(campoIdTime1));
@@ -134,14 +126,30 @@ public class StartPartidaRequestsFrame extends JFrame {
                 .addComponent(campoLocal));
         layout.setVerticalGroup(vGroup);
 
-        //adicionando inputPanel
-        // this.add(paddingPanel2, BorderLayout.WEST);
 
-        //empilha tudo
-        this.pack();
-        this.setLocationRelativeTo(null);
+        // Criando botões
+        this.createButton(buttonEmptySpacePanel, "Iniciar", e -> {
+            final JFrame startPartidaFrame = new StartPartidaFrame();
+            startPartidaFrame.setVisible(true);
 
+        }, false);
+        this.createButton(buttonEmptySpacePanel, "Voltar", e -> {
+        this.dispose();
+
+        }, true);
+
+
+        //Adicionando Paineis
+        buttonsPanel.add(buttonEmptySpacePanel, BorderLayout.CENTER);
+
+        paddingPanel.add(buttonsPanel, BorderLayout.EAST);
+
+        mainPanel.add(paddingPanel, BorderLayout.CENTER);
+        this.add(mainPanel, BorderLayout.CENTER);
+
+        paddingPanel.add(inputPanel, BorderLayout.WEST);
     }
+
     private void createButton(JPanel panel, String text, ActionListener listener, boolean space) {
         if (space) panel.add(Box.createRigidArea(new Dimension(0, 50)));
         final DefaultButton button = new DefaultButton(text, listener);

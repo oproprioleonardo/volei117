@@ -37,5 +37,8 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Others ###
 /.idea/
 /src/main/resources/.env
+/crash_reports/

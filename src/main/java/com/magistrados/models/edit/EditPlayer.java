@@ -1,6 +1,7 @@
-package com.magistrados.models.create;
+package com.magistrados.models.edit;
 
-public record CreateJogador(
+public record EditPlayer(
+        String id,
         String nome,
         String timeId,
         String numeroJogador,

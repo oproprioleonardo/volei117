@@ -1,19 +1,19 @@
-package com.magistrados.internal.validators;
+package com.magistrados.internal.validators.create;
 
 import com.magistrados.api.validations.ErrorMessage;
 import com.magistrados.api.validations.Validator;
 import com.magistrados.api.validations.exceptions.ValidationException;
-import com.magistrados.models.create.CreateJogador;
+import com.magistrados.models.create.CreatePlayer;
 import org.apache.commons.lang3.math.NumberUtils;
 
-public class CreatePlayerValidator extends Validator<CreateJogador> {
+public class CreatePlayerValidator extends Validator<CreatePlayer> {
 
     @Override
-    public void validate(CreateJogador object) throws ValidationException {
+    public void validate(CreatePlayer object) throws ValidationException {
         if (object.nome().isBlank()) {
             this.addError("nome do jogador", ErrorMessage.NOT_NULLABLE);
         }
-        if (NumberUtils.toLong(object.timeId(), 0) < 1) {
+        if (!object.timeId().isBlank() && NumberUtils.toLong(object.timeId(), 0) < 1) {
             this.addError("ID do time", ErrorMessage.NOT_ID);
         }
         int numeroJogador = NumberUtils.toInt(object.numeroJogador(), 0);

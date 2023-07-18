@@ -17,7 +17,7 @@ public class PsqlPartidaRepository implements PartidaRepository {
     @Override
     public void create(Partida object) {
         try (final Connection con = this.connectionProvider.getConnection()) {
-            final String sql = "INSERT INTO volei_partidas(id_time_a, id_time_b, local, qntd_sets, data_hora, vencedor)";
+            final String sql = "INSERT INTO volei_partidas(id_time_a, id_time_b, local, qntd_sets, data_hora, vencedor) RETURNING id";
             final PreparedStatement st = con.prepareStatement(sql);
             st.setLong(1, object.getIdTimeA());
             st.setLong(2, object.getIdTimeB());
@@ -25,11 +25,8 @@ public class PsqlPartidaRepository implements PartidaRepository {
             st.setInt(4, object.getQuantidadeSets());
             st.setTimestamp(5, Timestamp.valueOf(object.getDateTime()));
             st.setString(6, object.getVencedor());
-            int affectedRows = st.executeUpdate();
 
-            if (affectedRows == 0)
-                throw new SQLException("Creating 'partida' failed, no rows affected.");
-            try (ResultSet generatedKeys = st.getGeneratedKeys()) {
+            try (ResultSet generatedKeys = st.executeQuery()) {
                 if (generatedKeys.next())
                     object.setId(generatedKeys.getLong(1));
                 else

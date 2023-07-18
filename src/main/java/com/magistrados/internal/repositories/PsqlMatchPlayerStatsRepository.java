@@ -23,7 +23,7 @@ public class PsqlMatchPlayerStatsRepository implements MatchPlayerStatsRepositor
         try (final Connection con = this.connectionProvider.getConnection()) {
             final PreparedStatement st = con.prepareStatement("insert into volei_match_player_stats (id_jogador,id_partida," +
                     "bloqueios,saques,defesas,pontos_feitos)" +
-                    " values (?,?,?,?,?,?)");
+                    " values (?,?,?,?,?,?) RETURNING id");
             st.setLong(1, object.getPlayerId());
             st.setLong(2, object.getPartidaId());
             st.setInt(3, object.getQuantidadeBloqueios());
@@ -31,15 +31,11 @@ public class PsqlMatchPlayerStatsRepository implements MatchPlayerStatsRepositor
             st.setInt(5, object.getQuantidadeDefesas());
             st.setInt(6, object.getQuantidadePontos());
 
-            int affectedRows = st.executeUpdate();
-
-            if (affectedRows == 0)
-                throw new SQLException("Creating 'matchPlayerStats' failed, no rows affected.");
-            try (ResultSet generatedKeys = st.getGeneratedKeys()) {
+            try (ResultSet generatedKeys = st.executeQuery()) {
                 if (generatedKeys.next())
-                    object.setPlayerId(generatedKeys.getLong(1));
+                    object.setId(generatedKeys.getLong(1));
                 else
-                    throw new SQLException("Creating 'matchPlayerStats' failed, no ID obtained.");
+                    throw new SQLException("Creating 'match player stats' failed, no ID obtained.");
             }
 
             st.close();

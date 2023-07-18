@@ -21,16 +21,12 @@ public class PsqlTimeRepository implements TimeRepository {
     public void create(Time time) {
         try (final Connection con = this.connectionProvider.getConnection()) {
             final PreparedStatement st = con.prepareStatement("insert into volei_times (nome,vitorias,derrotas)" +
-                    " values (?,?,?)");
+                    " values (?,?,?) RETURNING id");
             st.setString(1, time.getNomeTime());
             st.setInt(2, time.getVitorias());
             st.setInt(3, time.getDerrotas());
 
-            int affectedRows = st.executeUpdate();
-
-            if (affectedRows == 0)
-                throw new SQLException("Creating 'time' failed, no rows affected.");
-            try (ResultSet generatedKeys = st.getGeneratedKeys()) {
+            try (ResultSet generatedKeys = st.executeQuery()) {
                 if (generatedKeys.next())
                     time.setId(generatedKeys.getLong(1));
                 else

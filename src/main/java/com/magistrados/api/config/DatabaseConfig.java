@@ -1,4 +1,4 @@
-package com.magistrados.config;
+package com.magistrados.api.config;
 
 public class DatabaseConfig {
 

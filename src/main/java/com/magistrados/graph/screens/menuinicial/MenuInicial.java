@@ -1,8 +1,8 @@
-package com.magistrados.graph.menuinicial;
+package com.magistrados.graph.screens.menuinicial;
 
 import com.magistrados.graph.buttons.DefaultButton;
-import com.magistrados.graph.managerplayers.ManagerPlayersFrame;
-import com.magistrados.graph.managertimes.ManagerTimesFrame;
+import com.magistrados.graph.screens.managerplayers.ManagerPlayersFrame;
+import com.magistrados.graph.screens.managertimes.ManagerTimesFrame;
 
 import javax.swing.*;
 import java.awt.*;

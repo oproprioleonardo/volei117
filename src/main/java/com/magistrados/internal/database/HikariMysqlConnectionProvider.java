@@ -1,7 +1,7 @@
 package com.magistrados.internal.database;
 
 import com.magistrados.api.database.ConnectionProvider;
-import com.magistrados.config.DatabaseConfig;
+import com.magistrados.api.config.DatabaseConfig;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 

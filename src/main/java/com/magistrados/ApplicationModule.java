@@ -2,8 +2,8 @@ package com.magistrados;
 
 import com.magistrados.api.database.ConnectionProvider;
 import com.magistrados.api.repositories.*;
-import com.magistrados.api.config.DatabaseConfig;
-import com.magistrados.api.config.DatabaseName;
+import com.magistrados.api.database.config.DatabaseConfig;
+import com.magistrados.api.database.config.DatabaseName;
 import com.magistrados.graph.screens.menuinicial.MenuInicial;
 import com.magistrados.internal.database.HikariMysqlConnectionProvider;
 import com.magistrados.internal.database.HikariPostgresConnectionProvider;

@@ -1,4 +1,4 @@
-package com.magistrados.api.config;
+package com.magistrados.api.database.config;
 
 import java.util.Arrays;
 

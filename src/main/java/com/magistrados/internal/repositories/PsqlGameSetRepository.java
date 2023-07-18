@@ -25,18 +25,16 @@ public class PsqlGameSetRepository implements GameSetRepository {
         try (final Connection con = this.connectionProvider.getConnection()) {
             final PreparedStatement st = con.prepareStatement("insert into volei_sets (id_partida, ordem, pontos_a, pontos_b, " +
                     "finalizado, vencedor)" +
-                    " values (?,?,?,?,?,?)");
+                    " values (?,?,?,?,?,?) RETURNING id");
+
             st.setLong(1, object.getPartida().getId());
             st.setInt(2, object.getOrdem());
             st.setInt(3, object.getPontosTimeA());
             st.setInt(4, object.getPontosTimeB());
             st.setBoolean(5, object.isFinalizado());
             st.setString(6, object.getVencedor());
-            int affectedRows = st.executeUpdate();
 
-            if (affectedRows == 0)
-                throw new SQLException("Creating 'set' failed, no rows affected.");
-            try (ResultSet generatedKeys = st.getGeneratedKeys()) {
+            try (ResultSet generatedKeys = st.executeQuery()) {
                 if (generatedKeys.next())
                     object.setId(generatedKeys.getLong(1));
                 else

@@ -4,10 +4,7 @@ import com.magistrados.api.database.ConnectionProvider;
 import com.magistrados.api.repositories.JogadorRepository;
 import com.magistrados.models.Jogador;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,25 +19,27 @@ public class PsqlJogadorRepository implements JogadorRepository {
     @Override
     public void create(Jogador object) {
         try (final Connection con = this.connectionProvider.getConnection()) {
-            final String sql = "INSERT INTO volei_jogadores(id_time, nome, numero, bloqueios, defesas, saques, pontos_feitos) VALUES (?,?,?,?,?,?,?)";
+            final String sql = "INSERT INTO volei_jogadores(id_time, nome, numero, bloqueios, defesas, saques, pontos_feitos) VALUES (?,?,?,?,?,?,?) RETURNING id";
             final PreparedStatement st = con.prepareStatement(sql);
-            st.setLong(1, object.getTimeId());
+
+            if (object.getTimeId() == null)
+                st.setNull(1, Types.BIGINT);
+            else st.setLong(1, object.getTimeId());
+
             st.setString(2, object.getNome());
             st.setInt(3, object.getNumeroJogador());
             st.setInt(4, object.getQuantidadeBloqueios());
             st.setInt(5, object.getQuantidadeDefesas());
             st.setInt(6, object.getQuantidadeSaques());
             st.setInt(7, object.getQuantidadePontos());
-            int affectedRows = st.executeUpdate();
 
-            if (affectedRows == 0)
-                throw new SQLException("Creating 'jogador' failed, no rows affected.");
-            try (ResultSet generatedKeys = st.getGeneratedKeys()) {
+            try (ResultSet generatedKeys = st.executeQuery()) {
                 if (generatedKeys.next())
                     object.setId(generatedKeys.getLong(1));
                 else
                     throw new SQLException("Creating 'jogador' failed, no ID obtained.");
             }
+
             st.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -77,7 +76,11 @@ public class PsqlJogadorRepository implements JogadorRepository {
         try (final Connection con = this.connectionProvider.getConnection()) {
             final String sql = "UPDATE volei_jogadores SET id_time = ?, nome = ?, numero = ?, bloqueios = ?, defesas = ?, saques = ?, pontos_feitos = ? WHERE id = ?";
             final PreparedStatement st = con.prepareStatement(sql);
-            st.setLong(1, object.getTimeId());
+
+            if (object.getTimeId() == null)
+                st.setNull(1, Types.BIGINT);
+            else st.setLong(1, object.getTimeId());
+
             st.setString(2, object.getNome());
             st.setInt(3, object.getNumeroJogador());
             st.setInt(4, object.getQuantidadeBloqueios());

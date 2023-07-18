@@ -1,24 +1,51 @@
 package com.magistrados.graph.screens.managertimes;
 
+import com.magistrados.api.validations.exceptions.ValidationException;
 import com.magistrados.graph.buttons.DefaultButton;
 import com.magistrados.graph.inputs.DefaultInput;
 import com.magistrados.graph.labels.DefaultLabel;
+import com.magistrados.internal.validators.create.CreatePlayerValidator;
+import com.magistrados.internal.validators.create.CreateTeamValidator;
+import com.magistrados.internal.validators.edit.EditPlayerValidator;
+import com.magistrados.internal.validators.edit.EditTeamValidator;
+import com.magistrados.internal.validators.find.FindPlayerValidator;
+import com.magistrados.internal.validators.find.FindTeamValidator;
+import com.magistrados.internal.validators.remove.RemovePlayerValidator;
+import com.magistrados.internal.validators.remove.RemoveTeamValidator;
+import com.magistrados.models.Jogador;
+import com.magistrados.models.Time;
+import com.magistrados.models.create.CreatePlayer;
+import com.magistrados.models.create.CreateTeam;
+import com.magistrados.models.edit.EditPlayer;
+import com.magistrados.models.edit.EditTeam;
+import com.magistrados.models.find.FindPlayer;
+import com.magistrados.models.find.FindTeam;
+import com.magistrados.models.remove.RemovePlayer;
+import com.magistrados.models.remove.RemoveTeam;
+import com.magistrados.services.PartidaService;
+import com.magistrados.services.TimeService;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.Optional;
 
 public class ManagerTimesFrame extends JFrame {
     private JPanel inputPanel;
     private JPanel buttonsPanel;
+    private TimeService timeService;
+    private JTextField campoIdTime;
+    private JTextField campoNomeTime;
+    private JTextField campoVitorias;
+    private JTextField campoDerrotas;
     Font font = new Font("Roboto", Font.BOLD, 20);
 
-    public ManagerTimesFrame() throws HeadlessException {
+    public ManagerTimesFrame(TimeService timeService) throws HeadlessException {
         super("Gerenciador de Times");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setResizable(false);
         this.setLayout(new BorderLayout());
-
+        this.timeService = timeService;
         //buttons
         buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new BorderLayout());
@@ -29,22 +56,10 @@ public class ManagerTimesFrame extends JFrame {
         buttonPanel.setBackground(Color.decode("#171717"));
 
         // Criando botões CRUD
-        this.createButton(buttonPanel, "Adicionar Time", e -> {
-
-
-        }, false);
-        this.createButton(buttonPanel, "Visualizar Time", e -> {
-
-
-        }, true);
-        this.createButton(buttonPanel, "Editar Time", e -> {
-
-
-        }, true);
-        this.createButton(buttonPanel, "Remover Time", e -> {
-
-
-        }, true);
+        this.createButton(buttonPanel, "Adicionar Time", adicionarTimeListener(), false);
+        this.createButton(buttonPanel, "Visualizar Time", buscarTimeListener(), true);
+        this.createButton(buttonPanel, "Editar Time", editarTimeListener(), true);
+        this.createButton(buttonPanel, "Remover Time", removerTimeListener(), true);
 
         // Criando um painel de preenchimento com EmptyBorder
         JPanel paddingPanel = new JPanel(new BorderLayout());
@@ -69,10 +84,10 @@ public class ManagerTimesFrame extends JFrame {
         JLabel labelDerrotas = createLabel(font,"Número de Derrotas:");
 
         //declarando JTextField
-        JTextField campoIdTime = createInput(300,40);
-        JTextField campoNomeTime =  createInput(300,40);
-        JTextField campoVitorias = createInput(300,40);
-        JTextField campoDerrotas = createInput(300,40);
+        campoIdTime = createInput(300,40);
+        campoNomeTime =  createInput(300,40);
+        campoVitorias = createInput(300,40);
+        campoDerrotas = createInput(300,40);
 
         // Configuração do GroupLayout
         GroupLayout layout = new GroupLayout(inputPanel);
@@ -137,4 +152,99 @@ public class ManagerTimesFrame extends JFrame {
         return label;
     }
 
+    private ActionListener removerTimeListener(){
+        return e -> {
+            final RemoveTeam removeTeam = new RemoveTeam(
+                    this.campoIdTime.getText(),
+                    this.campoNomeTime.getText()
+            );
+
+            try {
+                new RemoveTeamValidator().validate(removeTeam);
+            } catch (ValidationException ex) {
+                ex.printOnFile();
+                return;
+            }
+
+            this.timeService.deletarTime(removeTeam);
+            this.cleanFields();
+        };
+    }
+
+    private ActionListener editarTimeListener(){
+        return e -> {
+            final EditTeam editTeam = new EditTeam(
+                    this.campoIdTime.getText(),
+                    this.campoNomeTime.getText(),
+                    this.campoVitorias.getText(),
+                    this.campoDerrotas.getText()
+            );
+
+            try {
+                new EditTeamValidator().validate(editTeam);
+            } catch (ValidationException ex) {
+                ex.printOnFile();
+                return;
+            }
+
+            this.timeService.editarTime(editTeam);
+        };
+    }
+
+    private ActionListener adicionarTimeListener(){
+        return e -> {
+            final CreateTeam createTeam = new CreateTeam(
+                    this.campoNomeTime.getText(),
+                    this.campoVitorias.getText(),
+                    this.campoDerrotas.getText()
+            );
+            try {
+                new CreateTeamValidator().validate(createTeam);
+            } catch (ValidationException ex) {
+                ex.printOnFile();
+                return;
+            }
+
+
+            final Time time = this.timeService.criarTime(createTeam);
+            this.campoIdTime.setText(time.getId().toString());
+        };
+    }
+
+    private ActionListener buscarTimeListener(){
+        return e -> {
+            final FindTeam findTeam = new FindTeam(
+                    this.campoIdTime.getText(),
+                    this.campoNomeTime.getText()
+            );
+            try {
+                new FindTeamValidator().validate(findTeam);
+            } catch (ValidationException ex) {
+                ex.printOnFile();
+                return;
+            }
+
+            Long idTime = Long.parseLong(findTeam.id());
+
+
+            final Time time = Optional.ofNullable(this.timeService.buscarTime(idTime))
+                    .orElse(this.timeService.buscarTime(findTeam.nome()));
+
+            this.setFields(time);
+        };
+    }
+
+    private void cleanFields() {
+        this.campoIdTime.setText("");
+        this.campoNomeTime.setText("");
+        this.campoVitorias.setText("");
+        this.campoDerrotas.setText("");
+    }
+
+    private void setFields(Time time){
+        this.campoIdTime.setText(time.getId().toString());
+        this.campoNomeTime.setText(time.getNomeTime());
+        this.campoVitorias.setText(time.getVitorias().toString());
+        this.campoDerrotas.setText(time.getDerrotas().toString());
+    }
 }

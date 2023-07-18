@@ -19,6 +19,7 @@ import com.magistrados.services.JogadorService;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.Optional;
 
 public class ManagerPlayersFrame extends JFrame {
 
@@ -179,8 +180,7 @@ public class ManagerPlayersFrame extends JFrame {
 
         // Criando botões CRUD
         this.createButton(buttonsPanel, "Adicionar Jogador(a)", this.adicionarJogadorListener(), false);
-        this.createButton(buttonsPanel, "Visualizar Jogador(a)", e -> {
-        }, true);
+        this.createButton(buttonsPanel, "Visualizar Jogador(a)", this.buscarJogadorListener(), true);
         this.createButton(buttonsPanel, "Editar Jogador(a)", this.editarJogadorListener(), true);
         this.createButton(buttonsPanel, "Remover Jogador(a)", this.removerJogadorListener(), true);
         this.createButton(buttonsPanel, "Limpar tudo", this.cleanFieldsListener(), true);
@@ -300,7 +300,14 @@ public class ManagerPlayersFrame extends JFrame {
                 return;
             }
 
-            final Jogador jogador = this.jogadorService.buscarJogador(findPlayer.id());
+            Long idJogador = Long.parseLong(findPlayer.id());
+            Long idTime = Long.parseLong(findPlayer.id_time());
+            Integer numeroJogador = Integer.parseInt(findPlayer.numero());
+
+            final Jogador jogador = Optional.ofNullable(this.jogadorService.buscarJogador(idJogador))
+                    .orElse(this.jogadorService.buscarJogadorPorNumero(idTime, numeroJogador));
+
+            this.setFields(jogador);
         };
     }
 
@@ -313,5 +320,16 @@ public class ManagerPlayersFrame extends JFrame {
         this.campoSaquesFeitos.setText("");
         this.campoDefesasFeitas.setText("");
         this.campoPontosFeitos.setText("");
+    }
+
+    public void setFields(Jogador jogador){
+        this.campoIdJogador.setText(jogador.getId().toString());
+        this.campoNome.setText(jogador.getNome());
+        this.campoIdTime.setText(jogador.getTimeId().toString());
+        this.campoNumeroJogador.setText(jogador.getNumeroJogador().toString());
+        this.campoBloqueiosFeitos.setText(jogador.getQuantidadeBloqueios().toString());
+        this.campoSaquesFeitos.setText(jogador.getQuantidadeSaques().toString());
+        this.campoDefesasFeitas.setText(jogador.getQuantidadeDefesas().toString());
+        this.campoPontosFeitos.setText(jogador.getQuantidadePontos().toString());
     }
 }

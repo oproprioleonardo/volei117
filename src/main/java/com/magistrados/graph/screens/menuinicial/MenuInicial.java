@@ -5,6 +5,7 @@ import com.magistrados.graph.screens.managerplayers.ManagerPlayersFrame;
 import com.magistrados.graph.screens.managertimes.ManagerTimesFrame;
 import com.magistrados.services.JogadorService;
 import com.magistrados.graph.screens.partidas.StartPartidaRequestsFrame;
+import com.magistrados.services.TimeService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +15,7 @@ public class MenuInicial extends JFrame {
 
     private JPanel mainPanel;
 
-    public MenuInicial(JogadorService jogadorService) throws HeadlessException {
+    public MenuInicial(JogadorService jogadorService, TimeService timeService) throws HeadlessException {
         super("Menu Inicial");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
@@ -34,7 +35,7 @@ public class MenuInicial extends JFrame {
 
         }, false);
         this.createButton(buttonPanel, "Gerenciar Times", e -> {
-            final JFrame gerenciarTimes = new ManagerTimesFrame();
+            final JFrame gerenciarTimes = new ManagerTimesFrame(timeService);
             gerenciarTimes.setVisible(true);
 
         }, true);

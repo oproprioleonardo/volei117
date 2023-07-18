@@ -2,6 +2,7 @@ package com.magistrados.graph.menuinicial;
 
 import com.magistrados.graph.buttons.DefaultButton;
 import com.magistrados.graph.managerplayers.ManagerPlayersFrame;
+import com.magistrados.graph.managertimes.ManagerTimesFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,7 +32,8 @@ public class MenuInicial extends JFrame {
 
         }, false);
         this.createButton(buttonPanel, "Gerenciar Times", e -> {
-
+            final JFrame gerenciarTimes = new ManagerTimesFrame();
+            gerenciarTimes.setVisible(true);
 
         }, true);
         this.createButton(buttonPanel, "Gerenciar Partidas", e -> {

@@ -31,7 +31,7 @@ public class ManagerPlayersFrame extends JFrame {
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         buttonPanel.setBackground(Color.decode("#171717"));
 
-        // Criando botões
+        // Criando botões CRUD
         this.createButton(buttonPanel, "Adicionar Jogador(a)", e -> {
 
 

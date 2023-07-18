@@ -31,6 +31,16 @@ public class JogadorService {
         return jogador;
     }
 
+    public Jogador buscarJogadorPorNumero(Long timeId, Integer numero){
+        final Jogador jogador = this.jogadorRepository.findByNumber(timeId, numero);
+        if(jogador.isCreated())
+            throw new EntityNotFoundException(
+                    jogador.getTimeId().toString() + ", " + jogador.getNumeroJogador().toString(),
+                    "jogador"
+            );
+        return jogador;
+    }
+
     public Set<Jogador> buscarJogadores(Long idTime) {
         Set<Jogador> allByTeamId = this.jogadorRepository.findAllByTeamId(idTime);
         allByTeamId.forEach(jogador -> jogador.setMatchPlayerStats(this.matchPlayerStatsService.findByPlayerId(jogador.getId())));

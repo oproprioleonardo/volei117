@@ -3,6 +3,7 @@ package com.magistrados.api.validations.exceptions;
 import com.magistrados.api.validations.FieldError;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -25,9 +26,15 @@ public class ValidationException extends RuntimeException {
     }
 
     public void printOnFile() {
+        final String crashPath = "crash_reports/";
+        final File crashDir = new File(crashPath);
+        if (!crashDir.exists()) {
+            crashDir.mkdirs();
+        }
+
         final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
         final Date now = new Date();
-        final String name = "error_validation_" + dateFormat.format(now) + ".txt";
+        final String name = crashPath + "CRASH_REPORT_" + dateFormat.format(now) + ".txt";
         final String errorList = this.errors.stream().map(fieldError -> " - " + fieldError.getMessage() + "\n").collect(Collectors.joining());
         final String content = this.getMessage() + "\n\nValidações que deram erro:\n" + errorList;
 
@@ -36,9 +43,9 @@ public class ValidationException extends RuntimeException {
             final BufferedWriter writer = new BufferedWriter(fileWriter);
             writer.write(content);
             writer.close();
-            log.info("Arquivo criado com sucesso: " + name);
+            log.info("UM NOVO CRASH REPORT FOI EMITIDO: " + name);
         } catch (IOException e) {
-            log.error("Ocorreu um erro ao criar o arquivo: " + e.getMessage());
+            log.error("Ocorreu um erro ao emitir o crash report: " + e.getMessage());
         }
     }
 }

@@ -72,7 +72,7 @@ public class PsqlMatchPlayerStatsRepository implements MatchPlayerStatsRepositor
     public Set<MatchPlayerStats> findByPlayerId(Long playerId) {
         final Set<MatchPlayerStats> statsSet = new HashSet<>();
         try (final Connection con = this.connectionProvider.getConnection()) {
-            final String sql = "SELECT * FROM volei_match_player_stats WHERE player_id = ?";
+            final String sql = "SELECT * FROM volei_match_player_stats WHERE id_jogador = ?";
             final PreparedStatement st = con.prepareStatement(sql);
             st.setLong(1, playerId);
             final ResultSet rs = st.executeQuery();

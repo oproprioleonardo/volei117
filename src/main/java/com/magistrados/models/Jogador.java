@@ -1,8 +1,5 @@
 package com.magistrados.models;
 
-import com.magistrados.models.create.CreatePlayer;
-import com.magistrados.models.edit.EditPlayer;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,9 +29,9 @@ public class Jogador {
         this.quantidadePontos = quantidadePontos;
     }
 
-    public MatchPlayerStats matchStats(Long matchId){
+    public MatchPlayerStats matchStats(Long matchId) {
         return this.matchPlayerStats.stream()
-                .filter(x->x.getPartidaId().equals(matchId))
+                .filter(x -> x.getPartidaId().equals(matchId))
                 .findFirst()
                 .orElse(null);
     }
@@ -44,58 +41,77 @@ public class Jogador {
     }
 
     public Long getTimeId() {
-        return this.timeId;
+        return this.timeId != null && this.timeId > 0 ? timeId : null;
     }
 
     public void setTimeId(Long timeId) {
-        this.timeId = timeId;
+        if (timeId != null && timeId > 0)
+            this.timeId = timeId;
     }
 
     public void addPonto() {
         this.quantidadePontos++;
     }
 
-    public void addPontos(int pontos){this.quantidadePontos+= pontos;}
+    public void addPontos(int pontos) {
+        this.quantidadePontos += pontos;
+    }
 
     public void addSaque() {
         this.quantidadeSaques++;
     }
 
-    public void addSaques(int saques) { this.quantidadeSaques += saques; }
+    public void addSaques(int saques) {
+        this.quantidadeSaques += saques;
+    }
 
     public void addDefesa() {
         this.quantidadeDefesas++;
     }
 
-    public void addDefesas(int defesas) { this.quantidadeDefesas += defesas; }
+    public void addDefesas(int defesas) {
+        this.quantidadeDefesas += defesas;
+    }
 
     public void addBloqueio() {
         this.quantidadeBloqueios++;
     }
 
-    public void addBloqueios(int bloqueios){ this.quantidadeBloqueios += bloqueios; }
+    public void addBloqueios(int bloqueios) {
+        this.quantidadeBloqueios += bloqueios;
+    }
 
     public void removePonto() {
         this.quantidadePontos--;
     }
 
-    public void removePontos(int pontos) { this.quantidadePontos -= pontos; }
+    public void removePontos(int pontos) {
+        this.quantidadePontos -= pontos;
+    }
 
     public void removeSaque() {
         this.quantidadeSaques--;
     }
 
-    public void removeSaques(int saques){ this.quantidadeSaques -= saques; }
+    public void removeSaques(int saques) {
+        this.quantidadeSaques -= saques;
+    }
 
-    public void removeDefesa() { this.quantidadeDefesas--; }
+    public void removeDefesa() {
+        this.quantidadeDefesas--;
+    }
 
-    public void removeDefesas(int defesas) { this.quantidadeDefesas -= defesas; }
+    public void removeDefesas(int defesas) {
+        this.quantidadeDefesas -= defesas;
+    }
 
     public void removeBloqueio() {
         this.quantidadeBloqueios--;
     }
 
-    public void removeBloqueios(int bloqueios) { this.quantidadeBloqueios -= bloqueios; }
+    public void removeBloqueios(int bloqueios) {
+        this.quantidadeBloqueios -= bloqueios;
+    }
 
     public Long getId() {
         return id;
@@ -171,7 +187,7 @@ public class Jogador {
         this.matchPlayerStats = matchPlayerStats;
     }
 
-    public void addMatchPlayerStats(MatchPlayerStats matchPlayerStats){
+    public void addMatchPlayerStats(MatchPlayerStats matchPlayerStats) {
         this.matchPlayerStats.add(matchPlayerStats);
     }
 }

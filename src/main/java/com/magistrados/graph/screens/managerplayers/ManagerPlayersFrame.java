@@ -2,6 +2,7 @@ package com.magistrados.graph.screens.managerplayers;
 
 
 import com.magistrados.api.validations.exceptions.ValidationException;
+import com.magistrados.exceptions.EntityNotFoundException;
 import com.magistrados.graph.buttons.DefaultButton;
 import com.magistrados.graph.inputs.DefaultInput;
 import com.magistrados.graph.labels.DefaultLabel;
@@ -19,7 +20,6 @@ import com.magistrados.services.JogadorService;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.util.Optional;
 
 public class ManagerPlayersFrame extends JFrame {
 
@@ -246,8 +246,7 @@ public class ManagerPlayersFrame extends JFrame {
             final RemovePlayer removePlayer = new RemovePlayer(
                     this.campoIdJogador.getText(),
                     this.campoIdTime.getText(),
-                    this.campoNumeroJogador.getText(),
-                    this.campoNome.getText()
+                    this.campoNumeroJogador.getText()
             );
 
             try {
@@ -257,7 +256,7 @@ public class ManagerPlayersFrame extends JFrame {
                 return;
             }
 
-            this.jogadorService.deletarJogador(removePlayer);
+            this.jogadorService.removerJogador(removePlayer);
             this.cleanFields();
         };
     }
@@ -290,9 +289,10 @@ public class ManagerPlayersFrame extends JFrame {
             final FindPlayer findPlayer = new FindPlayer(
                     this.campoIdJogador.getText(),
                     this.campoIdTime.getText(),
-                    this.campoNome.getText(),
-                    this.campoNumeroJogador.getText()
+                    this.campoNumeroJogador.getText(),
+                    this.campoNome.getText()
             );
+
             try {
                 new FindPlayerValidator().validate(findPlayer);
             } catch (ValidationException ex) {
@@ -300,14 +300,14 @@ public class ManagerPlayersFrame extends JFrame {
                 return;
             }
 
-            Long idJogador = Long.parseLong(findPlayer.id());
-            Long idTime = Long.parseLong(findPlayer.id_time());
-            Integer numeroJogador = Integer.parseInt(findPlayer.numero());
-
-            final Jogador jogador = Optional.ofNullable(this.jogadorService.buscarJogador(idJogador))
-                    .orElse(this.jogadorService.buscarJogadorPorNumero(idTime, numeroJogador));
-
-            this.setFields(jogador);
+            try {
+                final Jogador jogador = this.jogadorService.buscarJogador(findPlayer);
+                if (jogador != null)
+                    this.setFields(jogador);
+            } catch (EntityNotFoundException ex) {
+                // todo não foi encontrado
+                cleanFields();
+            }
         };
     }
 
@@ -322,10 +322,10 @@ public class ManagerPlayersFrame extends JFrame {
         this.campoPontosFeitos.setText("");
     }
 
-    public void setFields(Jogador jogador){
+    public void setFields(Jogador jogador) {
         this.campoIdJogador.setText(jogador.getId().toString());
         this.campoNome.setText(jogador.getNome());
-        this.campoIdTime.setText(jogador.getTimeId().toString());
+        this.campoIdTime.setText(jogador.getTimeId() != null ? jogador.getTimeId().toString() : "");
         this.campoNumeroJogador.setText(jogador.getNumeroJogador().toString());
         this.campoBloqueiosFeitos.setText(jogador.getQuantidadeBloqueios().toString());
         this.campoSaquesFeitos.setText(jogador.getQuantidadeSaques().toString());

@@ -5,7 +5,9 @@ import com.magistrados.exceptions.EntityNotFoundException;
 import com.magistrados.models.Jogador;
 import com.magistrados.models.create.CreatePlayer;
 import com.magistrados.models.edit.EditPlayer;
+import com.magistrados.models.find.FindPlayer;
 import com.magistrados.models.remove.RemovePlayer;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.Set;
 
@@ -47,30 +49,41 @@ public class JogadorService {
         this.jogadorRepository.save(jogador);
     }
 
-    public void deletarJogador(RemovePlayer removePlayer) {
-        if (!removePlayer.id().isBlank()) {
-            final Jogador jogador = this.buscarJogador(removePlayer.getId());
-            this.jogadorRepository.deleteById(jogador.getId());
-            return;
+    public Jogador buscarJogador(FindPlayer findPlayer) {
+        Jogador jogador = this.buscarJogador(findPlayer.nome());
+        if (jogador == null) {
+            if (NumberUtils.isCreatable(findPlayer.id())) {
+                jogador = this.buscarJogador(findPlayer.getId());
+            } else if (NumberUtils.isCreatable(findPlayer.numero()) && NumberUtils.isCreatable(findPlayer.id_time())) {
+                jogador = this.buscarJogadorPorNumero(findPlayer.getIdTime(), findPlayer.getNumero());
+            }
         }
-        if (!removePlayer.nome().isBlank()) {
-            final Jogador jogador = this.buscarJogador(removePlayer.getNome());
-            this.jogadorRepository.deleteById(jogador.getId());
-            return;
-        }
-        final Jogador jogador = this.buscarJogadorPorNumero(removePlayer.getIdTime(), removePlayer.getNumero());
-        this.jogadorRepository.deleteById(jogador.getId());
+        return jogador;
     }
+
+    public void removerJogador(RemovePlayer removePlayer) {
+        Jogador jogador = null;
+        if (NumberUtils.isCreatable(removePlayer.id())) {
+            jogador = this.buscarJogador(removePlayer.getId());
+        } else if (NumberUtils.isCreatable(removePlayer.numero()) && NumberUtils.isCreatable(removePlayer.id_time())) {
+            jogador = this.buscarJogadorPorNumero(removePlayer.getIdTime(), removePlayer.getNumero());
+        }
+
+        if (jogador != null)
+            this.jogadorRepository.deleteById(jogador.getId());
+    }
+
 
     public void salvarJogador(Jogador jogador) {
         this.jogadorRepository.save(jogador);
         jogador.getMatchPlayerStats().forEach(matchPlayerStatsService::saveMatchPlayerStats);
     }
 
+
     public Jogador buscarJogador(Long id) {
         if (id == null) return null;
         final Jogador jogador = this.jogadorRepository.findById(id);
-        if (jogador.isCreated()) {
+        if (!jogador.isCreated()) {
             throw new EntityNotFoundException(id.toString(), "jogador");
         }
         jogador.setMatchPlayerStats(this.matchPlayerStatsService.findByPlayerId(jogador.getId()));
@@ -78,18 +91,18 @@ public class JogadorService {
     }
 
     public Jogador buscarJogador(String nome) {
-        if (nome == null) return null;
+        if (nome == null || nome.isBlank()) return null;
         final Jogador jogador = this.jogadorRepository.findByName(nome);
-        if (jogador.isCreated()) {
+        if (!jogador.isCreated()) {
             throw new EntityNotFoundException(nome, "jogador");
         }
         jogador.setMatchPlayerStats(this.matchPlayerStatsService.findByPlayerId(jogador.getId()));
         return jogador;
     }
 
-    public Jogador buscarJogadorPorNumero(Long timeId, Integer numero){
+    public Jogador buscarJogadorPorNumero(Long timeId, Integer numero) {
         final Jogador jogador = this.jogadorRepository.findByNumber(timeId, numero);
-        if(jogador.isCreated())
+        if (!jogador.isCreated())
             throw new EntityNotFoundException(
                     jogador.getTimeId().toString() + ", " + jogador.getNumeroJogador().toString(),
                     "jogador"

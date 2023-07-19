@@ -55,7 +55,7 @@ public class PsqlJogadorRepository implements JogadorRepository {
             st.setLong(1, object);
             final ResultSet rs = st.executeQuery();
             if (rs.next()) {
-                jogador.setId(object);
+                jogador.setId(rs.getLong("id"));
                 jogador.setNome(rs.getString("nome"));
                 jogador.setTimeId(rs.getLong("id_time"));
                 jogador.setNumeroJogador(rs.getInt("numero"));
@@ -118,9 +118,9 @@ public class PsqlJogadorRepository implements JogadorRepository {
     public Jogador findByName(String name) {
         final Jogador jogador = new Jogador();
         try (final Connection con = this.connectionProvider.getConnection()) {
-            final String sql = "SELECT * FROM volei_jogadores WHERE name = ?";
+            final String sql = "SELECT * FROM volei_jogadores WHERE nome ILIKE ?";
             final PreparedStatement st = con.prepareStatement(sql);
-            st.setString(1, name);
+            st.setString(1, name + "%");
             final ResultSet rs = st.executeQuery();
             if (rs.next()) {
                 jogador.setId(rs.getLong("id"));

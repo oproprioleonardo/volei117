@@ -3,8 +3,7 @@ package com.magistrados.models.remove;
 public record RemovePlayer(
         String id,
         String id_time,
-        String numero,
-        String nome
+        String numero
 ) {
 
     public Long getId() {
@@ -17,10 +16,6 @@ public record RemovePlayer(
 
     public Integer getNumero() {
         return Integer.valueOf(numero);
-    }
-
-    public String getNome() {
-        return this.nome;
     }
 
 }

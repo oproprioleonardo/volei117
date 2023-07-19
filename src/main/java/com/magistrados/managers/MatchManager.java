@@ -7,6 +7,8 @@ import com.magistrados.models.MatchPlayerStats;
 import com.magistrados.models.Partida;
 import com.magistrados.services.*;
 
+import java.time.LocalDateTime;
+
 public class MatchManager {
 
     private static final int POINTS_MAX = 25;
@@ -23,8 +25,10 @@ public class MatchManager {
         this.statsService = statsService;
     }
 
-    public void iniciarPartida(Long timeAId, Long timeBId, String local) {
+    public void iniciarPartida(Long timeAId, Long timeBId, String local, LocalDateTime dataHora) {
         this.partida = new Partida();
+        partida.setLocal(local);
+        partida.setDateTime(dataHora);
         partida.setTimeA(this.timeService.buscarTime(timeAId));
         partida.setTimeB(this.timeService.buscarTime(timeBId));
         this.partidaService.salvarPartida(partida);
@@ -38,9 +42,13 @@ public class MatchManager {
             this.statsService.saveMatchPlayerStats(playerStats);
         });
 
-        partida.setLocal(local);
         this.currentSet = partida.getSetByOrder(this.setNum);
 
+    }
+
+    public void cancelarPartida() {
+        this.partidaService.deletarPartida(partida);
+        // todo lógica para cancelar partida
     }
 
     public boolean nextSetAndCheckGameWon(TeamID teamID) {

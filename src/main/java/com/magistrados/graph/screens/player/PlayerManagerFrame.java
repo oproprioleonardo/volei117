@@ -1,4 +1,4 @@
-package com.magistrados.graph.screens.managerplayers;
+package com.magistrados.graph.screens.player;
 
 
 import com.magistrados.api.validations.exceptions.ValidationException;
@@ -21,7 +21,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-public class ManagerPlayersFrame extends JFrame {
+public class PlayerManagerFrame extends JFrame {
 
     private final Font font = new Font("Roboto", Font.BOLD, 20);
     private final JogadorService jogadorService;
@@ -51,7 +51,7 @@ public class ManagerPlayersFrame extends JFrame {
     private GroupLayout.SequentialGroup hGroup;
     private GroupLayout.SequentialGroup vGroup;
 
-    public ManagerPlayersFrame(JogadorService jogadorService) throws HeadlessException {
+    public PlayerManagerFrame(JogadorService jogadorService) throws HeadlessException {
         super("Gerenciador de Jogadores");
         this.jogadorService = jogadorService;
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

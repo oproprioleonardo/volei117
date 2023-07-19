@@ -1,4 +1,4 @@
-package com.magistrados.graph.screens.managertimes;
+package com.magistrados.graph.screens.team;
 
 import com.magistrados.api.validations.exceptions.ValidationException;
 import com.magistrados.exceptions.EntityNotFoundException;
@@ -20,7 +20,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-public class ManagerTimesFrame extends JFrame {
+public class TeamManagerFrame extends JFrame {
     Font font = new Font("Roboto", Font.BOLD, 20);
     private JPanel inputPanel;
     private JPanel buttonsPanel;
@@ -38,7 +38,7 @@ public class ManagerTimesFrame extends JFrame {
     private JLabel labelVitorias;
     private JLabel labelDerrotas;
 
-    public ManagerTimesFrame(TimeService timeService) throws HeadlessException {
+    public TeamManagerFrame(TimeService timeService) throws HeadlessException {
         super("Gerenciador de Times");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setResizable(false);

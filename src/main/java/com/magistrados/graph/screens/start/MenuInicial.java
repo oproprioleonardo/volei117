@@ -1,10 +1,12 @@
-package com.magistrados.graph.screens.menuinicial;
+package com.magistrados.graph.screens.start;
 
 import com.magistrados.graph.buttons.DefaultButton;
-import com.magistrados.graph.screens.managerplayers.ManagerPlayersFrame;
-import com.magistrados.graph.screens.managertimes.ManagerTimesFrame;
+import com.magistrados.graph.screens.player.PlayerManagerFrame;
+import com.magistrados.graph.screens.team.TeamManagerFrame;
 import com.magistrados.services.JogadorService;
-import com.magistrados.graph.screens.partidas.StartPartidaRequestsFrame;
+import com.magistrados.graph.screens.match.StartMatchRequestFrame;
+import com.magistrados.services.MatchPlayerStatsService;
+import com.magistrados.services.PartidaService;
 import com.magistrados.services.TimeService;
 
 import javax.swing.*;
@@ -15,7 +17,7 @@ public class MenuInicial extends JFrame {
 
     private JPanel mainPanel;
 
-    public MenuInicial(JogadorService jogadorService, TimeService timeService) throws HeadlessException {
+    public MenuInicial(PartidaService partidaService, MatchPlayerStatsService statsService, JogadorService jogadorService, TimeService timeService) throws HeadlessException {
         super("Menu Inicial");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
@@ -30,17 +32,17 @@ public class MenuInicial extends JFrame {
         buttonPanel.setBackground(Color.decode("#171717"));
         // Criando botões
         this.createButton(buttonPanel, "Gerenciar Jogadores", e -> {
-            final JFrame gerenciarJogadores = new ManagerPlayersFrame(jogadorService);
+            final JFrame gerenciarJogadores = new PlayerManagerFrame(jogadorService);
             gerenciarJogadores.setVisible(true);
 
         }, false);
         this.createButton(buttonPanel, "Gerenciar Times", e -> {
-            final JFrame gerenciarTimes = new ManagerTimesFrame(timeService);
+            final JFrame gerenciarTimes = new TeamManagerFrame(timeService);
             gerenciarTimes.setVisible(true);
 
         }, true);
         this.createButton(buttonPanel, "Iniciar Partida", e -> {
-            final JFrame startPartidasFrameRequests = new StartPartidaRequestsFrame();
+            final JFrame startPartidasFrameRequests = new StartMatchRequestFrame(partidaService, timeService, statsService);
             startPartidasFrameRequests.setVisible(true);
 
         }, true);

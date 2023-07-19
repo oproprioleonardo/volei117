@@ -4,7 +4,7 @@ import com.magistrados.api.database.ConnectionProvider;
 import com.magistrados.api.repositories.*;
 import com.magistrados.api.database.config.DatabaseConfig;
 import com.magistrados.api.database.config.DatabaseName;
-import com.magistrados.graph.screens.menuinicial.MenuInicial;
+import com.magistrados.graph.screens.start.MenuInicial;
 import com.magistrados.internal.database.HikariMysqlConnectionProvider;
 import com.magistrados.internal.database.HikariPostgresConnectionProvider;
 import com.magistrados.internal.repositories.*;
@@ -14,7 +14,6 @@ import io.github.cdimascio.dotenv.Dotenv;
 import javax.swing.*;
 
 public class ApplicationModule {
-
 
     public ApplicationModule() {
         final Dotenv dotenv = this.providesDotenv();
@@ -31,8 +30,7 @@ public class ApplicationModule {
         final GameSetService gameSetService = new GameSetService(gameSetRepository);
         final PartidaService partidaService = new PartidaService(partidaRepository, gameSetService, timeService);
 
-
-        final JFrame menuInicial = this.providesMenuInicial(jogadorService, timeService);
+        final JFrame menuInicial = new MenuInicial(partidaService, statsService, jogadorService, timeService);
         menuInicial.setVisible(true);
     }
 
@@ -76,7 +74,5 @@ public class ApplicationModule {
         return new PsqlGameSetRepository(connectionProvider);
     }
 
-    private JFrame providesMenuInicial(JogadorService jogadorService, TimeService timeService) {
-        return new MenuInicial(jogadorService, timeService);
-    }
+
 }

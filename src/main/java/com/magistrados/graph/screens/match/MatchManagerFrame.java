@@ -1,22 +1,25 @@
-package com.magistrados.graph.screens.partidas;
+package com.magistrados.graph.screens.match;
 
 import com.magistrados.graph.buttons.DefaultButton;
 import com.magistrados.graph.inputs.DefaultInput;
 import com.magistrados.graph.labels.DefaultLabel;
+import com.magistrados.managers.MatchManager;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-public class StartPartidaFrame extends JFrame {
+public class MatchManagerFrame extends JFrame {
     private JPanel timeWPanel;
     private JPanel buttonsWPanel;
     private JPanel dadosPartidaPanel;
     private JPanel timeEPanel;
     private JPanel buttonsEPanel;
+    private MatchManager matchManager;
 
-    public StartPartidaFrame(){
+    public MatchManagerFrame(MatchManager matchManager){
         super("Iniciar Partida - Jogo");
+        this.matchManager = matchManager;
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setResizable(false);
         this.setLayout(new BorderLayout());

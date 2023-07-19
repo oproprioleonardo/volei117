@@ -45,8 +45,9 @@ public class Jogador {
     }
 
     public void setTimeId(Long timeId) {
-        if (timeId != null && timeId > 0)
-            this.timeId = timeId;
+        if (timeId != null && timeId < 1)
+            this.timeId = null;
+        else this.timeId = timeId;
     }
 
     public void addPonto() {

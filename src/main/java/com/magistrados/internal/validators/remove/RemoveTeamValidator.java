@@ -12,10 +12,10 @@ public class RemoveTeamValidator extends Validator<RemoveTeam> {
     public void validate(RemoveTeam object) throws ValidationException {
         if(object.id().isBlank() && NumberUtils.toLong(object.id(), 0) < 1){
             this.addError("ID do time", ErrorMessage.NOT_ID);
-        }
+        } else return;
         if (object.nome().isBlank()) {
             this.addError("nome do time", ErrorMessage.NOT_NULLABLE);
-        }
+        } else return;
 
         this.throwPossibleErrors();
     }

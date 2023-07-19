@@ -20,6 +20,10 @@ public class MatchPlayerStatsService {
         this.matchPlayerStatsRepository.save(matchPlayerStats);
     }
 
+    public void deleteMatchPlayerStats(MatchPlayerStats matchPlayerStats){
+        this.deleteMatchPlayerStats(matchPlayerStats.getId());
+    }
+
     public void deleteMatchPlayerStats(Long id){
         this.matchPlayerStatsRepository.deleteById(id);
     }

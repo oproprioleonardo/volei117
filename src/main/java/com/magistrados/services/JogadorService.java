@@ -9,6 +9,7 @@ import com.magistrados.models.find.FindPlayer;
 import com.magistrados.models.remove.RemovePlayer;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class JogadorService {
@@ -62,15 +63,13 @@ public class JogadorService {
     }
 
     public void removerJogador(RemovePlayer removePlayer) {
-        Jogador jogador = null;
-        if (NumberUtils.isCreatable(removePlayer.id())) {
-            jogador = this.buscarJogador(removePlayer.getId());
-        } else if (NumberUtils.isCreatable(removePlayer.numero()) && NumberUtils.isCreatable(removePlayer.id_time())) {
-            jogador = this.buscarJogadorPorNumero(removePlayer.getIdTime(), removePlayer.getNumero());
-        }
+        final Jogador jogador = this.buscarJogador(new FindPlayer(removePlayer.id(), removePlayer.id_time(), removePlayer.numero(), ""));
 
-        if (jogador != null)
+        if (jogador != null) {
+            jogador.getMatchPlayerStats().forEach(this.matchPlayerStatsService::deleteMatchPlayerStats);
+            jogador.setMatchPlayerStats(new HashSet<>());
             this.jogadorRepository.deleteById(jogador.getId());
+        }
     }
 
 

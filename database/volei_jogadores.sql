@@ -3,7 +3,7 @@ CREATE TABLE volei_jogadores
     id            bigserial primary key not null,
     id_time       bigint,
     nome          varchar               not null,
-    numero        varchar               not null unique,
+    numero        varchar               not null,
     bloqueios     int                   not null default 0,
     defesas       int                   not null default 0,
     saques        int                   not null default 0,

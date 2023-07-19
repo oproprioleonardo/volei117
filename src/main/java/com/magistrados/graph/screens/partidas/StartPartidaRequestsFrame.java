@@ -31,7 +31,7 @@ public class StartPartidaRequestsFrame extends JFrame {
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setResizable(false);
         this.setLayout(new BorderLayout());
-        initComponents();
+        this.initComponents();
         //empilha tudo
         this.pack();
         this.setLocationRelativeTo(null);

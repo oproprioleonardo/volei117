@@ -12,9 +12,11 @@ public class FindTeamValidator extends Validator<FindTeam> {
     public void validate(FindTeam object) throws ValidationException {
         if(object.id().isBlank() && NumberUtils.toLong(object.id(), 0) < 1){
             this.addError("ID do time", ErrorMessage.NOT_ID);
-        } else if (object.nome().isBlank()) {
+        } else return;
+
+        if (object.nome().isBlank()) {
             this.addError("nome do time", ErrorMessage.NOT_NULLABLE);
-        }
+        } else return;
 
         this.throwPossibleErrors();
     }

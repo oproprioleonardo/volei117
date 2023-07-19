@@ -1,44 +1,42 @@
 package com.magistrados.graph.screens.managertimes;
 
 import com.magistrados.api.validations.exceptions.ValidationException;
+import com.magistrados.exceptions.EntityNotFoundException;
 import com.magistrados.graph.buttons.DefaultButton;
 import com.magistrados.graph.inputs.DefaultInput;
 import com.magistrados.graph.labels.DefaultLabel;
-import com.magistrados.internal.validators.create.CreatePlayerValidator;
 import com.magistrados.internal.validators.create.CreateTeamValidator;
-import com.magistrados.internal.validators.edit.EditPlayerValidator;
 import com.magistrados.internal.validators.edit.EditTeamValidator;
-import com.magistrados.internal.validators.find.FindPlayerValidator;
 import com.magistrados.internal.validators.find.FindTeamValidator;
-import com.magistrados.internal.validators.remove.RemovePlayerValidator;
 import com.magistrados.internal.validators.remove.RemoveTeamValidator;
-import com.magistrados.models.Jogador;
 import com.magistrados.models.Time;
-import com.magistrados.models.create.CreatePlayer;
 import com.magistrados.models.create.CreateTeam;
-import com.magistrados.models.edit.EditPlayer;
 import com.magistrados.models.edit.EditTeam;
-import com.magistrados.models.find.FindPlayer;
 import com.magistrados.models.find.FindTeam;
-import com.magistrados.models.remove.RemovePlayer;
 import com.magistrados.models.remove.RemoveTeam;
-import com.magistrados.services.PartidaService;
 import com.magistrados.services.TimeService;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.util.Optional;
 
 public class ManagerTimesFrame extends JFrame {
+    Font font = new Font("Roboto", Font.BOLD, 20);
     private JPanel inputPanel;
     private JPanel buttonsPanel;
+    private JPanel mainPanel;
+    private JPanel paddingPanel;
+    private JPanel formPanel;
+    private JPanel operationPanel;
     private TimeService timeService;
     private JTextField campoIdTime;
     private JTextField campoNomeTime;
     private JTextField campoVitorias;
     private JTextField campoDerrotas;
-    Font font = new Font("Roboto", Font.BOLD, 20);
+    private JLabel labelIdTime;
+    private JLabel labelVitoriasTime;
+    private JLabel labelVitorias;
+    private JLabel labelDerrotas;
 
     public ManagerTimesFrame(TimeService timeService) throws HeadlessException {
         super("Gerenciador de Times");
@@ -46,48 +44,60 @@ public class ManagerTimesFrame extends JFrame {
         this.setResizable(false);
         this.setLayout(new BorderLayout());
         this.timeService = timeService;
-        //buttons
-        buttonsPanel = new JPanel();
-        buttonsPanel.setLayout(new BorderLayout());
+        this.initComponents();
+        this.pack();
+        this.setLocationRelativeTo(null);
 
-        // Criando painel com box layout para ficar um botão debaixo do outro
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-        buttonPanel.setBackground(Color.decode("#171717"));
+    }
 
-        // Criando botões CRUD
-        this.createButton(buttonPanel, "Adicionar Time", adicionarTimeListener(), false);
-        this.createButton(buttonPanel, "Visualizar Time", buscarTimeListener(), true);
-        this.createButton(buttonPanel, "Editar Time", editarTimeListener(), true);
-        this.createButton(buttonPanel, "Remover Time", removerTimeListener(), true);
+    public void initComponents() {
+        //declarando Jlabels
+        labelIdTime = createLabel(font, "ID do Time:");
+        labelVitoriasTime = createLabel(font, "Nome do Time: ");
+        labelVitorias = createLabel(font, "Número de Vitórias: ");
+        labelDerrotas = createLabel(font, "Número de Derrotas:");
+
+        //declarando JTextField
+        campoIdTime = createInput(300, 40);
+        campoNomeTime = createInput(300, 40);
+        campoVitorias = createInput(300, 40, "0");
+        campoDerrotas = createInput(300, 40, "0");
+
+        // painel principal
+        mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
 
         // Criando um painel de preenchimento com EmptyBorder
-        JPanel paddingPanel = new JPanel(new BorderLayout());
-        paddingPanel.setBorder(BorderFactory.createEmptyBorder(100, 25, 100, 25));
-        paddingPanel.add(buttonPanel, BorderLayout.CENTER);
+        paddingPanel = new JPanel(new BorderLayout());
+        paddingPanel.setBorder(BorderFactory.createEmptyBorder(50, 25, 50, 25));
         paddingPanel.setBackground(Color.decode("#171717"));
 
-        // Adicionando o painel de preenchimento (com os botões) ao centro do painel principal
-        buttonsPanel.add(paddingPanel, BorderLayout.CENTER);
-        this.add(buttonsPanel, BorderLayout.EAST);
+        // Form panel
+        formPanel = new JPanel(new BorderLayout());
+        formPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 70));
+        formPanel.setBackground(Color.decode("#171717"));
 
-        //input
-        // Criando o painel input com BorderLayout
+        // Operations panel
+        operationPanel = new JPanel(new BorderLayout());
+        operationPanel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
+        operationPanel.setBackground(Color.decode("#171717"));
+
+        // Criando painel com box layout para ficar um botão debaixo do outro
+        buttonsPanel = new JPanel();
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
+        buttonsPanel.setBackground(Color.decode("#171717"));
+
+        // Criando painel de inputs com group layout
         inputPanel = new JPanel();
         inputPanel.setLayout(new BorderLayout());
         inputPanel.setBackground(Color.decode("#171717"));
 
-        //declarando Jlabels
-        JLabel labelIdTime =  createLabel(font,"ID do Time:");
-        JLabel labelVitoriasTime = createLabel(font, "Nome do Time: ");
-        JLabel labelVitorias = createLabel(font, "Número de Vitórias: ");
-        JLabel labelDerrotas = createLabel(font,"Número de Derrotas:");
-
-        //declarando JTextField
-        campoIdTime = createInput(300,40);
-        campoNomeTime =  createInput(300,40);
-        campoVitorias = createInput(300,40);
-        campoDerrotas = createInput(300,40);
+        // Criando botões CRUD
+        this.createButton(buttonsPanel, "Adicionar Time", adicionarTimeListener(), false);
+        this.createButton(buttonsPanel, "Visualizar Time", buscarTimeListener(), true);
+        this.createButton(buttonsPanel, "Editar Time", editarTimeListener(), true);
+        this.createButton(buttonsPanel, "Remover Time", removerTimeListener(), true);
+        this.createButton(buttonsPanel, "Limpar tudo", this.cleanFieldsListener(), true);
 
         // Configuração do GroupLayout
         GroupLayout layout = new GroupLayout(inputPanel);
@@ -129,30 +139,37 @@ public class ManagerTimesFrame extends JFrame {
                 .addComponent(campoDerrotas));
         layout.setVerticalGroup(vGroup);
 
-        //adicionando inputPanel
-        this.add(inputPanel, BorderLayout.WEST);
+        // os inputs ficam dentro do form panel
+        formPanel.add(inputPanel, BorderLayout.CENTER);
+        // os botões ficam dentro do operations panel
+        operationPanel.add(buttonsPanel, BorderLayout.CENTER);
 
-        //empilha tudo
-        this.pack();
-        this.setLocationRelativeTo(null);
+        // no padding panel ficam o formPanel e o buttonsPanel
+        paddingPanel.add(operationPanel, BorderLayout.EAST);
+        paddingPanel.add(formPanel, BorderLayout.WEST);
+
+        // no painel principal fica o paddingPanel
+        mainPanel.add(paddingPanel, BorderLayout.CENTER);
+
+        this.add(mainPanel, BorderLayout.CENTER);
 
     }
+
     private void createButton(JPanel panel, String text, ActionListener listener, boolean space) {
         if (space) panel.add(Box.createRigidArea(new Dimension(0, 50)));
         final DefaultButton button = new DefaultButton(text, listener);
         panel.add(button);
     }
 
-    private DefaultInput createInput(int sizeX, int sizeY) {
-        final DefaultInput input = new DefaultInput(sizeX, sizeY);
-        return input;
-    }
-    private DefaultLabel createLabel(Font font, String text) {
-        final DefaultLabel label = new DefaultLabel(font, text);
-        return label;
+    private DefaultInput createInput(int sizeX, int sizeY, String... text) {
+        return new DefaultInput(sizeX, sizeY, text);
     }
 
-    private ActionListener removerTimeListener(){
+    private DefaultLabel createLabel(Font font, String text) {
+        return new DefaultLabel(font, text);
+    }
+
+    private ActionListener removerTimeListener() {
         return e -> {
             final RemoveTeam removeTeam = new RemoveTeam(
                     this.campoIdTime.getText(),
@@ -171,7 +188,7 @@ public class ManagerTimesFrame extends JFrame {
         };
     }
 
-    private ActionListener editarTimeListener(){
+    private ActionListener editarTimeListener() {
         return e -> {
             final EditTeam editTeam = new EditTeam(
                     this.campoIdTime.getText(),
@@ -191,7 +208,7 @@ public class ManagerTimesFrame extends JFrame {
         };
     }
 
-    private ActionListener adicionarTimeListener(){
+    private ActionListener adicionarTimeListener() {
         return e -> {
             final CreateTeam createTeam = new CreateTeam(
                     this.campoNomeTime.getText(),
@@ -205,13 +222,12 @@ public class ManagerTimesFrame extends JFrame {
                 return;
             }
 
-
             final Time time = this.timeService.criarTime(createTeam);
             this.campoIdTime.setText(time.getId().toString());
         };
     }
 
-    private ActionListener buscarTimeListener(){
+    private ActionListener buscarTimeListener() {
         return e -> {
             final FindTeam findTeam = new FindTeam(
                     this.campoIdTime.getText(),
@@ -224,24 +240,30 @@ public class ManagerTimesFrame extends JFrame {
                 return;
             }
 
-            Long idTime = Long.parseLong(findTeam.id());
+            try {
+                final Time time = this.timeService.buscarTime(findTeam);
+                this.setFields(time);
+            } catch (EntityNotFoundException ex) {
+                // todo não encontrado
+                this.cleanFields();
+            }
 
 
-            final Time time = Optional.ofNullable(this.timeService.buscarTime(idTime))
-                    .orElse(this.timeService.buscarTime(findTeam.nome()));
-
-            this.setFields(time);
         };
+    }
+
+    private ActionListener cleanFieldsListener() {
+        return e -> cleanFields();
     }
 
     private void cleanFields() {
         this.campoIdTime.setText("");
         this.campoNomeTime.setText("");
-        this.campoVitorias.setText("");
-        this.campoDerrotas.setText("");
+        this.campoVitorias.setText("0");
+        this.campoDerrotas.setText("0");
     }
 
-    private void setFields(Time time){
+    private void setFields(Time time) {
         this.campoIdTime.setText(time.getId().toString());
         this.campoNomeTime.setText(time.getNomeTime());
         this.campoVitorias.setText(time.getVitorias().toString());

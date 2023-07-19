@@ -84,7 +84,7 @@ public class ManagerPlayersFrame extends JFrame {
         campoPontosFeitos = createInput(300, 40, "0");
 
 
-        // lado leste (botões)
+        // painel principal
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
@@ -316,10 +316,10 @@ public class ManagerPlayersFrame extends JFrame {
         this.campoNome.setText("");
         this.campoIdTime.setText("");
         this.campoNumeroJogador.setText("");
-        this.campoBloqueiosFeitos.setText("");
-        this.campoSaquesFeitos.setText("");
-        this.campoDefesasFeitas.setText("");
-        this.campoPontosFeitos.setText("");
+        this.campoBloqueiosFeitos.setText("0");
+        this.campoSaquesFeitos.setText("0");
+        this.campoDefesasFeitas.setText("0");
+        this.campoPontosFeitos.setText("0");
     }
 
     public void setFields(Jogador jogador) {

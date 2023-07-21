@@ -26,6 +26,7 @@ public class MatchManagerFrame extends JFrame {
     private JPanel headerBPanel;
     private JPanel buttonsBPanel;
     private JPanel footerBPanel;
+    private final Font font = new Font("Roboto", Font.BOLD, 20);
     private MatchManager matchManager;
 
 
@@ -88,10 +89,49 @@ public class MatchManagerFrame extends JFrame {
         timeBPanel.add(footerBPanel, BorderLayout.SOUTH);
     }
 
-    public void criarBotoesTimeA(JPanel panel) {
-        for (Jogador jogador : this.matchManager.getPartida().getTimeA().getJogadores()) {
+    public void criarBotoesTimeA(JPanel panel, GroupLayout.SequentialGroup vGroup,
+                                 GroupLayout.ParallelGroup nomes,
+                                 GroupLayout.ParallelGroup bloqueios,
+                                 GroupLayout.ParallelGroup saques,
+                                 GroupLayout.ParallelGroup defesas,
+                                 GroupLayout.ParallelGroup pontos)
+    {
+        GroupLayout layout = new GroupLayout(panel);
+        panel.setLayout(layout);
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
 
+        for (Jogador jogador : this.matchManager.getPartida().getTimeA().getJogadores()) {
+            JLabel labelNome = createLabel(font, jogador.getNome());
+            JButton btnBloqueios = createButton("Bloqueios("+jogador.getQuantidadeBloqueios()+")",null);
+            JButton btnSaques = createButton("Saques("+jogador.getQuantidadeSaques()+")",null);
+            JButton btnDefesas = createButton("Defesas("+jogador.getQuantidadeDefesas()+")",null);
+            JButton btnPontos = createButton("Pontos("+jogador.getQuantidadePontos()+")",null);
+
+            nomes.addComponent(labelNome);
+            bloqueios.addComponent(btnBloqueios);
+            saques.addComponent(btnSaques);
+            defesas.addComponent(btnDefesas);
+            pontos.addComponent(btnPontos);
+
+            vGroup.addGroup(
+                    layout.createParallelGroup()
+                            .addComponent(labelNome)
+                            .addComponent(btnBloqueios)
+                            .addComponent(btnSaques)
+                            .addComponent(btnDefesas)
+                            .addComponent(btnPontos)
+            );
         }
+        GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
+        hGroup.addGroup(nomes);
+        hGroup.addGroup(bloqueios);
+        hGroup.addGroup(saques);
+        hGroup.addGroup(defesas);
+        hGroup.addGroup(pontos);
+
+        layout.setHorizontalGroup(hGroup);
+        layout.setVerticalGroup(vGroup);
     }
 
     public void criarBotoesTimeB(JPanel panel) {
@@ -105,6 +145,11 @@ public class MatchManagerFrame extends JFrame {
         final DefaultButton button = new DefaultButton(text, listener);
         panel.add(button);
     }
+
+    private DefaultButton createButton(String text, ActionListener listener) {
+        return new DefaultButton(text, listener);
+    }
+
 
     private DefaultInput createInput(int sizeX, int sizeY) {
         final DefaultInput input = new DefaultInput(sizeX, sizeY);

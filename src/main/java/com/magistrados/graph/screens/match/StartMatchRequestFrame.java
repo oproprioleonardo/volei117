@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Date;
 
 public class StartMatchRequestFrame extends JFrame {
 
@@ -55,6 +56,8 @@ public class StartMatchRequestFrame extends JFrame {
     }
 
     public void initComponents() {
+        final Date dateNow = new Date();
+
         //Criando Jlabels
         labelIdTime1 = createLabel(font, "ID do 1º Time:");
         labelIdTime2 = createLabel(font, "ID do 2º Time:");
@@ -65,8 +68,8 @@ public class StartMatchRequestFrame extends JFrame {
         //Criando JTextField
         campoIdTime1 = createInput(300, 40);
         campoIdTime2 = createInput(300, 40);
-        campoData = createInput(300, 40, new SimpleDateFormat("dd/MM/yyyy").format(LocalDate.now()));
-        campoHorario = createInput(300, 40, new SimpleDateFormat("HH:mm").format(LocalTime.now()));
+        campoData = createInput(300, 40, new SimpleDateFormat("dd/MM/yyyy").format(dateNow));
+        campoHorario = createInput(300, 40, new SimpleDateFormat("HH:mm").format(dateNow));
         campoLocal = createInput(300, 40);
 
         //Criando Painéis

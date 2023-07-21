@@ -91,6 +91,14 @@ public class GameSet {
         this.pontosTimeB++;
     }
 
+    public void remPontosTimeA(){
+        this.pontosTimeA--;
+    }
+
+    public void remPontosTimeB(){
+        this.pontosTimeB--;
+    }
+
     public void finalizarSet(String timeVencedor){
         finalizado = true;
         vencedor = timeVencedor;

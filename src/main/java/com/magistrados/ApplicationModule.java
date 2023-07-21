@@ -28,7 +28,7 @@ public class ApplicationModule {
         final JogadorService jogadorService = new JogadorService(jogadorRepository, statsService);
         final TimeService timeService = new TimeService(timeRepository, jogadorService);
         final GameSetService gameSetService = new GameSetService(gameSetRepository);
-        final PartidaService partidaService = new PartidaService(partidaRepository, gameSetService, timeService);
+        final PartidaService partidaService = new PartidaService(partidaRepository, gameSetService, timeService, statsService);
 
         final JFrame menuInicial = new MenuInicial(partidaService, statsService, jogadorService, timeService);
         menuInicial.setVisible(true);

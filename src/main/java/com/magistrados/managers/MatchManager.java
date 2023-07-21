@@ -5,9 +5,12 @@ import com.magistrados.models.GameSet;
 import com.magistrados.models.Jogador;
 import com.magistrados.models.MatchPlayerStats;
 import com.magistrados.models.Partida;
-import com.magistrados.services.*;
+import com.magistrados.services.MatchPlayerStatsService;
+import com.magistrados.services.PartidaService;
+import com.magistrados.services.TimeService;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public class MatchManager {
 
@@ -56,7 +59,6 @@ public class MatchManager {
 
     public void cancelarPartida() {
         this.partidaService.deletarPartida(partida);
-        // todo lógica para cancelar partida
     }
 
     public boolean nextSetAndCheckGameWon(TeamID teamID) {
@@ -80,16 +82,27 @@ public class MatchManager {
         }
     }
 
-    public void adicionarPontoTimeA() {
+    public Optional<Runnable> adicionarPontoTimeA() {
         currentSet.addPontosTimeA();
-        if (this.checkWonSet(TeamID.TIME_A)) this.gameSetWon(TeamID.TIME_A);
+        if (this.checkWonSet(TeamID.TIME_A))
+            return Optional.of(() -> this.gameSetWon(TeamID.TIME_A));
+        return Optional.empty();
     }
 
-    public void adicionarPontoTimeB() {
+    public Optional<Runnable> adicionarPontoTimeB() {
         currentSet.addPontosTimeB();
-        if (this.checkWonSet(TeamID.TIME_B)) this.gameSetWon(TeamID.TIME_B);
+        if (this.checkWonSet(TeamID.TIME_B))
+            return Optional.of(() -> this.gameSetWon(TeamID.TIME_B));
+        return Optional.empty();
     }
 
+    public void removerPontoTimeA() {
+        this.currentSet.remPontosTimeA();
+    }
+
+    public void removerPontoTimeB() {
+        this.currentSet.remPontosTimeB();
+    }
 
     public int pointsDifference() {
         return Math.abs(this.currentSet.getPontosTimeA() - this.currentSet.getPontosTimeB());
@@ -119,31 +132,31 @@ public class MatchManager {
         jogador.matchStats(this.partida.getId()).addSaque();
     }
 
-    public void removeSaque(Jogador jogador){
+    public void removeSaque(Jogador jogador) {
         jogador.matchStats(this.partida.getId()).removeSaque();
     }
 
-    public void addDefesa(Jogador jogador){
+    public void addDefesa(Jogador jogador) {
         jogador.matchStats(this.partida.getId()).addDefesa();
     }
 
-    public void removeDefesa(Jogador jogador){
+    public void removeDefesa(Jogador jogador) {
         jogador.matchStats(this.partida.getId()).removeDefesa();
     }
 
-    public void addPonto(Jogador jogador){
+    public void addPonto(Jogador jogador) {
         jogador.matchStats(this.partida.getId()).addPonto();
     }
 
-    public void removePonto(Jogador jogador){
+    public void removePonto(Jogador jogador) {
         jogador.matchStats(this.partida.getId()).removePonto();
     }
 
-    public void addBloqueio(Jogador jogador){
+    public void addBloqueio(Jogador jogador) {
         jogador.matchStats(this.partida.getId()).addBloqueio();
     }
 
-    public void removeBloqueio(Jogador jogador){
+    public void removeBloqueio(Jogador jogador) {
         jogador.matchStats(this.partida.getId()).removeBloqueio();
     }
 }

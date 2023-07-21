@@ -46,6 +46,14 @@ public class MatchManager {
 
     }
 
+    public Partida getPartida() {
+        return partida;
+    }
+
+    public GameSet getCurrentSet() {
+        return currentSet;
+    }
+
     public void cancelarPartida() {
         this.partidaService.deletarPartida(partida);
         // todo lógica para cancelar partida

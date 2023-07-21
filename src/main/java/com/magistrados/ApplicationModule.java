@@ -30,8 +30,10 @@ public class ApplicationModule {
         final GameSetService gameSetService = new GameSetService(gameSetRepository);
         final PartidaService partidaService = new PartidaService(partidaRepository, gameSetService, timeService, statsService);
 
-        final JFrame menuInicial = new MenuInicial(partidaService, statsService, jogadorService, timeService);
-        menuInicial.setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            final JFrame menuInicial = new MenuInicial(partidaService, statsService, jogadorService, timeService);
+            menuInicial.setVisible(true);
+        });
     }
 
     private Dotenv providesDotenv() {

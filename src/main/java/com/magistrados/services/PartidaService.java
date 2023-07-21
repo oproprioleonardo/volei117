@@ -40,15 +40,14 @@ public class PartidaService {
     public void deletarPartida(Partida partida) {
         partida.getGameSets().forEach(this.gameSetService::deletarSet);
         partida.setGameSets(new HashSet<>());
-        partida.getJogadores().stream().map(Jogador::getMatchPlayerStats)
-                .map(matchPlayerStats ->
-                        matchPlayerStats.stream()
-                        .filter(matchPlayerStats1 -> Objects.equals(matchPlayerStats1.getPartidaId(), partida.getId())))
-                .map(Stream::findAny)
-                .forEach(matchPlayerStats -> matchPlayerStats
-                        .ifPresent(matchPlayerStats1 ->
-                                this.matchPlayerStatsService.deleteMatchPlayerStats(matchPlayerStats1.getId()))
-                );
+        partida.getJogadores().forEach(jogador -> jogador.getMatchPlayerStats()
+                .stream()
+                .filter(matchPlayerStats -> matchPlayerStats.getPartidaId().equals(partida.getId()))
+                .findFirst()
+                .ifPresent(matchPlayerStats -> {
+                    jogador.remMatchPlayerStats(matchPlayerStats);
+                    this.matchPlayerStatsService.deleteMatchPlayerStats(matchPlayerStats);
+                }));
         this.partidaRepository.deleteById(partida.getId());
     }
 }

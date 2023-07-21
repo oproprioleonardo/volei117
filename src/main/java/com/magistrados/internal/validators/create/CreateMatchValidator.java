@@ -23,6 +23,10 @@ public class CreateMatchValidator extends Validator<CreateMatch> {
         if (NumberUtils.toLong(object.idTimeB(), 0) < 1) {
             this.addError("ID do time B", ErrorMessage.NOT_ID);
         }
+        if (NumberUtils.isCreatable(object.idTimeA()) && NumberUtils.isCreatable(object.idTimeB()) && object.getIdTimeA().equals(object.getIdTimeB())) {
+            this.addError("ID times", ErrorMessage.NOT_REPEATABLE);
+        }
+
         try {
             LocalDate.parse(object.data(), DATE_FORMATTER);
         } catch (Exception ex) {

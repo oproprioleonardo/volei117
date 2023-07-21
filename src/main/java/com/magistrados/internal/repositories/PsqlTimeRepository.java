@@ -100,8 +100,8 @@ public class PsqlTimeRepository implements TimeRepository {
         ResultSet rs;
         Time time = new Time();
         try (final Connection con = this.connectionProvider.getConnection()) {
-            final PreparedStatement st = con.prepareStatement("select * from volei_times where nome=?");
-            st.setString(1, timeNome);
+            final PreparedStatement st = con.prepareStatement("select * from volei_times where nome ILIKE ? ");
+            st.setString(1, timeNome + "%");
             rs = st.executeQuery();
             if (rs.next()) {
                 time.setId(rs.getLong("id"));

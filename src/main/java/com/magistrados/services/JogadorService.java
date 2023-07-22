@@ -24,13 +24,14 @@ public class JogadorService {
 
     public Jogador criarJogador(CreatePlayer createPlayer) {
         final Jogador jogador = new Jogador();
+        jogador.setNome(createPlayer.getNome());
         jogador.setNumeroJogador(createPlayer.getNumero());
         jogador.setTimeId(createPlayer.getIdTime());
         jogador.setQuantidadePontos(createPlayer.getPontos());
         jogador.setQuantidadeDefesas(createPlayer.getDefesas());
         jogador.setQuantidadeSaques(createPlayer.getSaques());
         jogador.setQuantidadeBloqueios(createPlayer.getBloqueios());
-        jogador.setNome(createPlayer.getNome());
+        jogador.setPartidasJogadas(createPlayer.getPartidasJogadas());
 
         this.jogadorRepository.save(jogador);
         return jogador;
@@ -46,6 +47,7 @@ public class JogadorService {
         jogador.setQuantidadeDefesas(editPlayer.getDefesas());
         jogador.setQuantidadeBloqueios(editPlayer.getBloqueios());
         jogador.setQuantidadeSaques(editPlayer.getSaques());
+        jogador.setPartidasJogadas(editPlayer.getPartidasJogadas());
 
         this.jogadorRepository.save(jogador);
     }

@@ -7,7 +7,8 @@ public record CreatePlayer(
         String quantidadeBloqueios,
         String quantidadeSaques,
         String quantidadeDefesas,
-        String quantidadePontos
+        String quantidadePontos,
+        String partidasJogadas
 ) {
 
     public String getNome() {
@@ -37,6 +38,10 @@ public record CreatePlayer(
 
     public Integer getSaques() {
         return Integer.valueOf(this.quantidadeSaques);
+    }
+
+    public Integer getPartidasJogadas() {
+        return Integer.valueOf(this.partidasJogadas);
     }
 
 

@@ -39,6 +39,7 @@ public class PlayerManagerFrame extends JFrame {
     private JLabel labelDefesasFeitas;
     private JLabel labelSaquesFeitos;
     private JLabel labelPontosFeitos;
+    private JLabel labelPartidasJogadas;
     private JTextField campoIdJogador;
     private JTextField campoIdTime;
     private JTextField campoNome;
@@ -47,6 +48,7 @@ public class PlayerManagerFrame extends JFrame {
     private JTextField campoDefesasFeitas;
     private JTextField campoSaquesFeitos;
     private JTextField campoPontosFeitos;
+    private JTextField campoPartidasJogadas;
     private GroupLayout layout;
     private GroupLayout.SequentialGroup hGroup;
     private GroupLayout.SequentialGroup vGroup;
@@ -68,10 +70,11 @@ public class PlayerManagerFrame extends JFrame {
         labelIdTime = createLabel(font, "ID do Time:");
         labelNome = createLabel(font, "Nome:");
         labelNumeroJogador = createLabel(font, "Número do Jogador:");
-        labelBloqueiosFeitos = createLabel(font, "Número de Bloqueios Feitos:");
-        labelDefesasFeitas = createLabel(font, "Número de Defesas Feitas:");
-        labelSaquesFeitos = createLabel(font, "Número de Saques Feitos:");
-        labelPontosFeitos = createLabel(font, "Número de Pontos Feitos:");
+        labelBloqueiosFeitos = createLabel(font, "Quantidade de Bloqueios Feitos:");
+        labelDefesasFeitas = createLabel(font, "Quantidade de Defesas Feitas:");
+        labelSaquesFeitos = createLabel(font, "Quantidade de Saques Feitos:");
+        labelPontosFeitos = createLabel(font, "Quantidade de Pontos Feitos:");
+        labelPartidasJogadas = createLabel(font, "Quantidade de partidas Jogadas:");
 
         //declarando JTextField
         campoIdJogador = createInput(300, 40);
@@ -82,7 +85,7 @@ public class PlayerManagerFrame extends JFrame {
         campoDefesasFeitas = createInput(300, 40, "0");
         campoSaquesFeitos = createInput(300, 40, "0");
         campoPontosFeitos = createInput(300, 40, "0");
-
+        campoPartidasJogadas = createInput(300, 40, "0");
 
         // painel principal
         mainPanel = new JPanel();
@@ -130,7 +133,8 @@ public class PlayerManagerFrame extends JFrame {
                 .addComponent(labelBloqueiosFeitos)
                 .addComponent(labelDefesasFeitas)
                 .addComponent(labelSaquesFeitos)
-                .addComponent(labelPontosFeitos));
+                .addComponent(labelPontosFeitos)
+                .addComponent(labelPartidasJogadas));
         hGroup.addGroup(layout.createParallelGroup()
                 .addComponent(campoIdJogador)
                 .addComponent(campoIdTime)
@@ -139,7 +143,8 @@ public class PlayerManagerFrame extends JFrame {
                 .addComponent(campoBloqueiosFeitos)
                 .addComponent(campoDefesasFeitas)
                 .addComponent(campoSaquesFeitos)
-                .addComponent(campoPontosFeitos));
+                .addComponent(campoPontosFeitos)
+                .addComponent(campoPartidasJogadas));
         layout.setHorizontalGroup(hGroup);
 
         // Configuração das verticais
@@ -176,6 +181,10 @@ public class PlayerManagerFrame extends JFrame {
         vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 .addComponent(labelPontosFeitos)
                 .addComponent(campoPontosFeitos));
+        vGroup.addGap(20);
+        vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                .addComponent(labelPartidasJogadas)
+                .addComponent(campoPartidasJogadas));
         layout.setVerticalGroup(vGroup);
 
         // Criando botões CRUD
@@ -227,7 +236,8 @@ public class PlayerManagerFrame extends JFrame {
                     this.campoBloqueiosFeitos.getText(),
                     this.campoSaquesFeitos.getText(),
                     this.campoDefesasFeitas.getText(),
-                    this.campoPontosFeitos.getText()
+                    this.campoPontosFeitos.getText(),
+                    this.campoPartidasJogadas.getText()
             );
 
             try {
@@ -270,7 +280,8 @@ public class PlayerManagerFrame extends JFrame {
                     this.campoBloqueiosFeitos.getText(),
                     this.campoSaquesFeitos.getText(),
                     this.campoDefesasFeitas.getText(),
-                    this.campoPontosFeitos.getText()
+                    this.campoPontosFeitos.getText(),
+                    this.campoPartidasJogadas.getText()
             );
             try {
                 new CreatePlayerValidator().validate(createPlayer);
@@ -320,6 +331,7 @@ public class PlayerManagerFrame extends JFrame {
         this.campoSaquesFeitos.setText("0");
         this.campoDefesasFeitas.setText("0");
         this.campoPontosFeitos.setText("0");
+        this.campoPartidasJogadas.setText("0");
     }
 
     public void setFields(Jogador jogador) {
@@ -331,5 +343,6 @@ public class PlayerManagerFrame extends JFrame {
         this.campoSaquesFeitos.setText(jogador.getQuantidadeSaques().toString());
         this.campoDefesasFeitas.setText(jogador.getQuantidadeDefesas().toString());
         this.campoPontosFeitos.setText(jogador.getQuantidadePontos().toString());
+        this.campoPartidasJogadas.setText(jogador.getPartidasJogadas().toString());
     }
 }

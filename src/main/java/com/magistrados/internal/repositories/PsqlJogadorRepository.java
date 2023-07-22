@@ -19,7 +19,7 @@ public class PsqlJogadorRepository implements JogadorRepository {
     @Override
     public void create(Jogador object) {
         try (final Connection con = this.connectionProvider.getConnection()) {
-            final String sql = "INSERT INTO volei_jogadores(id_time, nome, numero, bloqueios, defesas, saques, pontos_feitos) VALUES (?,?,?,?,?,?,?) RETURNING id";
+            final String sql = "INSERT INTO volei_jogadores(id_time, nome, numero, bloqueios, defesas, saques, pontos_feitos, partidas_jogadas) VALUES (?,?,?,?,?,?,?,?) RETURNING id";
             final PreparedStatement st = con.prepareStatement(sql);
 
             if (object.getTimeId() == null)
@@ -32,6 +32,7 @@ public class PsqlJogadorRepository implements JogadorRepository {
             st.setInt(5, object.getQuantidadeDefesas());
             st.setInt(6, object.getQuantidadeSaques());
             st.setInt(7, object.getQuantidadePontos());
+            st.setInt(8, object.getPartidasJogadas());
 
             try (ResultSet generatedKeys = st.executeQuery()) {
                 if (generatedKeys.next())
@@ -63,6 +64,7 @@ public class PsqlJogadorRepository implements JogadorRepository {
                 jogador.setQuantidadeDefesas(rs.getInt("defesas"));
                 jogador.setQuantidadePontos(rs.getInt("pontos_feitos"));
                 jogador.setQuantidadeSaques(rs.getInt("saques"));
+                jogador.setPartidasJogadas(rs.getInt("partidas_jogadas"));
             }
             st.close();
         } catch (SQLException e) {
@@ -74,7 +76,7 @@ public class PsqlJogadorRepository implements JogadorRepository {
     @Override
     public void update(Jogador object) {
         try (final Connection con = this.connectionProvider.getConnection()) {
-            final String sql = "UPDATE volei_jogadores SET id_time = ?, nome = ?, numero = ?, bloqueios = ?, defesas = ?, saques = ?, pontos_feitos = ? WHERE id = ?";
+            final String sql = "UPDATE volei_jogadores SET id_time = ?, nome = ?, numero = ?, bloqueios = ?, defesas = ?, saques = ?, pontos_feitos = ?, partidas_jogadas = ? WHERE id = ?";
             final PreparedStatement st = con.prepareStatement(sql);
 
             if (object.getTimeId() == null)
@@ -87,7 +89,8 @@ public class PsqlJogadorRepository implements JogadorRepository {
             st.setInt(5, object.getQuantidadeDefesas());
             st.setInt(6, object.getQuantidadeSaques());
             st.setInt(7, object.getQuantidadePontos());
-            st.setLong(8, object.getId());
+            st.setInt(8, object.getPartidasJogadas());
+            st.setLong(9, object.getId());
             st.executeUpdate();
             st.close();
         } catch (SQLException e) {
@@ -131,6 +134,7 @@ public class PsqlJogadorRepository implements JogadorRepository {
                 jogador.setQuantidadeDefesas(rs.getInt("defesas"));
                 jogador.setQuantidadePontos(rs.getInt("pontos_feitos"));
                 jogador.setQuantidadeSaques(rs.getInt("saques"));
+                jogador.setPartidasJogadas(rs.getInt("partidas_jogadas"));
             }
             st.close();
         } catch (SQLException e) {
@@ -157,6 +161,7 @@ public class PsqlJogadorRepository implements JogadorRepository {
                 jogador.setQuantidadeDefesas(rs.getInt("defesas"));
                 jogador.setQuantidadePontos(rs.getInt("pontos_feitos"));
                 jogador.setQuantidadeSaques(rs.getInt("saques"));
+                jogador.setPartidasJogadas(rs.getInt("partidas_jogadas"));
             }
             st.close();
         } catch (SQLException e) {
@@ -183,6 +188,7 @@ public class PsqlJogadorRepository implements JogadorRepository {
                 jogador.setQuantidadeDefesas(rs.getInt("defesas"));
                 jogador.setQuantidadePontos(rs.getInt("pontos_feitos"));
                 jogador.setQuantidadeSaques(rs.getInt("saques"));
+                jogador.setPartidasJogadas(rs.getInt("partidas_jogadas"));
                 jogadores.add(jogador);
             }
             st.close();

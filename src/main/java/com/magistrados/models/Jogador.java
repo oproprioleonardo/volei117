@@ -12,13 +12,14 @@ public class Jogador {
     private Integer quantidadeSaques = 0;
     private Integer quantidadeDefesas = 0;
     private Integer quantidadePontos = 0;
+    private Integer partidasJogadas = 0;
     private Time time;
     private Set<MatchPlayerStats> matchPlayerStats = new HashSet<>();
 
     public Jogador() {
     }
 
-    public Jogador(Long id, String nome, Time time, Integer numeroJogador, Integer quantidadeBloqueios, Integer quantidadeSaques, Integer quantidadeDefesas, Integer quantidadePontos) {
+    public Jogador(Long id, String nome, Time time, Integer numeroJogador, Integer quantidadeBloqueios, Integer quantidadeSaques, Integer quantidadeDefesas, Integer quantidadePontos, Integer partidasJogadas) {
         this.id = id;
         this.nome = nome;
         this.time = time;
@@ -27,6 +28,23 @@ public class Jogador {
         this.quantidadeSaques = quantidadeSaques;
         this.quantidadeDefesas = quantidadeDefesas;
         this.quantidadePontos = quantidadePontos;
+        this.partidasJogadas = partidasJogadas;
+    }
+
+    public Integer getPartidasJogadas() {
+        return partidasJogadas;
+    }
+
+    public void setPartidasJogadas(Integer partidasJogadas) {
+        this.partidasJogadas = partidasJogadas;
+    }
+
+    public void addPartidaJogada() {
+        this.partidasJogadas++;
+    }
+
+    public void remPartidaJogada() {
+        this.partidasJogadas--;
     }
 
     public MatchPlayerStats matchStats(Long matchId) {
@@ -190,5 +208,9 @@ public class Jogador {
 
     public void addMatchPlayerStats(MatchPlayerStats matchPlayerStats) {
         this.matchPlayerStats.add(matchPlayerStats);
+    }
+
+    public void remMatchPlayerStats(MatchPlayerStats matchPlayerStats) {
+        this.matchPlayerStats.remove(matchPlayerStats);
     }
 }

@@ -37,6 +37,10 @@ public class EditPlayerValidator extends Validator<EditPlayer> {
         if (pontosQnd < 0) {
             this.addError("quantidade de pontos", ErrorMessage.NOT_NEGATIVE_NUMBER);
         }
+        int partidasQnt = NumberUtils.toInt(object.partidasJogadas(), -1);
+        if (partidasQnt < 0) {
+            this.addError("quantidade de partidas", ErrorMessage.NOT_NEGATIVE_NUMBER);
+        }
 
         this.throwPossibleErrors();
     }

@@ -1,6 +1,7 @@
 package com.magistrados.models;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class Jogador {
@@ -204,6 +205,10 @@ public class Jogador {
 
     public void setMatchPlayerStats(Set<MatchPlayerStats> matchPlayerStats) {
         this.matchPlayerStats = matchPlayerStats;
+    }
+
+    public MatchPlayerStats getMatchPlayerStats(Long partidaId) {
+        return this.matchPlayerStats.stream().filter(matchPlayerStats1 -> Objects.equals(matchPlayerStats1.getPartidaId(), partidaId)).findFirst().orElse(null);
     }
 
     public void addMatchPlayerStats(MatchPlayerStats matchPlayerStats) {

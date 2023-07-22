@@ -5,6 +5,7 @@ import com.magistrados.graph.inputs.DefaultInput;
 import com.magistrados.graph.labels.DefaultLabel;
 import com.magistrados.managers.MatchManager;
 import com.magistrados.models.Jogador;
+import com.magistrados.models.MatchPlayerStats;
 import com.magistrados.models.Time;
 
 import javax.swing.*;
@@ -12,11 +13,12 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.util.Objects;
 
 public class MatchManagerFrame extends JFrame {
 
+    private final Font font = new Font("Roboto", Font.BOLD, 20);
+    private final Font btnFont = new Font("Roboto", Font.BOLD, 10);
     private JPanel mainPanel;
     private JPanel timeAPanel;
     private JPanel headerAPanel;
@@ -31,12 +33,10 @@ public class MatchManagerFrame extends JFrame {
     private JPanel headerBPanel;
     private JPanel buttonsBPanel;
     private JPanel footerBPanel;
-    private final Font font = new Font("Roboto", Font.BOLD, 20);
-    private final Font btnFont = new Font("Roboto", Font.BOLD, 10);
     private MatchManager matchManager;
 
 
-    public MatchManagerFrame(MatchManager matchManager){
+    public MatchManagerFrame(MatchManager matchManager) {
         super("Iniciar Partida - Jogo");
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -54,7 +54,7 @@ public class MatchManagerFrame extends JFrame {
         this.setLocationRelativeTo(null);
     }
 
-    public void initComponents(){
+    public void initComponents() {
 
         //Criando JPanels
         mainPanel = new JPanel(new BorderLayout());
@@ -107,8 +107,7 @@ public class MatchManagerFrame extends JFrame {
 
     }
 
-    public void criarBotoesTime(Time time, JPanel panel)
-    {
+    public void criarBotoesTime(Time time, JPanel panel) {
         // layout config
         final GroupLayout layout = new GroupLayout(panel);
         panel.setLayout(layout);
@@ -126,10 +125,11 @@ public class MatchManagerFrame extends JFrame {
 
         for (Jogador jogador : time.getJogadores()) {
             final JLabel labelNome = createLabel(font, jogador.getNome());
-            final JButton btnBloqueios = createButton("Bloqueios ("+jogador.getQuantidadeBloqueios()+")",null);
-            final JButton btnSaques = createButton("Saques ("+jogador.getQuantidadeSaques()+")",null);
-            final JButton btnDefesas = createButton("Defesas ("+jogador.getQuantidadeDefesas()+")",null);
-            final JButton btnPontos = createButton("Pontos ("+jogador.getQuantidadePontos()+")",null);
+            final MatchPlayerStats stats = jogador.getMatchPlayerStats(matchManager.getPartida().getId());
+            final JButton btnBloqueios = createButton("Bloqueios (" + stats.getQuantidadeBloqueios() + ")", null);
+            final JButton btnSaques = createButton("Saques (" + stats.getQuantidadeSaques() + ")", null);
+            final JButton btnDefesas = createButton("Defesas (" + stats.getQuantidadeDefesas() + ")", null);
+            final JButton btnPontos = createButton("Pontos (" + stats.getQuantidadePontos() + ")", null);
 
             nomes.addComponent(labelNome);
             bloqueios.addComponent(btnBloqueios);
@@ -175,6 +175,7 @@ public class MatchManagerFrame extends JFrame {
     private DefaultInput createInput(int sizeX, int sizeY) {
         return new DefaultInput(sizeX, sizeY);
     }
+
     private DefaultLabel createLabel(Font font, String text) {
         return new DefaultLabel(font, text);
     }

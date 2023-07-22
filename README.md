@@ -3,9 +3,9 @@ Gerenciador de partidas de vôlei.
 
 ## Contribuidores
 
-- [leo](https://github.com/oproprioleonardo) (Leonardo)
-- [gu](https://github.com/gustavofg1pontes) (Gustavo)
 - [cat](https://github.com/Cat-07) (Pedro)
+- [gu](https://github.com/gustavofg1pontes) (Gustavo)
+- [leo](https://github.com/oproprioleonardo) (Leonardo)
 
 ## Capturas de telas
 

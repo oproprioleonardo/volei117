@@ -17,7 +17,7 @@ public class PsqlPartidaRepository implements PartidaRepository {
     @Override
     public void create(Partida object) {
         try (final Connection con = this.connectionProvider.getConnection()) {
-            final String sql = "INSERT INTO volei_partidas(id_time_a, id_time_b, local, qntd_sets, data_hora, vencedor) RETURNING id";
+            final String sql = "INSERT INTO volei_partidas(id_time_a, id_time_b, local, qntd_sets, data_hora, vencedor) VALUES (?,?,?,?,?,?) RETURNING id";
             final PreparedStatement st = con.prepareStatement(sql);
             st.setLong(1, object.getIdTimeA());
             st.setLong(2, object.getIdTimeB());

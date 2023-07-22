@@ -5,10 +5,15 @@ import com.magistrados.graph.inputs.DefaultInput;
 import com.magistrados.graph.labels.DefaultLabel;
 import com.magistrados.managers.MatchManager;
 import com.magistrados.models.Jogador;
+import com.magistrados.models.Time;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.util.Objects;
 
 public class MatchManagerFrame extends JFrame {
 
@@ -27,11 +32,18 @@ public class MatchManagerFrame extends JFrame {
     private JPanel buttonsBPanel;
     private JPanel footerBPanel;
     private final Font font = new Font("Roboto", Font.BOLD, 20);
+    private final Font btnFont = new Font("Roboto", Font.BOLD, 10);
     private MatchManager matchManager;
 
 
     public MatchManagerFrame(MatchManager matchManager){
         super("Iniciar Partida - Jogo");
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                matchManager.cancelarPartida();
+            }
+        });
         this.matchManager = matchManager;
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setResizable(false);
@@ -87,26 +99,37 @@ public class MatchManagerFrame extends JFrame {
         timeBPanel.add(headerBPanel, BorderLayout.NORTH);
         timeBPanel.add(buttonsBPanel, BorderLayout.CENTER);
         timeBPanel.add(footerBPanel, BorderLayout.SOUTH);
+
+        // populate panels
+
+        this.criarBotoesTime(matchManager.getPartida().getTimeA(), buttonsAPanel);
+        this.criarBotoesTime(matchManager.getPartida().getTimeB(), buttonsBPanel);
+
     }
 
-    public void criarBotoesTimeA(JPanel panel, GroupLayout.SequentialGroup vGroup,
-                                 GroupLayout.ParallelGroup nomes,
-                                 GroupLayout.ParallelGroup bloqueios,
-                                 GroupLayout.ParallelGroup saques,
-                                 GroupLayout.ParallelGroup defesas,
-                                 GroupLayout.ParallelGroup pontos)
+    public void criarBotoesTime(Time time, JPanel panel)
     {
-        GroupLayout layout = new GroupLayout(panel);
+        // layout config
+        final GroupLayout layout = new GroupLayout(panel);
         panel.setLayout(layout);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
 
-        for (Jogador jogador : this.matchManager.getPartida().getTimeA().getJogadores()) {
-            JLabel labelNome = createLabel(font, jogador.getNome());
-            JButton btnBloqueios = createButton("Bloqueios("+jogador.getQuantidadeBloqueios()+")",null);
-            JButton btnSaques = createButton("Saques("+jogador.getQuantidadeSaques()+")",null);
-            JButton btnDefesas = createButton("Defesas("+jogador.getQuantidadeDefesas()+")",null);
-            JButton btnPontos = createButton("Pontos("+jogador.getQuantidadePontos()+")",null);
+        final GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup(); // Configuração das verticais
+        final GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup(); // Configuração das horizontais
+
+        final GroupLayout.ParallelGroup nomes = layout.createParallelGroup();
+        final GroupLayout.ParallelGroup bloqueios = layout.createParallelGroup();
+        final GroupLayout.ParallelGroup saques = layout.createParallelGroup();
+        final GroupLayout.ParallelGroup defesas = layout.createParallelGroup();
+        final GroupLayout.ParallelGroup pontos = layout.createParallelGroup();
+
+        for (Jogador jogador : time.getJogadores()) {
+            final JLabel labelNome = createLabel(font, jogador.getNome());
+            final JButton btnBloqueios = createButton("Bloqueios ("+jogador.getQuantidadeBloqueios()+")",null);
+            final JButton btnSaques = createButton("Saques ("+jogador.getQuantidadeSaques()+")",null);
+            final JButton btnDefesas = createButton("Defesas ("+jogador.getQuantidadeDefesas()+")",null);
+            final JButton btnPontos = createButton("Pontos ("+jogador.getQuantidadePontos()+")",null);
 
             nomes.addComponent(labelNome);
             bloqueios.addComponent(btnBloqueios);
@@ -123,22 +146,20 @@ public class MatchManagerFrame extends JFrame {
                             .addComponent(btnPontos)
             );
         }
-        GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
-        hGroup.addGroup(nomes);
+
+        if (Objects.equals(matchManager.getPartida().getIdTimeA(), time.getId()))
+            hGroup.addGroup(nomes);
         hGroup.addGroup(bloqueios);
         hGroup.addGroup(saques);
         hGroup.addGroup(defesas);
         hGroup.addGroup(pontos);
+        if (Objects.equals(matchManager.getPartida().getIdTimeB(), time.getId()))
+            hGroup.addGroup(nomes);
 
         layout.setHorizontalGroup(hGroup);
         layout.setVerticalGroup(vGroup);
     }
 
-    public void criarBotoesTimeB(JPanel panel) {
-        for (Jogador jogador : this.matchManager.getPartida().getTimeB().getJogadores()) {
-
-        }
-    }
 
     private void createButton(JPanel panel, String text, ActionListener listener, boolean space) {
         if (space) panel.add(Box.createRigidArea(new Dimension(0, 50)));
@@ -147,17 +168,15 @@ public class MatchManagerFrame extends JFrame {
     }
 
     private DefaultButton createButton(String text, ActionListener listener) {
-        return new DefaultButton(text, listener);
+        return new DefaultButton(text, listener, btnFont, new Dimension(135, 45));
     }
 
 
     private DefaultInput createInput(int sizeX, int sizeY) {
-        final DefaultInput input = new DefaultInput(sizeX, sizeY);
-        return input;
+        return new DefaultInput(sizeX, sizeY);
     }
     private DefaultLabel createLabel(Font font, String text) {
-        final DefaultLabel label = new DefaultLabel(font, text);
-        return label;
+        return new DefaultLabel(font, text);
     }
 
 

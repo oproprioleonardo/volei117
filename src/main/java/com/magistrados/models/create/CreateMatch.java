@@ -25,7 +25,7 @@ public record CreateMatch(
     }
 
     public LocalTime getHorario() {
-        return LocalTime.parse(this.data, DateTimeFormatter.ofPattern("HH:mm"));
+        return LocalTime.parse(this.horario, DateTimeFormatter.ofPattern("HH:mm"));
     }
 
 }

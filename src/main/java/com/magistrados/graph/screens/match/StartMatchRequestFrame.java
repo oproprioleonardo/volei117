@@ -10,6 +10,7 @@ import com.magistrados.models.create.CreateMatch;
 import com.magistrados.services.MatchPlayerStatsService;
 import com.magistrados.services.PartidaService;
 import com.magistrados.services.TimeService;
+import io.smallrye.mutiny.Uni;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,9 +20,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
+import java.util.concurrent.Executors;
 
 public class StartMatchRequestFrame extends JFrame {
 
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ValidationException.class);
     private final PartidaService partidaService;
     private final TimeService timeService;
     private final MatchPlayerStatsService statsService;
@@ -70,7 +73,7 @@ public class StartMatchRequestFrame extends JFrame {
         campoIdTime2 = createInput(300, 40);
         campoData = createInput(300, 40, new SimpleDateFormat("dd/MM/yyyy").format(dateNow));
         campoHorario = createInput(300, 40, new SimpleDateFormat("HH:mm").format(dateNow));
-        campoLocal = createInput(300, 40);
+        campoLocal = createInput(300, 40, "IFSP CBT - Ginásio");
 
         //Criando Painéis
         mainPanel = new JPanel();
@@ -104,12 +107,12 @@ public class StartMatchRequestFrame extends JFrame {
 
 
         // Configuração do GroupLayout
-        GroupLayout layout = new GroupLayout(inputPanel);
+        final GroupLayout layout = new GroupLayout(inputPanel);
         inputPanel.setLayout(layout);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
 
-        GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup(); // Configuração das horizontais
+        final GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup(); // Configuração das horizontais
         hGroup.addGroup(layout.createParallelGroup()
                 .addComponent(labelIdTime1)
                 .addComponent(labelIdTime2)
@@ -124,7 +127,7 @@ public class StartMatchRequestFrame extends JFrame {
                 .addComponent(campoLocal));
         layout.setHorizontalGroup(hGroup);
 
-        GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup(); // Configuração das verticais
+        final GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup(); // Configuração das verticais
         vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 .addComponent(labelIdTime1)
                 .addComponent(campoIdTime1));
@@ -179,16 +182,26 @@ public class StartMatchRequestFrame extends JFrame {
                 ex.printOnFile();
             }
 
-            final MatchManager matchManager = new MatchManager(partidaService, timeService, statsService);
-            matchManager.iniciarPartida(
-                    createMatch.getIdTimeA(),
-                    createMatch.getIdTimeB(),
-                    createMatch.local(),
-                    LocalDateTime.of(createMatch.getData(), createMatch.getHorario())
-            );
+            Executors.newCachedThreadPool().submit(() -> {
+                final Uni<MatchManager> emitter = Uni.createFrom().emitter((em) -> {
+                    final MatchManager matchManager = new MatchManager(partidaService, timeService, statsService);
+                    matchManager.iniciarPartida(
+                            createMatch.getIdTimeA(),
+                            createMatch.getIdTimeB(),
+                            createMatch.local(),
+                            LocalDateTime.of(createMatch.getData(), createMatch.getHorario())
+                    );
+                    em.complete(matchManager);
+                });
 
-            final JFrame startPartidaFrame = new MatchManagerFrame(matchManager);
-            startPartidaFrame.setVisible(true);
+                emitter.subscribe().with(matchManager -> SwingUtilities.invokeLater(() -> {
+                    final JFrame startPartidaFrame = new MatchManagerFrame(matchManager);
+                    startPartidaFrame.setVisible(true);
+                }), failure -> {
+                    log.error("Não foi possível iniciar a partida entre os times " + this.campoIdTime1.getText() + " e " + this.campoIdTime2.getText());
+                });
+            });
+
         };
     }
 

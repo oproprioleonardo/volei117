@@ -2,17 +2,14 @@ package com.magistrados.graph.screens.player;
 
 
 import com.magistrados.api.validations.exceptions.ValidationException;
-import com.magistrados.exceptions.EntityNotFoundException;
 import com.magistrados.graph.buttons.DefaultButton;
 import com.magistrados.graph.inputs.DefaultInput;
 import com.magistrados.graph.labels.DefaultLabel;
-import com.magistrados.graph.screens.match.MatchManagerFrame;
-import com.magistrados.graph.screens.notification.Notifications;
+import com.magistrados.graph.notification.Notifications;
 import com.magistrados.internal.validators.create.CreatePlayerValidator;
 import com.magistrados.internal.validators.edit.EditPlayerValidator;
 import com.magistrados.internal.validators.find.FindPlayerValidator;
 import com.magistrados.internal.validators.remove.RemovePlayerValidator;
-import com.magistrados.managers.MatchManager;
 import com.magistrados.models.Jogador;
 import com.magistrados.models.create.CreatePlayer;
 import com.magistrados.models.edit.EditPlayer;
@@ -24,8 +21,6 @@ import io.smallrye.mutiny.Uni;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.time.LocalDateTime;
-import java.util.concurrent.Executors;
 
 public class PlayerManagerFrame extends JFrame {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ValidationException.class);

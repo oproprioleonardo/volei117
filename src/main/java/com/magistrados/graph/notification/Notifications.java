@@ -1,4 +1,4 @@
-package com.magistrados.graph.screens.notification;
+package com.magistrados.graph.notification;
 
 public final class Notifications {
 

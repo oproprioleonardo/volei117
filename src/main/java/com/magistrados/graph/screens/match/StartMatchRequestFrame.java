@@ -4,7 +4,7 @@ import com.magistrados.api.validations.exceptions.ValidationException;
 import com.magistrados.graph.buttons.DefaultButton;
 import com.magistrados.graph.inputs.DefaultInput;
 import com.magistrados.graph.labels.DefaultLabel;
-import com.magistrados.graph.screens.notification.Notifications;
+import com.magistrados.graph.notification.Notifications;
 import com.magistrados.internal.validators.create.CreateMatchValidator;
 import com.magistrados.managers.MatchManager;
 import com.magistrados.models.create.CreateMatch;

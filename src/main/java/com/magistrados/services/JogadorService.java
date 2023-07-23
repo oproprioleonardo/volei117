@@ -37,7 +37,7 @@ public class JogadorService {
         return jogador;
     }
 
-    public void editarJogador(Long id, EditPlayer editPlayer) {
+    public Jogador editarJogador(Long id, EditPlayer editPlayer) {
         final Jogador jogador = this.buscarJogador(id);
 
         jogador.setTimeId(editPlayer.getIdTime());
@@ -50,6 +50,7 @@ public class JogadorService {
         jogador.setPartidasJogadas(editPlayer.getPartidasJogadas());
 
         this.jogadorRepository.save(jogador);
+        return jogador;
     }
 
     public Jogador buscarJogador(FindPlayer findPlayer) {

@@ -182,8 +182,8 @@ public class StartMatchRequestFrame extends JFrame {
                 ex.printOnFile();
             }
 
-            Executors.newCachedThreadPool().submit(() -> {
-                final Uni<MatchManager> emitter = Uni.createFrom().emitter((em) -> {
+            final Uni<MatchManager> emitter = Uni.createFrom().emitter((em) -> {
+                new Thread(() -> {
                     final MatchManager matchManager = new MatchManager(partidaService, timeService, statsService);
                     matchManager.iniciarPartida(
                             createMatch.getIdTimeA(),
@@ -192,14 +192,14 @@ public class StartMatchRequestFrame extends JFrame {
                             LocalDateTime.of(createMatch.getData(), createMatch.getHorario())
                     );
                     em.complete(matchManager);
-                });
+                }).start();
+            });
 
-                emitter.subscribe().with(matchManager -> SwingUtilities.invokeLater(() -> {
-                    final JFrame startPartidaFrame = new MatchManagerFrame(matchManager);
-                    startPartidaFrame.setVisible(true);
-                }), failure -> {
-                    log.error("Não foi possível iniciar a partida entre os times " + this.campoIdTime1.getText() + " e " + this.campoIdTime2.getText());
-                });
+            emitter.subscribe().with(matchManager -> SwingUtilities.invokeLater(() -> {
+                final JFrame startPartidaFrame = new MatchManagerFrame(matchManager);
+                startPartidaFrame.setVisible(true);
+            }), failure -> {
+                log.error("Não foi possível iniciar a partida entre os times " + this.campoIdTime1.getText() + " e " + this.campoIdTime2.getText());
             });
 
         };

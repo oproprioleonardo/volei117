@@ -26,7 +26,7 @@ public class ValidationException extends RuntimeException {
     }
 
     public void printOnFile() {
-        final String crashPath = "crash_reports/";
+        final String crashPath = "crash_reports/validations/";
         final File crashDir = new File(crashPath);
         if (!crashDir.exists()) {
             crashDir.mkdirs();

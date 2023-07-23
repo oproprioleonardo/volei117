@@ -4,6 +4,7 @@ import com.magistrados.api.validations.exceptions.ValidationException;
 import com.magistrados.graph.buttons.DefaultButton;
 import com.magistrados.graph.inputs.DefaultInput;
 import com.magistrados.graph.labels.DefaultLabel;
+import com.magistrados.graph.screens.notification.Notifications;
 import com.magistrados.internal.validators.create.CreateMatchValidator;
 import com.magistrados.managers.MatchManager;
 import com.magistrados.models.create.CreateMatch;
@@ -24,7 +25,7 @@ import java.util.concurrent.Executors;
 
 public class StartMatchRequestFrame extends JFrame {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ValidationException.class);
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(StartMatchRequestFrame.class);
     private final PartidaService partidaService;
     private final TimeService timeService;
     private final MatchPlayerStatsService statsService;
@@ -39,6 +40,8 @@ public class StartMatchRequestFrame extends JFrame {
     private JLabel labelData;
     private JLabel labelHorario;
     private JLabel labelLocal;
+    private JButton btnIniciar;
+    private JButton btnVoltar;
     private JTextField campoIdTime1;
     private JTextField campoIdTime2;
     private JTextField campoData;
@@ -151,9 +154,8 @@ public class StartMatchRequestFrame extends JFrame {
 
 
         // Criando botões
-        this.createButton(buttonEmptySpacePanel, "Iniciar", this.startMatch(), false);
-        this.createButton(buttonEmptySpacePanel, "Voltar", e -> this.dispose(), true);
-
+        btnIniciar = this.createButton(buttonEmptySpacePanel, "Iniciar", this.startMatch(), false);
+        btnVoltar = this.createButton(buttonEmptySpacePanel, "Voltar", e -> this.dispose(), true);
 
         //Adicionando Paineis
         buttonsPanel.add(buttonEmptySpacePanel, BorderLayout.CENTER);
@@ -182,33 +184,39 @@ public class StartMatchRequestFrame extends JFrame {
                 ex.printOnFile();
             }
 
-            final Uni<MatchManager> emitter = Uni.createFrom().emitter((em) -> {
-                new Thread(() -> {
-                    final MatchManager matchManager = new MatchManager(partidaService, timeService, statsService);
-                    matchManager.iniciarPartida(
-                            createMatch.getIdTimeA(),
-                            createMatch.getIdTimeB(),
-                            createMatch.local(),
-                            LocalDateTime.of(createMatch.getData(), createMatch.getHorario())
-                    );
-                    em.complete(matchManager);
-                }).start();
-            });
+            this.btnIniciar.setEnabled(false);
+
+            Notifications.info("A partida está sendo criada, aguarde alguns segundos.");
+            final Uni<MatchManager> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
+                final MatchManager matchManager = new MatchManager(partidaService, timeService, statsService);
+                matchManager.iniciarPartida(
+                        createMatch.getIdTimeA(),
+                        createMatch.getIdTimeB(),
+                        createMatch.local(),
+                        LocalDateTime.of(createMatch.getData(), createMatch.getHorario())
+                );
+                em.complete(matchManager);
+            }).start());
 
             emitter.subscribe().with(matchManager -> SwingUtilities.invokeLater(() -> {
+                this.dispose();
+                this.btnIniciar.setEnabled(true);
                 final JFrame startPartidaFrame = new MatchManagerFrame(matchManager);
                 startPartidaFrame.setVisible(true);
+                Notifications.info("A partida foi criada com sucesso.");
             }), failure -> {
-                log.error("Não foi possível iniciar a partida entre os times " + this.campoIdTime1.getText() + " e " + this.campoIdTime2.getText());
+                Notifications.error("Não foi possível iniciar a partida entre os times " + this.campoIdTime1.getText() + " e " + this.campoIdTime2.getText());
+                log.error("Erro ao iniciar partida.", failure);
             });
 
         };
     }
 
-    private void createButton(JPanel panel, String text, ActionListener listener, boolean space) {
+    private JButton createButton(JPanel panel, String text, ActionListener listener, boolean space) {
         if (space) panel.add(Box.createRigidArea(new Dimension(0, 50)));
         final DefaultButton button = new DefaultButton(text, listener);
         panel.add(button);
+        return button;
     }
 
     private DefaultInput createInput(int sizeX, int sizeY, String... text) {

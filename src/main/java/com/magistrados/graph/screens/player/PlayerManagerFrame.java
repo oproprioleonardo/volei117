@@ -2,16 +2,14 @@ package com.magistrados.graph.screens.player;
 
 
 import com.magistrados.api.validations.exceptions.ValidationException;
-import com.magistrados.exceptions.EntityNotFoundException;
 import com.magistrados.graph.buttons.DefaultButton;
 import com.magistrados.graph.inputs.DefaultInput;
 import com.magistrados.graph.labels.DefaultLabel;
-import com.magistrados.graph.screens.match.MatchManagerFrame;
+import com.magistrados.graph.notification.Notifications;
 import com.magistrados.internal.validators.create.CreatePlayerValidator;
 import com.magistrados.internal.validators.edit.EditPlayerValidator;
 import com.magistrados.internal.validators.find.FindPlayerValidator;
 import com.magistrados.internal.validators.remove.RemovePlayerValidator;
-import com.magistrados.managers.MatchManager;
 import com.magistrados.models.Jogador;
 import com.magistrados.models.create.CreatePlayer;
 import com.magistrados.models.edit.EditPlayer;
@@ -23,8 +21,6 @@ import io.smallrye.mutiny.Uni;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.time.LocalDateTime;
-import java.util.concurrent.Executors;
 
 public class PlayerManagerFrame extends JFrame {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ValidationException.class);
@@ -255,18 +251,20 @@ public class PlayerManagerFrame extends JFrame {
                 return;
             }
 
-            final Uni<Jogador> emitter = Uni.createFrom().emitter((em) -> {
-                new Thread(() -> {
-                    Jogador jogador = this.jogadorService
-                            .editarJogador(Long.valueOf(this.campoIdJogador.getText()), editPlayer);
-                    em.complete(jogador);
-                }).start();
-            });
+            Notifications.info("Uma requisição para edição de jogador foi enviada, aguarde.");
+
+            final Uni<Jogador> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
+                final Jogador jogador = this.jogadorService
+                        .editarJogador(Long.valueOf(this.campoIdJogador.getText()), editPlayer);
+                em.complete(jogador);
+            }).start());
 
             emitter.subscribe().with(jogador -> SwingUtilities.invokeLater(() -> {
+                Notifications.info("Jogador editado com sucesso!");
                 realizandoOperacao = false;
             }), failure -> {
-                log.error("Erro ao editar jogador.");
+                Notifications.error("Não foi possível editar o jogador.");
+                log.error("Erro ao editar jogador.", failure);
                 realizandoOperacao = false;
             });
         };
@@ -290,18 +288,19 @@ public class PlayerManagerFrame extends JFrame {
                 return;
             }
 
-            final Uni<Void> emitter = Uni.createFrom().emitter((em) -> {
-                new Thread(() -> {
-                    this.jogadorService.removerJogador(removePlayer);
-                    em.complete(null);
-                }).start();
-            });
+            Notifications.info("Uma requisição para remoção de jogador foi enviada, aguarde.");
+
+            final Uni<Void> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
+                this.jogadorService.removerJogador(removePlayer);
+                em.complete(null);
+            }).start());
 
             emitter.subscribe().with(jogador -> SwingUtilities.invokeLater(() -> {
                 this.cleanFields();
                 realizandoOperacao = false;
             }), failure -> {
-                log.error("Erro ao deletar jogador.");
+                Notifications.error("Não foi possível deletar o jogador.");
+                log.error("Erro ao deletar jogador.", failure);
                 realizandoOperacao = false;
             });
         };
@@ -329,18 +328,19 @@ public class PlayerManagerFrame extends JFrame {
                 return;
             }
 
-            final Uni<Jogador> emitter = Uni.createFrom().emitter((em) -> {
-                new Thread(() -> {
-                    final Jogador jogador = this.jogadorService.criarJogador(createPlayer);
-                    em.complete(jogador);
-                }).start();
-            });
+            Notifications.info("Uma requisição para criação de jogador foi enviada, aguarde.");
+
+            final Uni<Jogador> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
+                final Jogador jogador = this.jogadorService.criarJogador(createPlayer);
+                em.complete(jogador);
+            }).start());
 
             emitter.subscribe().with(jogador -> SwingUtilities.invokeLater(() -> {
                 this.campoIdJogador.setText(jogador.getId().toString());
                 realizandoOperacao = false;
             }), failure -> {
-                log.error("Erro ao criar jogador.");
+                Notifications.error("Não foi possível adicionar o jogador.");
+                log.error("Erro ao criar jogador.", failure);
                 realizandoOperacao = false;
             });
         };
@@ -364,21 +364,25 @@ public class PlayerManagerFrame extends JFrame {
                 return;
             }
 
-            final Uni<Jogador> emitter = Uni.createFrom().emitter((em) -> {
-                new Thread(() -> {
-                    final Jogador jogador = this.jogadorService.buscarJogador(findPlayer);
-                    em.complete(jogador);
-                }).start();
-            });
+            Notifications.info("Uma requisição para busca de jogador foi enviada, aguarde.");
+
+            final Uni<Jogador> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
+                final Jogador jogador = this.jogadorService.buscarJogador(findPlayer);
+                em.complete(jogador);
+            }).start());
 
             emitter.subscribe().with(jogador -> SwingUtilities.invokeLater(() -> {
-                if (jogador != null)
+                if (jogador != null) {
                     this.setFields(jogador);
+                    Notifications.info("O jogador foi encontrado.");
+                }
+                else Notifications.warning("O jogador não foi encontrado.");
                 realizandoOperacao = false;
             }), failure -> {
                 // todo não encontrado
                 cleanFields();
-                log.error("Erro ao buscar jogador.");
+                Notifications.error("Não foi possível buscar o jogador.");
+                log.error("Erro ao buscar jogador.", failure);
                 realizandoOperacao = false;
             });
         };

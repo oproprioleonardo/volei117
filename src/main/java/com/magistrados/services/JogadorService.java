@@ -93,7 +93,7 @@ public class JogadorService {
     }
 
     public Jogador buscarJogador(Long id, Long partidaId){
-        Jogador jogador = this.buscarJogador(id);
+        Jogador jogador = this.jogadorRepository.findById(id);
         jogador.getMatchPlayerStats().add(matchPlayerStatsService.findByPlayerIdAndMatchId(id, partidaId));
         return jogador;
     }

@@ -92,6 +92,12 @@ public class JogadorService {
         return jogador;
     }
 
+    public Jogador buscarJogador(Long id, Long partidaId){
+        Jogador jogador = this.buscarJogador(id);
+        jogador.getMatchPlayerStats().add(matchPlayerStatsService.findByPlayerIdAndMatchId(id, partidaId));
+        return jogador;
+    }
+
     public Jogador buscarJogador(String nome) {
         if (nome == null || nome.isBlank()) return null;
         final Jogador jogador = this.jogadorRepository.findByName(nome);
@@ -115,6 +121,14 @@ public class JogadorService {
     public Set<Jogador> buscarJogadores(Long idTime) {
         Set<Jogador> allByTeamId = this.jogadorRepository.findAllByTeamId(idTime);
         allByTeamId.forEach(jogador -> jogador.setMatchPlayerStats(this.matchPlayerStatsService.findByPlayerId(jogador.getId())));
+        return allByTeamId;
+    }
+
+    public Set<Jogador> buscarJogadoresOtimizado(Long idTime, Long matchId){
+        Set<Jogador> allByTeamId = this.jogadorRepository.findAllByTeamId(idTime);
+        allByTeamId.forEach(jogador -> jogador
+                .getMatchPlayerStats()
+                .add(matchPlayerStatsService.findByPlayerIdAndMatchId(jogador.getId(), matchId)));
         return allByTeamId;
     }
 

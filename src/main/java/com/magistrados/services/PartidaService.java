@@ -35,6 +35,14 @@ public class PartidaService {
         return partida;
     }
 
+    public Partida buscarPartidaOtimizado(Long matchId){
+        final Partida partida = this.partidaRepository.findById(matchId);
+        partida.setGameSets(this.gameSetService.buscarSets(matchId));
+        partida.setTimeA(this.timeService.buscarTimeOtimizado(partida.getIdTimeA(), matchId));
+        partida.setTimeB(this.timeService.buscarTimeOtimizado(partida.getIdTimeB(), matchId));
+        return partida;
+    }
+
     public void salvarPartida(Partida partida) {
         partida.getGameSets().forEach(this.gameSetService::salvarSet);
         this.partidaRepository.save(partida);
@@ -45,13 +53,9 @@ public class PartidaService {
     public void optimizedSave(Partida partida){
         this.partidaRepository.save(partida);
         partida.getGameSets().forEach(this.gameSetService::salvarSet);
-        this.optimizedQuery(partida).forEach(matchPlayerStatsService::saveMatchPlayerStats);
-    }
-
-    public Set<MatchPlayerStats> optimizedQuery(Partida partida){
-        return partida.getJogadores().stream()
-                .map(jogador -> matchPlayerStatsService.findByPlayerIdAndMatchId(jogador.getId(), partida.getId()))
-                .collect(Collectors.toSet());
+        for(Jogador jogador : partida.getJogadores()){
+            matchPlayerStatsService.saveMatchPlayerStats(jogador.matchStats(partida.getId()));
+        }
     }
 
     public void deletarPartida(Partida partida) {

@@ -44,16 +44,17 @@ public class TimeService {
         return time;
     }
 
+
+    public void deletarTime(RemoveTeam removeTeam) {
+        final Time time = this.buscarTime(new FindTeam(removeTeam.id(), removeTeam.nome()));
+        this.deletarTime(time);
+    }
+
     public Time buscarTime(FindTeam findTeam) {
         Time time = null;
         if (!findTeam.nome().isBlank()) time = this.buscarTime(findTeam.nome());
         if (time == null && NumberUtils.isCreatable(findTeam.id())) time = this.buscarTime(findTeam.getId());
         return time;
-    }
-
-    public void deletarTime(RemoveTeam removeTeam) {
-        final Time time = this.buscarTime(new FindTeam(removeTeam.id(), removeTeam.nome()));
-        this.deletarTime(time);
     }
 
     public Time buscarTime(String nome) {
@@ -74,6 +75,14 @@ public class TimeService {
         return time;
     }
 
+    public Time buscarTimeOtimizado(Long id, Long matchId){
+        final Time time = this.timeRepository.findById(id);
+        if (!time.isCreated()) {
+            throw new EntityNotFoundException(id.toString(), "time");
+        }
+        time.setJogadores(this.jogadorService.buscarJogadoresOtimizado(time.getId(), matchId));
+        return time;
+    }
 
     public void deletarTime(Time time) {
         time.getJogadores().forEach(jogador -> {

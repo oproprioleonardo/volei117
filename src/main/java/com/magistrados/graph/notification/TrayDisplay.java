@@ -1,12 +1,10 @@
 package com.magistrados.graph.notification;
 
-import com.magistrados.api.validations.exceptions.ValidationException;
-
 import java.awt.*;
 
 public final class TrayDisplay {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ValidationException.class);
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(TrayDisplay.class);
 
     private static boolean display(String title, String message, TrayIcon.MessageType messageType) {
         if (!SystemTray.isSupported()) {

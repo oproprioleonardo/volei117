@@ -32,7 +32,7 @@ public class TimeService {
         return time;
     }
 
-    public void editarTime(EditTeam editTeam) {
+    public Time editarTime(EditTeam editTeam) {
         final Time time = this.buscarTime(Long.parseLong(editTeam.id()));
 
         time.setNomeTime(editTeam.nome());
@@ -41,6 +41,7 @@ public class TimeService {
         time.setJogadores(this.jogadorService.buscarJogadores(Long.parseLong(editTeam.id())));
 
         this.salvarTime(time);
+        return time;
     }
 
     public Time buscarTime(FindTeam findTeam) {

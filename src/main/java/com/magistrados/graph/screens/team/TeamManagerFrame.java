@@ -15,6 +15,7 @@ import com.magistrados.models.edit.EditTeam;
 import com.magistrados.models.find.FindTeam;
 import com.magistrados.models.remove.RemoveTeam;
 import com.magistrados.services.TimeService;
+import io.smallrye.mutiny.Uni;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,6 +23,7 @@ import java.awt.event.ActionListener;
 
 public class TeamManagerFrame extends JFrame {
     Font font = new Font("Roboto", Font.BOLD, 20);
+    private boolean realizandoOperacao = false;
     private JPanel inputPanel;
     private JPanel buttonsPanel;
     private JPanel mainPanel;
@@ -171,6 +173,8 @@ public class TeamManagerFrame extends JFrame {
 
     private ActionListener removerTimeListener() {
         return e -> {
+            if (realizandoOperacao) return;
+            realizandoOperacao = true;
             final RemoveTeam removeTeam = new RemoveTeam(
                     this.campoIdTime.getText(),
                     this.campoNomeTime.getText()
@@ -183,13 +187,28 @@ public class TeamManagerFrame extends JFrame {
                 return;
             }
 
-            this.timeService.deletarTime(removeTeam);
-            this.cleanFields();
+
+            final Uni<Void> emitter = Uni.createFrom().emitter((em) -> {
+                new Thread(() -> {
+                    this.timeService.deletarTime(removeTeam);
+                    em.complete(null);
+                }).start();
+            });
+
+            emitter.subscribe().with(time -> SwingUtilities.invokeLater(() -> {
+                cleanFields();
+                realizandoOperacao = false;
+            }), failure -> {
+                this.cleanFields();
+                realizandoOperacao = false;
+            });
         };
     }
 
     private ActionListener editarTimeListener() {
         return e -> {
+            if (realizandoOperacao) return;
+            realizandoOperacao = true;
             final EditTeam editTeam = new EditTeam(
                     this.campoIdTime.getText(),
                     this.campoNomeTime.getText(),
@@ -204,12 +223,27 @@ public class TeamManagerFrame extends JFrame {
                 return;
             }
 
-            this.timeService.editarTime(editTeam);
+            final Uni<Time> emitter = Uni.createFrom().emitter((em) -> {
+                new Thread(() -> {
+                    final Time time = this.timeService.editarTime(editTeam);
+                    em.complete(time);
+                }).start();
+            });
+
+            emitter.subscribe().with(time -> SwingUtilities.invokeLater(() ->{
+                setFields(time);
+                realizandoOperacao = false;
+            }), failure -> {
+                cleanFields();
+                realizandoOperacao = false;
+            });
         };
     }
 
     private ActionListener adicionarTimeListener() {
         return e -> {
+            if (realizandoOperacao) return;
+            realizandoOperacao = true;
             final CreateTeam createTeam = new CreateTeam(
                     this.campoNomeTime.getText(),
                     this.campoVitorias.getText(),
@@ -222,13 +256,28 @@ public class TeamManagerFrame extends JFrame {
                 return;
             }
 
-            final Time time = this.timeService.criarTime(createTeam);
-            this.campoIdTime.setText(time.getId().toString());
+            final Uni<Time> emitter = Uni.createFrom().emitter((em) -> {
+                new Thread(() -> {
+                    final Time time = this.timeService.criarTime(createTeam);
+                    em.complete(time);
+                }).start();
+            });
+
+            emitter.subscribe().with(time -> SwingUtilities.invokeLater(() -> {
+                this.campoIdTime.setText(time.getId().toString());
+                realizandoOperacao = false;
+            }), failure -> {
+                cleanFields();
+                realizandoOperacao = false;
+            });
+
         };
     }
 
     private ActionListener buscarTimeListener() {
         return e -> {
+            if (realizandoOperacao) return;
+            realizandoOperacao = true;
             final FindTeam findTeam = new FindTeam(
                     this.campoIdTime.getText(),
                     this.campoNomeTime.getText()
@@ -240,15 +289,21 @@ public class TeamManagerFrame extends JFrame {
                 return;
             }
 
-            try {
-                final Time time = this.timeService.buscarTime(findTeam);
+            final Uni<Time> emitter = Uni.createFrom().emitter((em) -> {
+                new Thread(() -> {
+                    final Time time = this.timeService.buscarTime(findTeam);
+                    em.complete(time);
+                }).start();
+            });
+
+            emitter.subscribe().with(time -> SwingUtilities.invokeLater(() -> {
                 this.setFields(time);
-            } catch (EntityNotFoundException ex) {
-                // todo não encontrado
-                this.cleanFields();
-            }
-
-
+                realizandoOperacao = false;
+            }), failure -> {
+                //todo nao encontrado
+                cleanFields();
+                realizandoOperacao = false;
+            });
         };
     }
 

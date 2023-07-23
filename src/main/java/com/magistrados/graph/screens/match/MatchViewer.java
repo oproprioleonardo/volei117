@@ -17,10 +17,17 @@ public class MatchViewer {
     public MatchViewer(PartidaService partidaService, Partida partida) {
         this.partidaService = partidaService;
         this.partida = partida;
+    }
+
+    public void watch(){
         timer = new Timer();
         timer.schedule(new updateMatch(),
                 30000, // delay inicial de 30seg
                 30000); // atualiza partida a cada 30seg
+    }
+
+    public void stopWatch(){
+        timer.cancel();
     }
 
     class updateMatch extends TimerTask {

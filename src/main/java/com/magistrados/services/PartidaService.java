@@ -2,10 +2,13 @@ package com.magistrados.services;
 
 import com.magistrados.api.repositories.PartidaRepository;
 import com.magistrados.models.Jogador;
+import com.magistrados.models.MatchPlayerStats;
 import com.magistrados.models.Partida;
 
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PartidaService {
@@ -14,12 +17,14 @@ public class PartidaService {
     private final GameSetService gameSetService;
     private final TimeService timeService;
     private final MatchPlayerStatsService matchPlayerStatsService;
+    private final JogadorService jogadorService;
 
-    public PartidaService(PartidaRepository partidaRepository, GameSetService gameSetService, TimeService timeService, MatchPlayerStatsService matchPlayerStatsService) {
+    public PartidaService(PartidaRepository partidaRepository, GameSetService gameSetService, TimeService timeService, MatchPlayerStatsService matchPlayerStatsService, JogadorService jogadorService) {
         this.partidaRepository = partidaRepository;
         this.gameSetService = gameSetService;
         this.timeService = timeService;
         this.matchPlayerStatsService = matchPlayerStatsService;
+        this.jogadorService = jogadorService;
     }
 
     public Partida buscarPartida(Long id) {
@@ -35,6 +40,18 @@ public class PartidaService {
         this.partidaRepository.save(partida);
         this.timeService.salvarTime(partida.getTimeA());
         this.timeService.salvarTime(partida.getTimeB());
+    }
+
+    public void optimizedSave(Partida partida){
+        this.partidaRepository.save(partida);
+        partida.getGameSets().forEach(this.gameSetService::salvarSet);
+        this.optimizedQuery(partida).forEach(matchPlayerStatsService::saveMatchPlayerStats);
+    }
+
+    public Set<MatchPlayerStats> optimizedQuery(Partida partida){
+        return partida.getJogadores().stream()
+                .map(jogador -> matchPlayerStatsService.findByPlayerIdAndMatchId(jogador.getId(), partida.getId()))
+                .collect(Collectors.toSet());
     }
 
     public void deletarPartida(Partida partida) {

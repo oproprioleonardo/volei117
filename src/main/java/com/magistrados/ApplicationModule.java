@@ -28,7 +28,7 @@ public class ApplicationModule {
         final JogadorService jogadorService = new JogadorService(jogadorRepository, statsService);
         final TimeService timeService = new TimeService(timeRepository, jogadorService);
         final GameSetService gameSetService = new GameSetService(gameSetRepository);
-        final PartidaService partidaService = new PartidaService(partidaRepository, gameSetService, timeService, statsService);
+        final PartidaService partidaService = new PartidaService(partidaRepository, gameSetService, timeService, statsService, jogadorService);
 
         SwingUtilities.invokeLater(() -> {
             final JFrame menuInicial = new MenuInicial(partidaService, statsService, jogadorService, timeService);

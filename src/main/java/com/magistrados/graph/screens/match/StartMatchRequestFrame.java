@@ -185,14 +185,18 @@ public class StartMatchRequestFrame extends JFrame {
 
             Notifications.info("A partida está sendo criada, aguarde alguns segundos.");
             final Uni<MatchManager> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
-                final MatchManager matchManager = new MatchManager(partidaService, timeService, statsService);
-                matchManager.iniciarPartida(
-                        createMatch.getIdTimeA(),
-                        createMatch.getIdTimeB(),
-                        createMatch.local(),
-                        LocalDateTime.of(createMatch.getData(), createMatch.getHorario())
-                );
-                em.complete(matchManager);
+                try {
+                    final MatchManager matchManager = new MatchManager(partidaService, timeService, statsService);
+                    matchManager.iniciarPartida(
+                            createMatch.getIdTimeA(),
+                            createMatch.getIdTimeB(),
+                            createMatch.local(),
+                            LocalDateTime.of(createMatch.getData(), createMatch.getHorario())
+                    );
+                    em.complete(matchManager);
+                } catch (Exception ex) {
+                    em.fail(ex);
+                }
             }).start());
 
             emitter.subscribe().with(matchManager -> SwingUtilities.invokeLater(() -> {

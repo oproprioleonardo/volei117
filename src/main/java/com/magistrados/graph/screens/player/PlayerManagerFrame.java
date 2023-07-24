@@ -2,6 +2,7 @@ package com.magistrados.graph.screens.player;
 
 
 import com.magistrados.api.validations.exceptions.ValidationException;
+import com.magistrados.exceptions.EntityNotFoundException;
 import com.magistrados.graph.buttons.DefaultButton;
 import com.magistrados.graph.inputs.DefaultInput;
 import com.magistrados.graph.labels.DefaultLabel;
@@ -23,10 +24,10 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class PlayerManagerFrame extends JFrame {
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ValidationException.class);
-    private boolean realizandoOperacao = false;
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(PlayerManagerFrame.class);
     private final Font font = new Font("Roboto", Font.BOLD, 20);
     private final JogadorService jogadorService;
+    private boolean realizandoOperacao = false;
     private JPanel inputPanel;
     private JPanel mainPanel;
     private JPanel buttonsPanel;
@@ -232,7 +233,6 @@ public class PlayerManagerFrame extends JFrame {
     private ActionListener editarJogadorListener() {
         return e -> {
             if (realizandoOperacao) return;
-            realizandoOperacao = true;
             final EditPlayer editPlayer = new EditPlayer(
                     this.campoNome.getText(),
                     this.campoIdTime.getText(),
@@ -250,13 +250,18 @@ public class PlayerManagerFrame extends JFrame {
                 ex.printOnFile();
                 return;
             }
+            realizandoOperacao = true;
 
             Notifications.info("Uma requisição para edição de jogador foi enviada, aguarde.");
 
             final Uni<Jogador> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
-                final Jogador jogador = this.jogadorService
-                        .editarJogador(Long.valueOf(this.campoIdJogador.getText()), editPlayer);
-                em.complete(jogador);
+                try {
+                    final Jogador jogador = this.jogadorService
+                            .editarJogador(Long.valueOf(this.campoIdJogador.getText()), editPlayer);
+                    em.complete(jogador);
+                } catch (Exception ex) {
+                    em.fail(ex);
+                }
             }).start());
 
             emitter.subscribe().with(jogador -> SwingUtilities.invokeLater(() -> {
@@ -273,7 +278,6 @@ public class PlayerManagerFrame extends JFrame {
     private ActionListener removerJogadorListener() {
         return e -> {
             if (realizandoOperacao) return;
-            realizandoOperacao = true;
 
             final RemovePlayer removePlayer = new RemovePlayer(
                     this.campoIdJogador.getText(),
@@ -287,16 +291,22 @@ public class PlayerManagerFrame extends JFrame {
                 ex.printOnFile();
                 return;
             }
+            realizandoOperacao = true;
 
             Notifications.info("Uma requisição para remoção de jogador foi enviada, aguarde.");
 
             final Uni<Void> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
-                this.jogadorService.removerJogador(removePlayer);
-                em.complete(null);
+                try {
+                    this.jogadorService.removerJogador(removePlayer);
+                    em.complete(null);
+                } catch (Exception ex) {
+                    em.fail(ex);
+                }
             }).start());
 
             emitter.subscribe().with(jogador -> SwingUtilities.invokeLater(() -> {
                 this.cleanFields();
+                Notifications.info("O jogador foi removido com sucesso.");
                 realizandoOperacao = false;
             }), failure -> {
                 Notifications.error("Não foi possível deletar o jogador.");
@@ -309,7 +319,6 @@ public class PlayerManagerFrame extends JFrame {
     private ActionListener adicionarJogadorListener() {
         return e -> {
             if (realizandoOperacao) return;
-            realizandoOperacao = true;
 
             final CreatePlayer createPlayer = new CreatePlayer(
                     this.campoNome.getText(),
@@ -327,16 +336,22 @@ public class PlayerManagerFrame extends JFrame {
                 ex.printOnFile();
                 return;
             }
+            realizandoOperacao = true;
 
             Notifications.info("Uma requisição para criação de jogador foi enviada, aguarde.");
 
             final Uni<Jogador> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
-                final Jogador jogador = this.jogadorService.criarJogador(createPlayer);
-                em.complete(jogador);
+                try {
+                    final Jogador jogador = this.jogadorService.criarJogador(createPlayer);
+                    em.complete(jogador);
+                } catch (Exception ex) {
+                    em.fail(ex);
+                }
             }).start());
 
             emitter.subscribe().with(jogador -> SwingUtilities.invokeLater(() -> {
                 this.campoIdJogador.setText(jogador.getId().toString());
+                Notifications.info("Jogador foi criado.");
                 realizandoOperacao = false;
             }), failure -> {
                 Notifications.error("Não foi possível adicionar o jogador.");
@@ -349,7 +364,6 @@ public class PlayerManagerFrame extends JFrame {
     private ActionListener buscarJogadorListener() {
         return e -> {
             if (realizandoOperacao) return;
-            realizandoOperacao = true;
             final FindPlayer findPlayer = new FindPlayer(
                     this.campoIdJogador.getText(),
                     this.campoIdTime.getText(),
@@ -363,27 +377,33 @@ public class PlayerManagerFrame extends JFrame {
                 ex.printOnFile();
                 return;
             }
+            realizandoOperacao = true;
 
             Notifications.info("Uma requisição para busca de jogador foi enviada, aguarde.");
 
             final Uni<Jogador> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
-                final Jogador jogador = this.jogadorService.buscarJogador(findPlayer);
-                em.complete(jogador);
+                try {
+                    final Jogador jogador = this.jogadorService.buscarJogador(findPlayer);
+                    em.complete(jogador);
+                } catch (EntityNotFoundException ex) {
+                    em.fail(ex);
+                }
             }).start());
 
             emitter.subscribe().with(jogador -> SwingUtilities.invokeLater(() -> {
                 if (jogador != null) {
                     this.setFields(jogador);
-                    Notifications.info("O jogador foi encontrado.");
-                }
-                else Notifications.warning("O jogador não foi encontrado.");
+                } else Notifications.warning("O jogador não foi encontrado.");
                 realizandoOperacao = false;
             }), failure -> {
-                // todo não encontrado
+                realizandoOperacao = false;
                 cleanFields();
+                if (failure instanceof EntityNotFoundException) {
+                    Notifications.error(failure.getMessage());
+                    return;
+                }
                 Notifications.error("Não foi possível buscar o jogador.");
                 log.error("Erro ao buscar jogador.", failure);
-                realizandoOperacao = false;
             });
         };
     }

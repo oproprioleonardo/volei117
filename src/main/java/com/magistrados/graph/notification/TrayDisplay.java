@@ -15,8 +15,7 @@ public final class TrayDisplay {
         final Image image = Toolkit.getDefaultToolkit().createImage("default_icon.png");
         final SystemTray tray = SystemTray.getSystemTray();
 
-        final TrayIcon trayIcon = new TrayIcon(image, "Notificação");
-        trayIcon.setToolTip("Clique aqui para mais informação");
+        final TrayIcon trayIcon = new TrayIcon(image, "VôleiApp");
 
         try {
             tray.add(trayIcon);

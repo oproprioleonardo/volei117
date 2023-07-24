@@ -18,7 +18,7 @@ public class EditPlayerValidator extends Validator<EditPlayer> {
             this.addError("ID do time", ErrorMessage.NOT_ID);
         }
         int numeroJogador = NumberUtils.toInt(object.numeroJogador(), 0);
-        if (numeroJogador < 0 || numeroJogador > 100) {
+        if (numeroJogador < 1 || numeroJogador > 100) {
             this.addError("número do jogador", ErrorMessage.NOT_VALID_PLAYER_NUMBER);
         }
         int bloqueiosQnd = NumberUtils.toInt(object.quantidadeBloqueios(), -1);

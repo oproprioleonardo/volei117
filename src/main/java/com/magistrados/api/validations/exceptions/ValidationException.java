@@ -1,6 +1,7 @@
 package com.magistrados.api.validations.exceptions;
 
 import com.magistrados.api.validations.FieldError;
+import com.magistrados.graph.notification.Notifications;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -43,6 +44,7 @@ public class ValidationException extends RuntimeException {
             final BufferedWriter writer = new BufferedWriter(fileWriter);
             writer.write(content);
             writer.close();
+            Notifications.error("Erro ao validar os dados, verifique os logs na crash_reports/validations");
             log.info("UM NOVO CRASH REPORT FOI EMITIDO: " + name);
         } catch (IOException e) {
             log.error("Ocorreu um erro ao emitir o crash report: " + e.getMessage());

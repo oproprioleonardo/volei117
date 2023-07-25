@@ -10,10 +10,10 @@ public class MatchPlayerStats {
     private Integer quantidadeDefesas = 0;
     private Integer quantidadePontos = 0;
 
-    public MatchPlayerStats(){
+    public MatchPlayerStats() {
     }
 
-    public MatchPlayerStats(Long Id, Long playerId, Long partidaId){
+    public MatchPlayerStats(Long Id, Long playerId, Long partidaId) {
         this.Id = Id;
         this.playerId = playerId;
         this.partidaId = partidaId;
@@ -40,74 +40,75 @@ public class MatchPlayerStats {
     }
 
     public void removePonto() {
-        this.quantidadePontos--;
+        if (quantidadePontos > 0)
+            this.quantidadePontos--;
     }
 
     public void removeSaque() {
-        this.quantidadeSaques--;
+        if (quantidadeSaques > 0) this.quantidadeSaques--;
     }
 
     public void removeDefesa() {
-        this.quantidadeDefesas--;
+        if (quantidadeDefesas > 0) this.quantidadeDefesas--;
     }
 
     public void removeBloqueio() {
-        this.quantidadeBloqueios--;
+        if (quantidadeBloqueios > 0) this.quantidadeBloqueios--;
     }
 
-    public Long getPlayerId(){
+    public Long getPlayerId() {
         return playerId;
     }
 
-    public void setPlayerId(Long playerId){
+    public void setPlayerId(Long playerId) {
         this.playerId = playerId;
     }
 
-    public Long getId(){
+    public Long getId() {
         return Id;
     }
 
-    public void setId(Long Id){
+    public void setId(Long Id) {
         this.Id = Id;
     }
 
-    public Long getPartidaId(){
+    public Long getPartidaId() {
         return partidaId;
     }
 
-    public void setPartidaId(Long partidaId){
+    public void setPartidaId(Long partidaId) {
         this.partidaId = partidaId;
     }
 
-    public int getQuantidadePontos(){
+    public int getQuantidadePontos() {
         return quantidadePontos;
     }
 
-    public void setQuantidadePontos(int pontos){
+    public void setQuantidadePontos(int pontos) {
         quantidadePontos = pontos;
     }
 
-    public int getQuantidadeSaques(){
+    public int getQuantidadeSaques() {
         return quantidadeSaques;
     }
 
-    public void setQuantidadeSaques(int saques){
+    public void setQuantidadeSaques(int saques) {
         quantidadeSaques = saques;
     }
 
-    public int getQuantidadeDefesas(){
+    public int getQuantidadeDefesas() {
         return quantidadeDefesas;
     }
 
-    public void setQuantidadeDefesas(int defesas){
+    public void setQuantidadeDefesas(int defesas) {
         quantidadeSaques = defesas;
     }
 
-    public int getQuantidadeBloqueios(){
+    public int getQuantidadeBloqueios() {
         return quantidadeBloqueios;
     }
 
-    public void setQuantidadeBloqueios(int bloqueios){
+    public void setQuantidadeBloqueios(int bloqueios) {
         quantidadeBloqueios = bloqueios;
     }
 }

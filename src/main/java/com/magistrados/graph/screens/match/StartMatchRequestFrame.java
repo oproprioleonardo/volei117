@@ -6,7 +6,6 @@ import com.magistrados.graph.inputs.DefaultInput;
 import com.magistrados.graph.labels.DefaultLabel;
 import com.magistrados.graph.notification.Notifications;
 import com.magistrados.internal.validators.create.CreateMatchValidator;
-import com.magistrados.managers.MatchManager;
 import com.magistrados.models.create.CreateMatch;
 import com.magistrados.services.MatchPlayerStatsService;
 import com.magistrados.services.PartidaService;
@@ -184,16 +183,16 @@ public class StartMatchRequestFrame extends JFrame {
             this.btnIniciar.setEnabled(false);
 
             Notifications.info("A partida está sendo criada, aguarde alguns segundos.");
-            final Uni<MatchManager> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
+            final Uni<MatchManagerFrame> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
                 try {
-                    final MatchManager matchManager = new MatchManager(partidaService, timeService, statsService);
-                    matchManager.iniciarPartida(
+                    final MatchManagerFrame matchManagerFrame = new MatchManagerFrame(partidaService, timeService, statsService);
+                    matchManagerFrame.iniciarPartida(
                             createMatch.getIdTimeA(),
                             createMatch.getIdTimeB(),
                             createMatch.local(),
                             LocalDateTime.of(createMatch.getData(), createMatch.getHorario())
                     );
-                    em.complete(matchManager);
+                    em.complete(matchManagerFrame);
                 } catch (Exception ex) {
                     em.fail(ex);
                 }
@@ -202,8 +201,7 @@ public class StartMatchRequestFrame extends JFrame {
             emitter.subscribe().with(matchManager -> SwingUtilities.invokeLater(() -> {
                 this.dispose();
                 this.btnIniciar.setEnabled(true);
-                final JFrame startPartidaFrame = new MatchManagerFrame(matchManager);
-                startPartidaFrame.setVisible(true);
+                matchManager.setVisible(true);
                 Notifications.info("A partida foi criada com sucesso.");
             }), failure -> {
                 Notifications.error("Não foi possível iniciar a partida entre os times " + this.campoIdTime1.getText() + " e " + this.campoIdTime2.getText());

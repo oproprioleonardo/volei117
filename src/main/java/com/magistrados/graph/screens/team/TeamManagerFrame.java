@@ -5,6 +5,7 @@ import com.magistrados.exceptions.EntityNotFoundException;
 import com.magistrados.graph.buttons.DefaultButton;
 import com.magistrados.graph.inputs.DefaultInput;
 import com.magistrados.graph.labels.DefaultLabel;
+import com.magistrados.graph.notification.Notifications;
 import com.magistrados.internal.validators.create.CreateTeamValidator;
 import com.magistrados.internal.validators.edit.EditTeamValidator;
 import com.magistrados.internal.validators.find.FindTeamValidator;
@@ -22,6 +23,8 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class TeamManagerFrame extends JFrame {
+
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(TeamManagerFrame.class);
     Font font = new Font("Roboto", Font.BOLD, 20);
     private boolean realizandoOperacao = false;
     private JPanel inputPanel;
@@ -174,7 +177,6 @@ public class TeamManagerFrame extends JFrame {
     private ActionListener removerTimeListener() {
         return e -> {
             if (realizandoOperacao) return;
-            realizandoOperacao = true;
             final RemoveTeam removeTeam = new RemoveTeam(
                     this.campoIdTime.getText(),
                     this.campoNomeTime.getText()
@@ -186,21 +188,27 @@ public class TeamManagerFrame extends JFrame {
                 ex.printOnFile();
                 return;
             }
+            realizandoOperacao = true;
 
+            Notifications.info("Uma requisição para deletar time foi enviada, aguarde.");
 
-            final Uni<Void> emitter = Uni.createFrom().emitter((em) -> {
-                new Thread(() -> {
+            final Uni<Void> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
+                try {
                     this.timeService.deletarTime(removeTeam);
                     em.complete(null);
-                }).start();
-            });
+                } catch (Exception ex) {
+                    em.fail(ex);
+                }
+            }).start());
 
             emitter.subscribe().with(time -> SwingUtilities.invokeLater(() -> {
                 cleanFields();
                 realizandoOperacao = false;
+                Notifications.info("Time deletado com sucesso!");
             }), failure -> {
                 this.cleanFields();
                 realizandoOperacao = false;
+                Notifications.error("Não foi possível deletar o time.");
             });
         };
     }
@@ -208,7 +216,6 @@ public class TeamManagerFrame extends JFrame {
     private ActionListener editarTimeListener() {
         return e -> {
             if (realizandoOperacao) return;
-            realizandoOperacao = true;
             final EditTeam editTeam = new EditTeam(
                     this.campoIdTime.getText(),
                     this.campoNomeTime.getText(),
@@ -222,20 +229,27 @@ public class TeamManagerFrame extends JFrame {
                 ex.printOnFile();
                 return;
             }
+            realizandoOperacao = true;
 
-            final Uni<Time> emitter = Uni.createFrom().emitter((em) -> {
-                new Thread(() -> {
+            Notifications.info("Uma requisição para edição de time foi enviada, aguarde.");
+
+            final Uni<Time> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
+                try {
                     final Time time = this.timeService.editarTime(editTeam);
                     em.complete(time);
-                }).start();
-            });
+                } catch (Exception ex) {
+                    em.fail(ex);
+                }
+            }).start());
 
-            emitter.subscribe().with(time -> SwingUtilities.invokeLater(() ->{
+            emitter.subscribe().with(time -> SwingUtilities.invokeLater(() -> {
                 setFields(time);
                 realizandoOperacao = false;
+                Notifications.info("Time editado com sucesso!");
             }), failure -> {
                 cleanFields();
                 realizandoOperacao = false;
+                Notifications.error("Não foi possível editar o time.");
             });
         };
     }
@@ -243,7 +257,6 @@ public class TeamManagerFrame extends JFrame {
     private ActionListener adicionarTimeListener() {
         return e -> {
             if (realizandoOperacao) return;
-            realizandoOperacao = true;
             final CreateTeam createTeam = new CreateTeam(
                     this.campoNomeTime.getText(),
                     this.campoVitorias.getText(),
@@ -255,20 +268,27 @@ public class TeamManagerFrame extends JFrame {
                 ex.printOnFile();
                 return;
             }
+            realizandoOperacao = true;
 
-            final Uni<Time> emitter = Uni.createFrom().emitter((em) -> {
-                new Thread(() -> {
+            Notifications.info("Uma requisição para criação de time foi enviada, aguarde.");
+
+            final Uni<Time> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
+                try {
                     final Time time = this.timeService.criarTime(createTeam);
                     em.complete(time);
-                }).start();
-            });
+                } catch (Exception ex) {
+                    em.fail(ex);
+                }
+            }).start());
 
             emitter.subscribe().with(time -> SwingUtilities.invokeLater(() -> {
                 this.campoIdTime.setText(time.getId().toString());
                 realizandoOperacao = false;
+                Notifications.info("Time criado com sucesso!");
             }), failure -> {
                 cleanFields();
                 realizandoOperacao = false;
+                Notifications.error("Não foi possível criar o time.");
             });
 
         };
@@ -277,7 +297,6 @@ public class TeamManagerFrame extends JFrame {
     private ActionListener buscarTimeListener() {
         return e -> {
             if (realizandoOperacao) return;
-            realizandoOperacao = true;
             final FindTeam findTeam = new FindTeam(
                     this.campoIdTime.getText(),
                     this.campoNomeTime.getText()
@@ -288,21 +307,33 @@ public class TeamManagerFrame extends JFrame {
                 ex.printOnFile();
                 return;
             }
+            realizandoOperacao = true;
 
-            final Uni<Time> emitter = Uni.createFrom().emitter((em) -> {
-                new Thread(() -> {
+            Notifications.info("Uma requisição para buscar time foi enviada, aguarde.");
+
+            final Uni<Time> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
+                try {
                     final Time time = this.timeService.buscarTime(findTeam);
                     em.complete(time);
-                }).start();
-            });
+                } catch (Exception ex) {
+                    em.fail(ex);
+                }
+            }).start());
 
             emitter.subscribe().with(time -> SwingUtilities.invokeLater(() -> {
                 this.setFields(time);
                 realizandoOperacao = false;
+                Notifications.info("Time encontrado.");
             }), failure -> {
                 //todo nao encontrado
                 cleanFields();
                 realizandoOperacao = false;
+                if (failure instanceof EntityNotFoundException) {
+                    Notifications.error(failure.getMessage());
+                    return;
+                }
+                Notifications.error("Não foi possível buscar o time.");
+                log.error("Não foi possível buscar o time", failure);
             });
         };
     }

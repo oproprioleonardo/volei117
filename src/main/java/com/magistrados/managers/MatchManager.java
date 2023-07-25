@@ -1,5 +1,6 @@
 package com.magistrados.managers;
 
+import com.magistrados.graph.screens.match.MatchJob;
 import com.magistrados.managers.enums.TeamID;
 import com.magistrados.models.GameSet;
 import com.magistrados.models.Jogador;
@@ -9,10 +10,11 @@ import com.magistrados.services.MatchPlayerStatsService;
 import com.magistrados.services.PartidaService;
 import com.magistrados.services.TimeService;
 
+import javax.swing.*;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public class MatchManager {
+public class MatchManager extends JFrame {
 
     private static final int POINTS_MAX = 25;
     private final PartidaService partidaService;
@@ -21,6 +23,7 @@ public class MatchManager {
     private Partida partida;
     private int setNum = 1;
     private GameSet currentSet;
+    private MatchJob matchJob;
 
     public MatchManager(PartidaService partidaService, TimeService timeService, MatchPlayerStatsService statsService) {
         this.partidaService = partidaService;
@@ -32,8 +35,8 @@ public class MatchManager {
         this.partida = new Partida();
         partida.setLocal(local);
         partida.setDateTime(dataHora);
-        partida.setTimeA(this.timeService.buscarTime(timeAId));
-        partida.setTimeB(this.timeService.buscarTime(timeBId));
+        partida.setTimeA(this.timeService.buscarTimeLazy(timeAId));
+        partida.setTimeB(this.timeService.buscarTimeLazy(timeBId));
         this.partidaService.salvarPartida(partida);
 
         partida.getJogadores().forEach(jogador -> {
@@ -46,7 +49,8 @@ public class MatchManager {
         });
 
         this.currentSet = partida.getSetByOrder(this.setNum);
-
+        matchJob = new MatchJob(partidaService, partida);
+        matchJob.watch();
     }
 
     public Partida getPartida() {
@@ -78,6 +82,7 @@ public class MatchManager {
     public void gameSetWon(TeamID teamID) {
         if (!this.nextSetAndCheckGameWon(teamID)) {
             this.partida.finalizarPartida(teamID);
+            matchJob.stopWatch();
             this.partidaService.salvarPartida(partida);
         }
     }

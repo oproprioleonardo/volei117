@@ -124,6 +124,10 @@ public class JogadorService {
         return allByTeamId;
     }
 
+    public Set<Jogador> buscarJogadoresLazy(Long idTime) {
+        return this.jogadorRepository.findAllByTeamId(idTime);
+    }
+
     public Set<Jogador> buscarJogadoresOtimizado(Long idTime, Long matchId){
         Set<Jogador> allByTeamId = this.jogadorRepository.findAllByTeamId(idTime);
         allByTeamId.forEach(jogador -> jogador

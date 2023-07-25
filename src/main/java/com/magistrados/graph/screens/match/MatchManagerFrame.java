@@ -1,12 +1,15 @@
 package com.magistrados.graph.screens.match;
 
-import com.magistrados.graph.buttons.DefaultButton;
+import com.magistrados.graph.buttons.*;
 import com.magistrados.graph.inputs.DefaultInput;
 import com.magistrados.graph.labels.DefaultLabel;
 import com.magistrados.managers.MatchManager;
 import com.magistrados.models.Jogador;
 import com.magistrados.models.MatchPlayerStats;
 import com.magistrados.models.Time;
+import com.magistrados.services.MatchPlayerStatsService;
+import com.magistrados.services.PartidaService;
+import com.magistrados.services.TimeService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,10 +18,12 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Objects;
 
-public class MatchManagerFrame extends JFrame {
+public class MatchManagerFrame extends MatchManager {
 
-    private final Font font = new Font("Roboto", Font.BOLD, 20);
-    private final Font btnFont = new Font("Roboto", Font.BOLD, 10);
+    private static final Font font = new Font("Roboto", Font.BOLD, 20);
+    private static final Color BACKGROUND_COLOR = Color.decode("#171717");
+
+    private OperatorButton operator;
     private JPanel mainPanel;
     private JPanel timeAPanel;
     private JPanel headerAPanel;
@@ -33,18 +38,16 @@ public class MatchManagerFrame extends JFrame {
     private JPanel headerBPanel;
     private JPanel buttonsBPanel;
     private JPanel footerBPanel;
-    private MatchManager matchManager;
 
 
-    public MatchManagerFrame(MatchManager matchManager) {
-        super("Iniciar Partida - Jogo");
+    public MatchManagerFrame(PartidaService partidaService, TimeService timeService, MatchPlayerStatsService statsService) {
+        super(partidaService, timeService, statsService);
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
-                matchManager.cancelarPartida();
+                cancelarPartida();
             }
         });
-        this.matchManager = matchManager;
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setResizable(false);
         this.setLayout(new BorderLayout());
@@ -61,34 +64,33 @@ public class MatchManagerFrame extends JFrame {
 
         timeAPanel = new JPanel(new BorderLayout());
         headerAPanel = new JPanel(new BorderLayout());
-        headerAPanel.setBackground(Color.decode("#171717"));
+        headerAPanel.setBackground(BACKGROUND_COLOR);
         buttonsAPanel = new JPanel(new BorderLayout());
-        buttonsAPanel.setBackground(Color.decode("#171717"));
+        buttonsAPanel.setBackground(BACKGROUND_COLOR);
         footerAPanel = new JPanel(new BorderLayout());
-        footerAPanel.setBackground(Color.decode("#171717"));
+        footerAPanel.setBackground(BACKGROUND_COLOR);
 
         dadosPartidaPanel = new JPanel();
         headerDadosPanel = new JPanel(new BorderLayout());
-        headerDadosPanel.setBackground(Color.decode("#171717"));
+        headerDadosPanel.setBackground(BACKGROUND_COLOR);
         setsContPanel = new JPanel(new BorderLayout());
-        setsContPanel.setBackground(Color.decode("#171717"));
+        setsContPanel.setBackground(BACKGROUND_COLOR);
         setsViewerPanel = new JPanel(new BorderLayout());
-        setsViewerPanel.setBackground(Color.decode("#171717"));
+        setsViewerPanel.setBackground(BACKGROUND_COLOR);
         footerDadosPanel = new JPanel(new BorderLayout());
-        footerDadosPanel.setBackground(Color.decode("#171717"));
+        footerDadosPanel.setBackground(BACKGROUND_COLOR);
 
         timeBPanel = new JPanel(new BorderLayout());
         headerBPanel = new JPanel(new BorderLayout());
-        headerBPanel.setBackground(Color.decode("#171717"));
+        headerBPanel.setBackground(BACKGROUND_COLOR);
         buttonsBPanel = new JPanel(new BorderLayout());
-        buttonsBPanel.setBackground(Color.decode("#171717"));
+        buttonsBPanel.setBackground(BACKGROUND_COLOR);
         footerBPanel = new JPanel(new BorderLayout());
-        footerBPanel.setBackground(Color.decode("#171717"));
+        footerBPanel.setBackground(BACKGROUND_COLOR);
 
 
         //Layout
         dadosPartidaPanel.setLayout(new BoxLayout(dadosPartidaPanel, BoxLayout.Y_AXIS));
-
 
 
         //Adicionando Painéis ao Frame
@@ -111,26 +113,26 @@ public class MatchManagerFrame extends JFrame {
         timeBPanel.add(buttonsBPanel, BorderLayout.CENTER);
         timeBPanel.add(footerBPanel, BorderLayout.SOUTH);
 
-        //Painel do Time A
-        this.headerAPanel.add(createLabel(font, matchManager.getPartida().getTimeA().getNomeTime()));
-        this.criarBotoesTime(matchManager.getPartida().getTimeA(), buttonsAPanel);
-        this.createButton(footerAPanel, "+Ponto", null, false);
-
         //Painel Dados da Partida
-        this.headerDadosPanel.add(createLabel(font, matchManager.getPartida().getDateTime().toString()), BorderLayout.NORTH);
-        this.headerDadosPanel.add(createLabel(font, matchManager.getPartida().getLocal()), BorderLayout.CENTER);
+        this.headerDadosPanel.add(new DefaultLabel(font, getPartida().getDateTime().toString()), BorderLayout.NORTH);
+        this.headerDadosPanel.add(new DefaultLabel(font, getPartida().getLocal()), BorderLayout.CENTER);
 
-        this.setsContPanel.add(createLabel(font, ""+matchManager.getPartida().getSetsA()), BorderLayout.WEST);
-        this.setsContPanel.add(createLabel(font, "x"), BorderLayout.CENTER);
-        this.setsContPanel.add(createLabel(font, ""+matchManager.getPartida().getSetsB()), BorderLayout.EAST);
+        this.setsContPanel.add(new DefaultLabel(font, "" + getPartida().getSetsA(), 28), BorderLayout.WEST);
+        this.setsContPanel.add(new DefaultLabel(font, "X", 24), BorderLayout.CENTER);
+        this.setsContPanel.add(new DefaultLabel(font, "" + getPartida().getSetsB(), 28), BorderLayout.EAST);
 
-        this.createButton(footerDadosPanel, "Subtrair", null, BorderLayout.NORTH);
+        operator = new OperatorButton("Somando");
+        footerDadosPanel.add(operator, BorderLayout.NORTH);
 
+        //Painel do Time A
+        this.headerAPanel.add(new DefaultLabel(font, getPartida().getTimeA().getNomeTime()));
+        this.criarBotoesTime(getPartida().getTimeA(), buttonsAPanel);
+        this.createButton(footerAPanel, "Ponto", null, false);
 
         //Painel do Time B
-        this.headerBPanel.add(createLabel(font, matchManager.getPartida().getTimeB().getNomeTime()));
-        this.criarBotoesTime(matchManager.getPartida().getTimeB(), buttonsBPanel);
-        this.createButton(footerBPanel, "+Ponto", null, false);
+        this.headerBPanel.add(new DefaultLabel(font, getPartida().getTimeB().getNomeTime()));
+        this.criarBotoesTime(getPartida().getTimeB(), buttonsBPanel);
+        this.createButton(footerBPanel, "Ponto", null, false);
 
     }
 
@@ -150,13 +152,35 @@ public class MatchManagerFrame extends JFrame {
         final GroupLayout.ParallelGroup defesas = layout.createParallelGroup();
         final GroupLayout.ParallelGroup pontos = layout.createParallelGroup();
 
+        final JLabel titleNomes = new DefaultLabel(font, "Nomes");
+        titleNomes.setHorizontalAlignment(SwingConstants.CENTER);
+        final JLabel titleBloqueios = new DefaultLabel(font, "Bloqueios", new Dimension(100, 45), SwingConstants.CENTER);
+        final JLabel titleSaques = new DefaultLabel(font, "Saques", new Dimension(100, 45), SwingConstants.CENTER);
+        final JLabel titleDefesas = new DefaultLabel(font, "Defesas", new Dimension(100, 45), SwingConstants.CENTER);
+        final JLabel titlePontos = new DefaultLabel(font, "Pontos", new Dimension(100, 45), SwingConstants.CENTER);
+
+        vGroup.addGroup(
+                layout.createParallelGroup()
+                        .addComponent(titleNomes)
+                        .addComponent(titleBloqueios)
+                        .addComponent(titleSaques)
+                        .addComponent(titleDefesas)
+                        .addComponent(titlePontos)
+        );
+
+        nomes.addComponent(titleNomes);
+        bloqueios.addComponent(titleBloqueios);
+        saques.addComponent(titleSaques);
+        defesas.addComponent(titleDefesas);
+        pontos.addComponent(titlePontos);
+
         for (Jogador jogador : time.getJogadores()) {
-            final JLabel labelNome = createLabel(font, jogador.getNome());
-            final MatchPlayerStats stats = jogador.getMatchPlayerStats(matchManager.getPartida().getId());
-            final JButton btnBloqueios = createButton("+Bloqueios (" + stats.getQuantidadeBloqueios() + ")", null);
-            final JButton btnSaques = createButton("+Saques (" + stats.getQuantidadeSaques() + ")", null);
-            final JButton btnDefesas = createButton("+Defesas (" + stats.getQuantidadeDefesas() + ")", null);
-            final JButton btnPontos = createButton("+Pontos (" + stats.getQuantidadePontos() + ")", null);
+            final JLabel labelNome = new DefaultLabel(font, jogador.getNome());
+            final MatchPlayerStats stats = jogador.getMatchPlayerStats(getPartida().getId());
+            final JButton btnBloqueios = new BloqueiosButton("(" + stats.getQuantidadeBloqueios() + ")", stats, operator);
+            final JButton btnSaques = new SaquesButton("(" + stats.getQuantidadeSaques() + ")", stats, operator);
+            final JButton btnDefesas = new DefesasButton("(" + stats.getQuantidadeDefesas() + ")", stats, operator);
+            final JButton btnPontos = new PontosButton("(" + stats.getQuantidadePontos() + ")", stats, operator);
 
             nomes.addComponent(labelNome);
             bloqueios.addComponent(btnBloqueios);
@@ -174,13 +198,13 @@ public class MatchManagerFrame extends JFrame {
             );
         }
 
-        if (Objects.equals(matchManager.getPartida().getIdTimeA(), time.getId()))
+        if (Objects.equals(getPartida().getIdTimeA(), time.getId()))
             hGroup.addGroup(nomes);
         hGroup.addGroup(bloqueios);
         hGroup.addGroup(saques);
         hGroup.addGroup(defesas);
         hGroup.addGroup(pontos);
-        if (Objects.equals(matchManager.getPartida().getIdTimeB(), time.getId()))
+        if (Objects.equals(getPartida().getIdTimeB(), time.getId()))
             hGroup.addGroup(nomes);
 
         layout.setHorizontalGroup(hGroup);
@@ -192,24 +216,6 @@ public class MatchManagerFrame extends JFrame {
         if (space) panel.add(Box.createRigidArea(new Dimension(0, 50)));
         final DefaultButton button = new DefaultButton(text, listener);
         panel.add(button);
-    }
-    private void createButton(JPanel panel, String text, ActionListener listener, String layout) {
-        final DefaultButton button = new DefaultButton(text, listener);
-        panel.add(button, layout);
-    }
-
-    private DefaultButton createButton(String text, ActionListener listener) {
-        return new DefaultButton(text, listener, btnFont,
-                new Dimension(100, 45), BorderFactory.createEmptyBorder(5,5,5,5));
-    }
-
-
-    private DefaultInput createInput(int sizeX, int sizeY) {
-        return new DefaultInput(sizeX, sizeY);
-    }
-
-    private DefaultLabel createLabel(Font font, String text) {
-        return new DefaultLabel(font, text);
     }
 
 

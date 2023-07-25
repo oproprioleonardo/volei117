@@ -75,6 +75,15 @@ public class TimeService {
         return time;
     }
 
+    public Time buscarTimeLazy(Long id) {
+        final Time time = this.timeRepository.findById(id);
+        if (!time.isCreated()) {
+            throw new EntityNotFoundException(id.toString(), "time");
+        }
+        time.setJogadores(this.jogadorService.buscarJogadoresLazy(time.getId()));
+        return time;
+    }
+
     public Time buscarTimeOtimizado(Long id, Long matchId){
         final Time time = this.timeRepository.findById(id);
         if (!time.isCreated()) {

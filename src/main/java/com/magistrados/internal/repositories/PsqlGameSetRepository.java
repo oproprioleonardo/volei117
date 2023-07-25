@@ -8,7 +8,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -92,7 +94,7 @@ public class PsqlGameSetRepository implements GameSetRepository {
     @Override
     public void deleteById(Long object) {
         try (final Connection con = this.connectionProvider.getConnection()) {
-            final PreparedStatement st = con.prepareStatement("DELETE FROM volei_sets WHERE id=?");
+            final PreparedStatement st = con.prepareStatement("DELETE FROM volei_sets WHERE id = ?");
             st.setLong(1, object);
             st.executeUpdate();
             st.close();
@@ -108,8 +110,8 @@ public class PsqlGameSetRepository implements GameSetRepository {
     }
 
     @Override
-    public Set<GameSet> findAllSetsByMatchId(Long matchId) {
-        final Set<GameSet> gameSets = new HashSet<>();
+    public List<GameSet> findAllSetsByMatchId(Long matchId) {
+        final List<GameSet> gameSets = new ArrayList<>();
         try (final Connection con = this.connectionProvider.getConnection()) {
             final PreparedStatement st = con.prepareStatement("select * from volei_sets where id_partida=?");
             st.setLong(1, matchId);

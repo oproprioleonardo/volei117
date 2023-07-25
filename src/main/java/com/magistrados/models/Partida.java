@@ -1,9 +1,11 @@
 package com.magistrados.models;
 
-import com.magistrados.managers.enums.TeamID;
+import com.magistrados.graph.screens.match.enums.TeamID;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Partida {
@@ -14,14 +16,15 @@ public class Partida {
     private Integer setsA = 0, setsB = 0;
     private Long idTimeA, idTimeB;
     private int quantidadeSets;
-    private Set<GameSet> gameSets = new HashSet<>();
+    private List<GameSet> gameSets = new ArrayList<>();
     private String vencedor;
     private boolean finalizada = false;
 
     public Partida() {
     }
 
-    public Partida(LocalDateTime dateTime, String local, Time timeA, Time timeB, int quantidadeSets, String vencedor) {
+    public Partida(Long id, LocalDateTime dateTime, String local, Time timeA, Time timeB, int quantidadeSets, String vencedor) {
+        this.id = id;
         this.dateTime = dateTime;
         this.local = local;
         this.timeA = timeA;
@@ -140,11 +143,11 @@ public class Partida {
         }
     }
 
-    public Set<GameSet> getGameSets() {
+    public List<GameSet> getGameSets() {
         return gameSets;
     }
 
-    public void setGameSets(Set<GameSet> gameSets) {
+    public void setGameSets(List<GameSet> gameSets) {
         this.gameSets = gameSets;
     }
 

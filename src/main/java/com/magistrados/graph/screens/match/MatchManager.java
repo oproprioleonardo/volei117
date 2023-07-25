@@ -1,11 +1,11 @@
-package com.magistrados.managers;
+package com.magistrados.graph.screens.match;
 
-import com.magistrados.graph.screens.match.MatchJob;
-import com.magistrados.managers.enums.TeamID;
+import com.magistrados.graph.screens.match.enums.TeamID;
 import com.magistrados.models.GameSet;
 import com.magistrados.models.Jogador;
 import com.magistrados.models.MatchPlayerStats;
 import com.magistrados.models.Partida;
+import com.magistrados.services.GameSetService;
 import com.magistrados.services.MatchPlayerStatsService;
 import com.magistrados.services.PartidaService;
 import com.magistrados.services.TimeService;
@@ -23,15 +23,17 @@ public abstract class MatchManager extends JFrame {
     private final PartidaService partidaService;
     private final TimeService timeService;
     private final MatchPlayerStatsService statsService;
+    private final GameSetService gameSetService;
     private Partida partida;
     private int setNum = 1;
     private GameSet currentSet;
     private MatchJob matchJob;
 
-    public MatchManager(PartidaService partidaService, TimeService timeService, MatchPlayerStatsService statsService) {
+    public MatchManager(PartidaService partidaService, TimeService timeService, MatchPlayerStatsService statsService, GameSetService gameSetService) {
         this.partidaService = partidaService;
         this.timeService = timeService;
         this.statsService = statsService;
+        this.gameSetService = gameSetService;
     }
 
     public void iniciarPartida(Long timeAId, Long timeBId, String local, LocalDateTime dataHora) {
@@ -41,6 +43,10 @@ public abstract class MatchManager extends JFrame {
         partida.setTimeA(this.timeService.buscarTimeLazy(timeAId));
         partida.setTimeB(this.timeService.buscarTimeLazy(timeBId));
         this.partidaService.salvarPartida(partida);
+
+        partida.setQuantidadeSets(3);
+        partida.getGameSets().forEach(this.gameSetService::salvarSet);
+        partida.getSetByOrder(1).setIniciado(true);
 
         partida.getJogadores().forEach(jogador -> {
             final MatchPlayerStats playerStats = new MatchPlayerStats();
@@ -60,6 +66,7 @@ public abstract class MatchManager extends JFrame {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
+                matchJob.stopWatch();
                 cancelarPartida();
             }
         });

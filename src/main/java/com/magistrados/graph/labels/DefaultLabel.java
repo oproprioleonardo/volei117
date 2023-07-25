@@ -13,6 +13,13 @@ public class DefaultLabel extends JLabel {
         this.setForeground(Color.WHITE);
     }
 
+    public DefaultLabel(String text, Font font, int alignment) {
+        this.setText(text);
+        this.setFont(font);
+        this.setForeground(Color.WHITE);
+        this.setHorizontalAlignment(alignment);
+    }
+
     public DefaultLabel(Font font, String text, Dimension dimension) {
         this.setText(text);
         this.setSize(dimension);

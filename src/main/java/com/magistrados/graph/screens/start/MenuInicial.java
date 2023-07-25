@@ -3,11 +3,8 @@ package com.magistrados.graph.screens.start;
 import com.magistrados.graph.buttons.DefaultButton;
 import com.magistrados.graph.screens.player.PlayerManagerFrame;
 import com.magistrados.graph.screens.team.TeamManagerFrame;
-import com.magistrados.services.JogadorService;
+import com.magistrados.services.*;
 import com.magistrados.graph.screens.match.StartMatchRequestFrame;
-import com.magistrados.services.MatchPlayerStatsService;
-import com.magistrados.services.PartidaService;
-import com.magistrados.services.TimeService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +14,7 @@ public class MenuInicial extends JFrame {
 
     private JPanel mainPanel;
 
-    public MenuInicial(PartidaService partidaService, MatchPlayerStatsService statsService, JogadorService jogadorService, TimeService timeService) throws HeadlessException {
+    public MenuInicial(PartidaService partidaService, MatchPlayerStatsService statsService, JogadorService jogadorService, TimeService timeService, GameSetService gameSetService) throws HeadlessException {
         super("Menu Inicial");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
@@ -42,7 +39,7 @@ public class MenuInicial extends JFrame {
 
         }, true);
         this.createButton(buttonPanel, "Iniciar Partida", e -> {
-            final JFrame startPartidasFrameRequests = new StartMatchRequestFrame(partidaService, timeService, statsService);
+            final JFrame startPartidasFrameRequests = new StartMatchRequestFrame(partidaService, timeService, statsService, gameSetService);
             startPartidasFrameRequests.setVisible(true);
 
         }, true);

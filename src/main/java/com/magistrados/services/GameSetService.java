@@ -3,6 +3,7 @@ package com.magistrados.services;
 import com.magistrados.api.repositories.GameSetRepository;
 import com.magistrados.models.GameSet;
 
+import java.util.List;
 import java.util.Set;
 
 public class GameSetService {
@@ -17,7 +18,7 @@ public class GameSetService {
         return this.gameSetRepository.findById(id);
     }
 
-    public Set<GameSet> buscarSets(Long idPartida) {
+    public List<GameSet> buscarSets(Long idPartida) {
         return this.gameSetRepository.findAllSetsByMatchId(idPartida);
     }
 

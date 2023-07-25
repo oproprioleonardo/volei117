@@ -5,6 +5,7 @@ import com.magistrados.models.Jogador;
 import com.magistrados.models.MatchPlayerStats;
 import com.magistrados.models.Partida;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -60,7 +61,7 @@ public class PartidaService {
 
     public void deletarPartida(Partida partida) {
         partida.getGameSets().forEach(this.gameSetService::deletarSet);
-        partida.setGameSets(new HashSet<>());
+        partida.setGameSets(new ArrayList<>());
         partida.getJogadores().forEach(jogador -> jogador.getMatchPlayerStats()
                 .stream()
                 .filter(matchPlayerStats -> matchPlayerStats.getPartidaId().equals(partida.getId()))

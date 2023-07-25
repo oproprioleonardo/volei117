@@ -31,7 +31,7 @@ public class ApplicationModule {
         final PartidaService partidaService = new PartidaService(partidaRepository, gameSetService, timeService, statsService, jogadorService);
 
         SwingUtilities.invokeLater(() -> {
-            final JFrame menuInicial = new MenuInicial(partidaService, statsService, jogadorService, timeService);
+            final JFrame menuInicial = new MenuInicial(partidaService, statsService, jogadorService, timeService, gameSetService);
             menuInicial.setVisible(true);
         });
     }

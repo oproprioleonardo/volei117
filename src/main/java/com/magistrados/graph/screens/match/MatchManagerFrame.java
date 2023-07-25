@@ -1,12 +1,12 @@
 package com.magistrados.graph.screens.match;
 
 import com.magistrados.graph.buttons.*;
-import com.magistrados.graph.inputs.DefaultInput;
 import com.magistrados.graph.labels.DefaultLabel;
-import com.magistrados.managers.MatchManager;
+import com.magistrados.models.GameSet;
 import com.magistrados.models.Jogador;
 import com.magistrados.models.MatchPlayerStats;
 import com.magistrados.models.Time;
+import com.magistrados.services.GameSetService;
 import com.magistrados.services.MatchPlayerStatsService;
 import com.magistrados.services.PartidaService;
 import com.magistrados.services.TimeService;
@@ -14,15 +14,13 @@ import com.magistrados.services.TimeService;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.Objects;
 
 public class MatchManagerFrame extends MatchManager {
 
     private static final Font font = new Font("Roboto", Font.BOLD, 20);
     private static final Color BACKGROUND_COLOR = Color.decode("#171717");
-
+    private static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MatchManagerFrame.class);
     private OperatorButton operator;
     private JPanel mainPanel;
     private JPanel timeAPanel;
@@ -40,15 +38,15 @@ public class MatchManagerFrame extends MatchManager {
     private JPanel footerBPanel;
 
 
-    public MatchManagerFrame(PartidaService partidaService, TimeService timeService, MatchPlayerStatsService statsService) {
-        super(partidaService, timeService, statsService);
+    public MatchManagerFrame(PartidaService partidaService, TimeService timeService, MatchPlayerStatsService statsService, GameSetService gameSetService) {
+        super(partidaService, timeService, statsService, gameSetService);
     }
 
     @Override
     public void initComponents() {
         //Criando JPanels
         mainPanel = new JPanel(new BorderLayout());
-
+        mainPanel.setBackground(BACKGROUND_COLOR);
         timeAPanel = new JPanel(new BorderLayout());
         headerAPanel = new JPanel(new BorderLayout());
         headerAPanel.setBackground(BACKGROUND_COLOR);
@@ -58,13 +56,20 @@ public class MatchManagerFrame extends MatchManager {
         footerAPanel.setBackground(BACKGROUND_COLOR);
 
         dadosPartidaPanel = new JPanel();
+        dadosPartidaPanel.setBackground(BACKGROUND_COLOR);
+        dadosPartidaPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
         headerDadosPanel = new JPanel(new BorderLayout());
+        headerDadosPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 25, 0));
         headerDadosPanel.setBackground(BACKGROUND_COLOR);
         setsContPanel = new JPanel(new BorderLayout());
         setsContPanel.setBackground(BACKGROUND_COLOR);
-        setsViewerPanel = new JPanel(new BorderLayout());
+        setsViewerPanel = new JPanel();
+        setsViewerPanel.setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255), 6));
+        setsViewerPanel.setSize(new Dimension(200, 250));
+        setsViewerPanel.setLayout(new BoxLayout(setsViewerPanel, BoxLayout.Y_AXIS));
         setsViewerPanel.setBackground(BACKGROUND_COLOR);
         footerDadosPanel = new JPanel(new BorderLayout());
+        footerDadosPanel.setBorder(BorderFactory.createEmptyBorder(25, 0, 10, 0));
         footerDadosPanel.setBackground(BACKGROUND_COLOR);
 
         timeBPanel = new JPanel(new BorderLayout());
@@ -104,9 +109,7 @@ public class MatchManagerFrame extends MatchManager {
         this.headerDadosPanel.add(new DefaultLabel(font, getPartida().getDateTime().toString()), BorderLayout.NORTH);
         this.headerDadosPanel.add(new DefaultLabel(font, getPartida().getLocal()), BorderLayout.CENTER);
 
-        this.setsContPanel.add(new DefaultLabel(font, "" + getPartida().getSetsA(), 28), BorderLayout.WEST);
-        this.setsContPanel.add(new DefaultLabel(font, "X", 24), BorderLayout.CENTER);
-        this.setsContPanel.add(new DefaultLabel(font, "" + getPartida().getSetsB(), 28), BorderLayout.EAST);
+        this.updateSetsComponent();
 
         operator = new OperatorButton("Somando");
         footerDadosPanel.add(operator, BorderLayout.NORTH);
@@ -114,12 +117,30 @@ public class MatchManagerFrame extends MatchManager {
         //Painel do Time A
         this.headerAPanel.add(new DefaultLabel(font, getPartida().getTimeA().getNomeTime()));
         this.criarBotoesTime(getPartida().getTimeA(), buttonsAPanel);
-        this.createButton(footerAPanel, "Ponto", null, false);
+
+        this.createButton(footerAPanel, "Ponto", e -> {
+            if (operator.isSomando())
+                adicionarPontoTimeA().ifPresent(runnable -> {
+                    runnable.run();
+                    // todo criar botao de finalizar set e chamar a runnable
+                });
+            else removerPontoTimeA();
+            this.updateSetsComponent();
+        }, false);
 
         //Painel do Time B
         this.headerBPanel.add(new DefaultLabel(font, getPartida().getTimeB().getNomeTime()));
         this.criarBotoesTime(getPartida().getTimeB(), buttonsBPanel);
-        this.createButton(footerBPanel, "Ponto", null, false);
+        this.createButton(footerBPanel, "Ponto", e -> {
+            if (operator.isSomando())
+                adicionarPontoTimeB().ifPresent(runnable -> {
+                    runnable.run();
+                    // todo criar botao de finalizar set e chamar a runnable
+                });
+            else removerPontoTimeB();
+            this.updateSetsComponent();
+        }, false);
+
 
     }
 
@@ -196,6 +217,29 @@ public class MatchManagerFrame extends MatchManager {
 
         layout.setHorizontalGroup(hGroup);
         layout.setVerticalGroup(vGroup);
+    }
+
+    public void updateSetsComponent() {
+        this.setsViewerPanel.removeAll();
+        this.pack();
+        for (GameSet set : getPartida().getGameSets()) {
+            this.setsViewerPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+            final JPanel setsContPanel = new JPanel(new BorderLayout());
+            setsContPanel.setBackground(BACKGROUND_COLOR);
+            if (set.isIniciado() && !set.isFinalizado()) {
+                setsContPanel.setBorder(BorderFactory.createLineBorder(new Color(39, 77, 11), 3));
+            } else setsContPanel.setBorder(null);
+            setsContPanel.add(new DefaultLabel(font, "" + set.getPontosTimeA(), 16), BorderLayout.WEST);
+            setsContPanel.add(new DefaultLabel(font, "X", 14), BorderLayout.CENTER);
+            setsContPanel.add(new DefaultLabel(font, "" + set.getPontosTimeB(), 16), BorderLayout.EAST);
+            this.setsViewerPanel.add(setsContPanel);
+        }
+        this.setsContPanel.removeAll();
+        this.pack();
+        this.setsContPanel.add(new DefaultLabel(font, "" + getPartida().getSetsA(), 28), BorderLayout.WEST);
+        this.setsContPanel.add(new DefaultLabel(font, "X", 24), BorderLayout.CENTER);
+        this.setsContPanel.add(new DefaultLabel(font, "" + getPartida().getSetsB(), 28), BorderLayout.EAST);
+        this.pack();
     }
 
 

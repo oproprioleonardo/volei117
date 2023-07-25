@@ -7,6 +7,7 @@ import com.magistrados.graph.labels.DefaultLabel;
 import com.magistrados.graph.notification.Notifications;
 import com.magistrados.internal.validators.create.CreateMatchValidator;
 import com.magistrados.models.create.CreateMatch;
+import com.magistrados.services.GameSetService;
 import com.magistrados.services.MatchPlayerStatsService;
 import com.magistrados.services.PartidaService;
 import com.magistrados.services.TimeService;
@@ -25,6 +26,7 @@ public class StartMatchRequestFrame extends JFrame {
     private final PartidaService partidaService;
     private final TimeService timeService;
     private final MatchPlayerStatsService statsService;
+    private final GameSetService gameSetService;
     private final Font font = new Font("Roboto", Font.BOLD, 20);
     private JPanel inputPanel;
     private JPanel mainPanel;
@@ -44,11 +46,12 @@ public class StartMatchRequestFrame extends JFrame {
     private JTextField campoHorario;
     private JTextField campoLocal;
 
-    public StartMatchRequestFrame(PartidaService partidaService, TimeService timeService, MatchPlayerStatsService statsService) throws HeadlessException {
+    public StartMatchRequestFrame(PartidaService partidaService, TimeService timeService, MatchPlayerStatsService statsService, GameSetService gameSetService) throws HeadlessException {
         super("Iniciar Partida - Requerimentos");
         this.partidaService = partidaService;
         this.timeService = timeService;
         this.statsService = statsService;
+        this.gameSetService = gameSetService;
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setResizable(false);
         this.setLayout(new BorderLayout());
@@ -185,7 +188,7 @@ public class StartMatchRequestFrame extends JFrame {
             Notifications.info("A partida está sendo criada, aguarde alguns segundos.");
             final Uni<MatchManagerFrame> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
                 try {
-                    final MatchManagerFrame matchManagerFrame = new MatchManagerFrame(partidaService, timeService, statsService);
+                    final MatchManagerFrame matchManagerFrame = new MatchManagerFrame(partidaService, timeService, statsService, gameSetService);
                     matchManagerFrame.iniciarPartida(
                             createMatch.getIdTimeA(),
                             createMatch.getIdTimeB(),

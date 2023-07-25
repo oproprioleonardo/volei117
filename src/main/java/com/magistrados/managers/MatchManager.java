@@ -11,10 +11,13 @@ import com.magistrados.services.PartidaService;
 import com.magistrados.services.TimeService;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public class MatchManager extends JFrame {
+public abstract class MatchManager extends JFrame {
 
     private static final int POINTS_MAX = 25;
     private final PartidaService partidaService;
@@ -51,7 +54,25 @@ public class MatchManager extends JFrame {
         this.currentSet = partida.getSetByOrder(this.setNum);
         matchJob = new MatchJob(partidaService, partida);
         matchJob.watch();
+
+        // init components of frame
+
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                cancelarPartida();
+            }
+        });
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setResizable(false);
+        this.setLayout(new BorderLayout());
+        initComponents();
+        //empilha tudo
+        this.pack();
+        this.setLocationRelativeTo(null);
     }
+
+    public abstract void initComponents();
 
     public Partida getPartida() {
         return partida;

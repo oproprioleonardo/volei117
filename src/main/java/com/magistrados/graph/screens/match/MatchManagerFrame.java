@@ -42,23 +42,10 @@ public class MatchManagerFrame extends MatchManager {
 
     public MatchManagerFrame(PartidaService partidaService, TimeService timeService, MatchPlayerStatsService statsService) {
         super(partidaService, timeService, statsService);
-        this.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosed(WindowEvent e) {
-                cancelarPartida();
-            }
-        });
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.setResizable(false);
-        this.setLayout(new BorderLayout());
-        initComponents();
-        //empilha tudo
-        this.pack();
-        this.setLocationRelativeTo(null);
     }
 
+    @Override
     public void initComponents() {
-
         //Criando JPanels
         mainPanel = new JPanel(new BorderLayout());
 

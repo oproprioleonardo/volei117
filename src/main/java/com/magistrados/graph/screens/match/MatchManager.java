@@ -1,5 +1,6 @@
 package com.magistrados.graph.screens.match;
 
+import com.magistrados.graph.notification.Notifications;
 import com.magistrados.graph.screens.match.enums.TeamID;
 import com.magistrados.models.GameSet;
 import com.magistrados.models.Jogador;
@@ -9,6 +10,7 @@ import com.magistrados.services.GameSetService;
 import com.magistrados.services.MatchPlayerStatsService;
 import com.magistrados.services.PartidaService;
 import com.magistrados.services.TimeService;
+import io.smallrye.mutiny.Uni;
 
 import javax.swing.*;
 import java.awt.*;
@@ -111,7 +113,16 @@ public abstract class MatchManager extends JFrame {
         if (!this.nextSetAndCheckGameWon(teamID)) {
             this.partida.finalizarPartida(teamID);
             matchJob.stopWatch();
-            this.partidaService.salvarPartida(partida);
+            final Uni<Void> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
+                this.partidaService.salvarPartida(partida);
+                em.complete(null);
+            }).start());
+
+            emitter.subscribe().with(e -> SwingUtilities.invokeLater(() -> {
+                Notifications.info("Partida finalizada e salva.");
+            }), failure -> {
+                Notifications.error("Erro ao finalizar e salvar partida.");
+            });
         }
     }
 

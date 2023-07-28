@@ -6,7 +6,6 @@ import com.magistrados.models.GameSet;
 import com.magistrados.models.Jogador;
 import com.magistrados.models.MatchPlayerStats;
 import com.magistrados.models.Partida;
-import com.magistrados.graph.screens.match.models.MatchJob;
 import com.magistrados.services.GameSetService;
 import com.magistrados.services.MatchPlayerStatsService;
 import com.magistrados.services.PartidaService;
@@ -69,9 +68,8 @@ public abstract class MatchManager extends JFrame {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
-                if (!partida.isFinalizada())
-                    cancelarPartida();
                 matchJob.stopWatch();
+                cancelarPartida();
             }
         });
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -84,7 +82,9 @@ public abstract class MatchManager extends JFrame {
     }
 
     public abstract void initComponents();
+
     public abstract void travarTodosBotoes();
+
     public abstract void destravarTodosBotoes();
 
     public Partida getPartida() {
@@ -121,10 +121,10 @@ public abstract class MatchManager extends JFrame {
 
             Notifications.info("Partida sendo finalizada...");
 
-            final Uni<String> emitter = Uni.createFrom().emitter((em) -> {
+            final Uni<String> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
                 this.partidaService.salvarPartida(partida);
                 em.complete("Partida finalizada com sucesso.");
-            });
+            }).start());
 
             emitter.subscribe().with(Notifications::info);
         }

@@ -2,6 +2,8 @@ package com.magistrados.graph.screens.match;
 
 import com.magistrados.graph.buttons.*;
 import com.magistrados.graph.labels.DefaultLabel;
+import com.magistrados.graph.notification.Notifications;
+import com.magistrados.graph.screens.match.models.MatchManager;
 import com.magistrados.models.GameSet;
 import com.magistrados.models.Jogador;
 import com.magistrados.models.MatchPlayerStats;
@@ -10,18 +12,25 @@ import com.magistrados.services.GameSetService;
 import com.magistrados.services.MatchPlayerStatsService;
 import com.magistrados.services.PartidaService;
 import com.magistrados.services.TimeService;
+import io.smallrye.mutiny.Uni;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public class MatchManagerFrame extends MatchManager {
 
     private static final Font font = new Font("Roboto", Font.BOLD, 20);
     private static final Color BACKGROUND_COLOR = Color.decode("#171717");
     private static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MatchManagerFrame.class);
+    private boolean botoesTravados = false;
     private OperatorButton operator;
+    private DefaultButton btnCancelar;
+    public DefaultButton btnConfirmarSet;
     private JPanel mainPanel;
     private JPanel timeAPanel;
     private JPanel headerAPanel;
@@ -31,6 +40,7 @@ public class MatchManagerFrame extends MatchManager {
     private JPanel headerDadosPanel;
     private JPanel setsContPanel;
     private JPanel setsViewerPanel;
+    private JPanel centeringPanel;
     private JPanel footerDadosPanel;
     private JPanel timeBPanel;
     private JPanel headerBPanel;
@@ -68,7 +78,9 @@ public class MatchManagerFrame extends MatchManager {
         setsViewerPanel.setSize(new Dimension(200, 250));
         setsViewerPanel.setLayout(new BoxLayout(setsViewerPanel, BoxLayout.Y_AXIS));
         setsViewerPanel.setBackground(BACKGROUND_COLOR);
-        footerDadosPanel = new JPanel(new BorderLayout());
+        centeringPanel = new JPanel();
+        centeringPanel.setBackground(BACKGROUND_COLOR);
+        footerDadosPanel = new JPanel();
         footerDadosPanel.setBorder(BorderFactory.createEmptyBorder(25, 0, 10, 0));
         footerDadosPanel.setBackground(BACKGROUND_COLOR);
 
@@ -82,7 +94,14 @@ public class MatchManagerFrame extends MatchManager {
 
 
         //Layout
+        centeringPanel.setLayout(new BoxLayout(centeringPanel, BoxLayout.X_AXIS));
+        footerDadosPanel.setLayout(new BoxLayout(footerDadosPanel, BoxLayout.Y_AXIS));
         dadosPartidaPanel.setLayout(new BoxLayout(dadosPartidaPanel, BoxLayout.Y_AXIS));
+
+
+        centeringPanel.add(Box.createHorizontalGlue());
+        centeringPanel.add(footerDadosPanel);
+        centeringPanel.add(Box.createHorizontalGlue());
 
 
         //Adicionando Painéis ao Frame
@@ -99,7 +118,7 @@ public class MatchManagerFrame extends MatchManager {
         dadosPartidaPanel.add(headerDadosPanel, BorderLayout.NORTH);
         headerDadosPanel.add(setsContPanel, BorderLayout.SOUTH);
         dadosPartidaPanel.add(setsViewerPanel, BorderLayout.CENTER);
-        dadosPartidaPanel.add(footerDadosPanel, BorderLayout.SOUTH);
+        dadosPartidaPanel.add(centeringPanel, BorderLayout.SOUTH);
 
         timeBPanel.add(headerBPanel, BorderLayout.NORTH);
         timeBPanel.add(buttonsBPanel, BorderLayout.CENTER);
@@ -111,19 +130,59 @@ public class MatchManagerFrame extends MatchManager {
 
         this.updateSetsComponent();
 
-        operator = new OperatorButton("Somando");
-        footerDadosPanel.add(operator, BorderLayout.NORTH);
+        operator = new OperatorButton("Somando", this);
+        btnCancelar = new DefaultButton("Cancelar", e -> {
+            travarTodosBotoes();
+
+            Notifications.info("A partida está sendo cancelada, aguarde...");
+
+            final Uni<String> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
+                cancelarPartida();
+                em.complete("Partida cancelada com sucesso!");
+            }).start());
+
+            emitter.subscribe().with(s -> {
+                Notifications.info(s);
+                dispose();
+            });
+        });
+
+
+        footerDadosPanel.add(operator);
+        footerDadosPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        footerDadosPanel.add(btnCancelar);
+        footerDadosPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+
 
         //Painel do Time A
         this.headerAPanel.add(new DefaultLabel(font, getPartida().getTimeA().getNomeTime()));
         this.criarBotoesTime(getPartida().getTimeA(), buttonsAPanel);
 
+        final Consumer<Runnable> confirmarAvancarSet = runnable -> {
+            travarTodosBotoes();
+            ativarBotoesEssenciais();
+
+            btnConfirmarSet = new DefaultButton("Finalizar Set", e1 -> {
+                runnable.run();
+                this.updateSetsComponent();
+                footerDadosPanel.remove(btnConfirmarSet);
+                this.revalidate();
+                this.repaint();
+                btnConfirmarSet = null;
+                if (this.getPartida().isFinalizada()) {
+                    travarTodosBotoes();
+                } else destravarTodosBotoes();
+            });
+
+            footerDadosPanel.add(btnConfirmarSet);
+
+            this.revalidate();
+            this.repaint();
+        };
+
         this.createButton(footerAPanel, "Ponto", e -> {
             if (operator.isSomando())
-                adicionarPontoTimeA().ifPresent(runnable -> {
-                    runnable.run();
-                    // todo criar botao de finalizar set e chamar a runnable
-                });
+                adicionarPontoTimeA().ifPresent(confirmarAvancarSet);
             else removerPontoTimeA();
             this.updateSetsComponent();
         }, false);
@@ -133,15 +192,41 @@ public class MatchManagerFrame extends MatchManager {
         this.criarBotoesTime(getPartida().getTimeB(), buttonsBPanel);
         this.createButton(footerBPanel, "Ponto", e -> {
             if (operator.isSomando())
-                adicionarPontoTimeB().ifPresent(runnable -> {
-                    runnable.run();
-                    // todo criar botao de finalizar set e chamar a runnable
-                });
+                adicionarPontoTimeB().ifPresent(confirmarAvancarSet);
             else removerPontoTimeB();
             this.updateSetsComponent();
         }, false);
 
 
+    }
+
+    public void destravarTodosBotoes() {
+        this.getButtonsFromFrame(this).forEach(btn -> btn.setEnabled(true));
+        botoesTravados = false;
+    }
+
+    public void ativarBotoesEssenciais() {
+        operator.setEnabled(true);
+        btnCancelar.setEnabled(true);
+    }
+
+    public void travarTodosBotoes() {
+        this.getButtonsFromFrame(this).forEach(btn -> btn.setEnabled(false));
+        botoesTravados = true;
+    }
+
+    private java.util.List<JButton> getButtonsFromFrame(Component component) {
+        final java.util.List<JButton> buttonsList = new ArrayList<>();
+        if (component instanceof JButton) {
+            buttonsList.add((JButton) component);
+        } else if (component instanceof Container) {
+            final Component[] components = ((Container) component).getComponents();
+            for (Component child : components) {
+                buttonsList.addAll(getButtonsFromFrame(child));
+            }
+        }
+
+        return buttonsList;
     }
 
     public void criarBotoesTime(Time time, JPanel panel) {

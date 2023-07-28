@@ -1,4 +1,4 @@
-package com.magistrados.graph.screens.match.enums;
+package com.magistrados.graph.screens.match.models.enums;
 
 public enum TeamID {
 

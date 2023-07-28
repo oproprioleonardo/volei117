@@ -1,4 +1,4 @@
-package com.magistrados.graph.screens.match;
+package com.magistrados.graph.screens.match.models;
 
 import com.magistrados.graph.notification.Notifications;
 import com.magistrados.models.Partida;

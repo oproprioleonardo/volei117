@@ -1,8 +1,8 @@
 package com.magistrados.graph.buttons;
 
-import com.magistrados.graph.screens.match.MatchManager;
+import com.magistrados.graph.screens.match.models.MatchManager;
 import com.magistrados.graph.screens.match.MatchManagerFrame;
-import com.magistrados.graph.screens.match.enums.TeamID;
+import com.magistrados.graph.screens.match.models.enums.TeamID;
 
 import javax.swing.*;
 import javax.swing.border.Border;

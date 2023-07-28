@@ -1,6 +1,6 @@
 package com.magistrados.models;
 
-import com.magistrados.graph.screens.match.enums.TeamID;
+import com.magistrados.graph.screens.match.models.enums.TeamID;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

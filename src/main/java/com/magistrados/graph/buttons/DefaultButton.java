@@ -58,6 +58,21 @@ public class DefaultButton extends JButton {
         this.addActionListener(listener);
     }
 
+    public DefaultButton(String text, ActionListener listener, Dimension dimension) {
+        this.setText(text);
+        this.setFont(FONT);
+        this.setMinimumSize(dimension);
+        this.setMaximumSize(dimension);
+        this.setForeground(Color.WHITE);
+        this.setBackground(BTN_COLOR);
+        this.setFocusPainted(false);
+        this.setOpaque(true);
+        this.setBorder(BorderFactory.createEmptyBorder(10, 25, 10, 25));
+        this.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        this.addMouseListener(new SmoothColorTransitionMouseListener(this, BTN_HOVER_COLOR, BTN_COLOR));
+        this.addActionListener(listener);
+    }
+
     public DefaultButton(String text, ActionListener listener, Font font, Dimension dimension, Border border) {
         this.setText(text);
         this.setFont(font);

@@ -1,14 +1,17 @@
-package com.magistrados.graph.screens.match;
+package com.magistrados.graph.screens.match.models;
 
-import com.magistrados.graph.screens.match.enums.TeamID;
+import com.magistrados.graph.notification.Notifications;
+import com.magistrados.graph.screens.match.models.enums.TeamID;
 import com.magistrados.models.GameSet;
 import com.magistrados.models.Jogador;
 import com.magistrados.models.MatchPlayerStats;
 import com.magistrados.models.Partida;
+import com.magistrados.graph.screens.match.models.MatchJob;
 import com.magistrados.services.GameSetService;
 import com.magistrados.services.MatchPlayerStatsService;
 import com.magistrados.services.PartidaService;
 import com.magistrados.services.TimeService;
+import io.smallrye.mutiny.Uni;
 
 import javax.swing.*;
 import java.awt.*;
@@ -66,8 +69,9 @@ public abstract class MatchManager extends JFrame {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
+                if (!partida.isFinalizada())
+                    cancelarPartida();
                 matchJob.stopWatch();
-                cancelarPartida();
             }
         });
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -80,6 +84,8 @@ public abstract class MatchManager extends JFrame {
     }
 
     public abstract void initComponents();
+    public abstract void travarTodosBotoes();
+    public abstract void destravarTodosBotoes();
 
     public Partida getPartida() {
         return partida;
@@ -109,9 +115,18 @@ public abstract class MatchManager extends JFrame {
 
     public void gameSetWon(TeamID teamID) {
         if (!this.nextSetAndCheckGameWon(teamID)) {
+            this.travarTodosBotoes();
             this.partida.finalizarPartida(teamID);
             matchJob.stopWatch();
-            this.partidaService.salvarPartida(partida);
+
+            Notifications.info("Partida sendo finalizada...");
+
+            final Uni<String> emitter = Uni.createFrom().emitter((em) -> {
+                this.partidaService.salvarPartida(partida);
+                em.complete("Partida finalizada com sucesso.");
+            });
+
+            emitter.subscribe().with(Notifications::info);
         }
     }
 

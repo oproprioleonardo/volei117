@@ -14,10 +14,10 @@ public class GameSet {
     private boolean finalizado = false;
     private String vencedor;
 
-    public GameSet(){
+    public GameSet() {
     }
 
-    public GameSet(Partida partida, Long idPartida, int ordem){
+    public GameSet(Partida partida, Long idPartida, int ordem) {
         this.partida = partida;
         this.idPartida = idPartida;
         this.ordem = ordem;
@@ -83,23 +83,25 @@ public class GameSet {
         this.vencedor = vencedor;
     }
 
-    public void addPontosTimeA(){
+    public void addPontosTimeA() {
         this.pontosTimeA++;
     }
 
-    public void addPontosTimeB(){
+    public void addPontosTimeB() {
         this.pontosTimeB++;
     }
 
-    public void remPontosTimeA(){
-        this.pontosTimeA--;
+    public void remPontosTimeA() {
+        if (this.pontosTimeA > 1)
+            this.pontosTimeA--;
     }
 
-    public void remPontosTimeB(){
-        this.pontosTimeB--;
+    public void remPontosTimeB() {
+        if (this.pontosTimeB > 1)
+            this.pontosTimeB--;
     }
 
-    public void finalizarSet(String timeVencedor){
+    public void finalizarSet(String timeVencedor) {
         finalizado = true;
         vencedor = timeVencedor;
     }

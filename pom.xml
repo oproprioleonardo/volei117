@@ -83,10 +83,10 @@
                     <archive>
                         <manifest>
                             <mainClass>com.magistrados.Main</mainClass>
-                            <manifestEntries>
-                                <Application-Name>VoleiApp-117</Application-Name>
-                            </manifestEntries>
                         </manifest>
+                        <manifestEntries>
+                            <Application-Name>VoleiApp-117</Application-Name>
+                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>

@@ -1,9 +1,10 @@
-package com.magistrados.graph.screens.match;
+package com.magistrados.graph.screens.match.models;
 
 import com.magistrados.graph.notification.Notifications;
 import com.magistrados.models.Partida;
 import com.magistrados.services.PartidaService;
 import io.smallrye.mutiny.Uni;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.util.Timer;
@@ -19,31 +20,30 @@ public class MatchJob {
         this.partida = partida;
     }
 
-    public void watch(){
+    public void watch() {
         timer = new Timer();
         timer.schedule(new updateMatch(),
                 30000, // delay inicial de 30seg
                 30000); // atualiza partida a cada 30seg
     }
 
-    public void stopWatch(){
+    public void stopWatch() {
         timer.cancel();
     }
 
     class updateMatch extends TimerTask {
         @Override
         public void run() {
-            Notifications.info("Salvando partida...");
+            if (partida.isFinalizada()) {
+                cancel();
+                return;
+            }
             final Uni<Void> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
                 partidaService.salvarPartida(partida);
                 em.complete(null);
             }).start());
 
-            emitter.subscribe().with(partida -> SwingUtilities.invokeLater(() -> {
-                Notifications.info("Partida salva");
-            }), failure -> {
-                Notifications.error("Erro ao salvar partida");
-            });
+            emitter.subscribe().with(unused -> LoggerFactory.getLogger(MatchJob.class).info("Partida #" + partida.getId() + " foi salva."));
         }
     }
 }

@@ -205,6 +205,11 @@ public class MatchManagerFrame extends MatchManager {
         botoesTravados = false;
     }
 
+    @Override
+    public boolean isBotoesTravados() {
+        return botoesTravados;
+    }
+
     public void ativarBotoesEssenciais() {
         operator.setEnabled(true);
         btnCancelar.setEnabled(true);

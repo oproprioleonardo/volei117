@@ -87,6 +87,8 @@ public abstract class MatchManager extends JFrame {
 
     public abstract void destravarTodosBotoes();
 
+    public abstract boolean isBotoesTravados();
+
     public Partida getPartida() {
         return partida;
     }
@@ -146,10 +148,14 @@ public abstract class MatchManager extends JFrame {
 
     public void removerPontoTimeA() {
         this.currentSet.remPontosTimeA();
+        if (isBotoesTravados())
+            destravarTodosBotoes();
     }
 
     public void removerPontoTimeB() {
         this.currentSet.remPontosTimeB();
+        if (isBotoesTravados())
+            destravarTodosBotoes();
     }
 
     public int pointsDifference() {

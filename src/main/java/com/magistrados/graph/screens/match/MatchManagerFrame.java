@@ -212,8 +212,8 @@ public class MatchManagerFrame extends MatchManager {
     }
 
     @Override
-    public boolean isBotoesTravados() {
-        return botoesTravados;
+    public DefaultButton getBtnFinalizarSet() {
+        return btnConfirmarSet;
     }
 
     public void ativarBotoesEssenciais() {

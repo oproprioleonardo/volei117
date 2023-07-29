@@ -1,5 +1,6 @@
 package com.magistrados.graph.screens.match.models;
 
+import com.magistrados.graph.buttons.DefaultButton;
 import com.magistrados.graph.notification.Notifications;
 import com.magistrados.graph.screens.match.models.enums.TeamID;
 import com.magistrados.models.GameSet;
@@ -88,7 +89,7 @@ public abstract class MatchManager extends JFrame {
 
     public abstract void destravarTodosBotoes();
 
-    public abstract boolean isBotoesTravados();
+    public abstract DefaultButton getBtnFinalizarSet();
 
     public abstract void resetBtnFinalizarSet();
 
@@ -151,16 +152,14 @@ public abstract class MatchManager extends JFrame {
 
     public void removerPontoTimeA() {
         this.currentSet.remPontosTimeA();
-        if (isBotoesTravados()) {
+        if (this.getBtnFinalizarSet() != null) {
             this.resetBtnFinalizarSet();
-            destravarTodosBotoes();
         }
     }
 
     public void removerPontoTimeB() {
         this.currentSet.remPontosTimeB();
-        if (isBotoesTravados()) {
-            destravarTodosBotoes();
+        if (this.getBtnFinalizarSet() != null) {
             this.resetBtnFinalizarSet();
         }
     }

@@ -165,10 +165,7 @@ public class MatchManagerFrame extends MatchManager {
             btnConfirmarSet = new DefaultButton("Finalizar Set", e1 -> {
                 runnable.run();
                 this.updateSetsComponent();
-                footerDadosPanel.remove(btnConfirmarSet);
-                this.revalidate();
-                this.repaint();
-                btnConfirmarSet = null;
+                this.resetBtnFinalizarSet();
                 if (this.getPartida().isFinalizada()) {
                     travarTodosBotoes();
                 } else destravarTodosBotoes();
@@ -199,6 +196,15 @@ public class MatchManagerFrame extends MatchManager {
 
 
     }
+
+    @Override
+    public void resetBtnFinalizarSet() {
+        footerDadosPanel.remove(btnConfirmarSet);
+        this.revalidate();
+        this.repaint();
+        btnConfirmarSet = null;
+    }
+
 
     public void destravarTodosBotoes() {
         this.getButtonsFromFrame(this).forEach(btn -> btn.setEnabled(true));

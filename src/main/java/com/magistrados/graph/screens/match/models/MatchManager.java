@@ -69,7 +69,8 @@ public abstract class MatchManager extends JFrame {
             @Override
             public void windowClosed(WindowEvent e) {
                 matchJob.stopWatch();
-                cancelarPartida();
+                if (!partida.isFinalizada())
+                    cancelarPartida();
             }
         });
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -88,6 +89,8 @@ public abstract class MatchManager extends JFrame {
     public abstract void destravarTodosBotoes();
 
     public abstract boolean isBotoesTravados();
+
+    public abstract void resetBtnFinalizarSet();
 
     public Partida getPartida() {
         return partida;
@@ -148,14 +151,18 @@ public abstract class MatchManager extends JFrame {
 
     public void removerPontoTimeA() {
         this.currentSet.remPontosTimeA();
-        if (isBotoesTravados())
+        if (isBotoesTravados()) {
+            this.resetBtnFinalizarSet();
             destravarTodosBotoes();
+        }
     }
 
     public void removerPontoTimeB() {
         this.currentSet.remPontosTimeB();
-        if (isBotoesTravados())
+        if (isBotoesTravados()) {
             destravarTodosBotoes();
+            this.resetBtnFinalizarSet();
+        }
     }
 
     public int pointsDifference() {

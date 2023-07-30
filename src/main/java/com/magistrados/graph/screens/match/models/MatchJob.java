@@ -3,7 +3,6 @@ package com.magistrados.graph.screens.match.models;
 import com.magistrados.graph.notification.Notifications;
 import com.magistrados.models.Partida;
 import com.magistrados.services.PartidaService;
-import io.smallrye.mutiny.Uni;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
@@ -38,12 +37,11 @@ public class MatchJob {
                 cancel();
                 return;
             }
-            final Uni<Void> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
+            new Thread(() -> {
                 partidaService.salvarPartida(partida);
-                em.complete(null);
-            }).start());
+                LoggerFactory.getLogger(MatchJob.class).info("Partida #" + partida.getId() + " foi salva.");
+            }).start();
 
-            emitter.subscribe().with(unused -> LoggerFactory.getLogger(MatchJob.class).info("Partida #" + partida.getId() + " foi salva."));
         }
     }
 }

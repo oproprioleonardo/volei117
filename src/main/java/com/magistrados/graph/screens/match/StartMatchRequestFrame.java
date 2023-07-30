@@ -11,7 +11,6 @@ import com.magistrados.services.GameSetService;
 import com.magistrados.services.MatchPlayerStatsService;
 import com.magistrados.services.PartidaService;
 import com.magistrados.services.TimeService;
-import io.smallrye.mutiny.Uni;
 
 import javax.swing.*;
 import java.awt.*;
@@ -186,7 +185,7 @@ public class StartMatchRequestFrame extends JFrame {
             this.btnIniciar.setEnabled(false);
 
             Notifications.info("A partida está sendo criada, aguarde alguns segundos.");
-            final Uni<MatchManagerFrame> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
+            new Thread(() -> {
                 try {
                     final MatchManagerFrame matchManagerFrame = new MatchManagerFrame(partidaService, timeService, statsService, gameSetService);
                     matchManagerFrame.iniciarPartida(
@@ -195,21 +194,15 @@ public class StartMatchRequestFrame extends JFrame {
                             createMatch.local(),
                             LocalDateTime.of(createMatch.getData(), createMatch.getHorario())
                     );
-                    em.complete(matchManagerFrame);
+                    this.dispose();
+                    this.btnIniciar.setEnabled(true);
+                    matchManagerFrame.setVisible(true);
+                    Notifications.info("A partida foi criada com sucesso.");
                 } catch (Exception ex) {
-                    em.fail(ex);
+                    Notifications.error("Não foi possível iniciar a partida entre os times " + this.campoIdTime1.getText() + " e " + this.campoIdTime2.getText());
+                    log.error("Erro ao iniciar partida.", ex);
                 }
-            }).start());
-
-            emitter.subscribe().with(matchManager -> SwingUtilities.invokeLater(() -> {
-                this.dispose();
-                this.btnIniciar.setEnabled(true);
-                matchManager.setVisible(true);
-                Notifications.info("A partida foi criada com sucesso.");
-            }), failure -> {
-                Notifications.error("Não foi possível iniciar a partida entre os times " + this.campoIdTime1.getText() + " e " + this.campoIdTime2.getText());
-                log.error("Erro ao iniciar partida.", failure);
-            });
+            }).start();
 
         };
     }

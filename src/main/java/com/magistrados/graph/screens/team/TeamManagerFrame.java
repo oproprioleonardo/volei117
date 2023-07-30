@@ -16,7 +16,6 @@ import com.magistrados.models.edit.EditTeam;
 import com.magistrados.models.find.FindTeam;
 import com.magistrados.models.remove.RemoveTeam;
 import com.magistrados.services.TimeService;
-import io.smallrye.mutiny.Uni;
 
 import javax.swing.*;
 import java.awt.*;
@@ -192,24 +191,18 @@ public class TeamManagerFrame extends JFrame {
 
             Notifications.info("Uma requisição para deletar time foi enviada, aguarde.");
 
-            final Uni<Void> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
+            new Thread(() -> {
                 try {
                     this.timeService.deletarTime(removeTeam);
-                    em.complete(null);
+                    cleanFields();
+                    realizandoOperacao = false;
+                    Notifications.info("Time deletado com sucesso!");
                 } catch (Exception ex) {
-                    em.fail(ex);
+                    this.cleanFields();
+                    realizandoOperacao = false;
+                    Notifications.error("Não foi possível deletar o time.");
                 }
-            }).start());
-
-            emitter.subscribe().with(time -> SwingUtilities.invokeLater(() -> {
-                cleanFields();
-                realizandoOperacao = false;
-                Notifications.info("Time deletado com sucesso!");
-            }), failure -> {
-                this.cleanFields();
-                realizandoOperacao = false;
-                Notifications.error("Não foi possível deletar o time.");
-            });
+            }).start();
         };
     }
 
@@ -233,24 +226,18 @@ public class TeamManagerFrame extends JFrame {
 
             Notifications.info("Uma requisição para edição de time foi enviada, aguarde.");
 
-            final Uni<Time> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
+            new Thread(() -> {
                 try {
                     final Time time = this.timeService.editarTime(editTeam);
-                    em.complete(time);
+                    setFields(time);
+                    realizandoOperacao = false;
+                    Notifications.info("Time editado com sucesso!");
                 } catch (Exception ex) {
-                    em.fail(ex);
+                    cleanFields();
+                    realizandoOperacao = false;
+                    Notifications.error("Não foi possível editar o time.");
                 }
-            }).start());
-
-            emitter.subscribe().with(time -> SwingUtilities.invokeLater(() -> {
-                setFields(time);
-                realizandoOperacao = false;
-                Notifications.info("Time editado com sucesso!");
-            }), failure -> {
-                cleanFields();
-                realizandoOperacao = false;
-                Notifications.error("Não foi possível editar o time.");
-            });
+            }).start();
         };
     }
 
@@ -272,25 +259,18 @@ public class TeamManagerFrame extends JFrame {
 
             Notifications.info("Uma requisição para criação de time foi enviada, aguarde.");
 
-            final Uni<Time> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
+            new Thread(() -> {
                 try {
                     final Time time = this.timeService.criarTime(createTeam);
-                    em.complete(time);
+                    this.campoIdTime.setText(time.getId().toString());
+                    realizandoOperacao = false;
+                    Notifications.info("Time criado com sucesso!");
                 } catch (Exception ex) {
-                    em.fail(ex);
+                    cleanFields();
+                    realizandoOperacao = false;
+                    Notifications.error("Não foi possível criar o time.");
                 }
-            }).start());
-
-            emitter.subscribe().with(time -> SwingUtilities.invokeLater(() -> {
-                this.campoIdTime.setText(time.getId().toString());
-                realizandoOperacao = false;
-                Notifications.info("Time criado com sucesso!");
-            }), failure -> {
-                cleanFields();
-                realizandoOperacao = false;
-                Notifications.error("Não foi possível criar o time.");
-            });
-
+            }).start();
         };
     }
 
@@ -311,30 +291,23 @@ public class TeamManagerFrame extends JFrame {
 
             Notifications.info("Uma requisição para buscar time foi enviada, aguarde.");
 
-            final Uni<Time> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
+            new Thread(() -> {
                 try {
                     final Time time = this.timeService.buscarTime(findTeam);
-                    em.complete(time);
+                    this.setFields(time);
+                    realizandoOperacao = false;
+                    Notifications.info("Time encontrado.");
                 } catch (Exception ex) {
-                    em.fail(ex);
+                    cleanFields();
+                    realizandoOperacao = false;
+                    if (ex instanceof EntityNotFoundException) {
+                        Notifications.error(ex.getMessage());
+                        return;
+                    }
+                    Notifications.error("Não foi possível buscar o time.");
+                    log.error("Não foi possível buscar o time", ex);
                 }
-            }).start());
-
-            emitter.subscribe().with(time -> SwingUtilities.invokeLater(() -> {
-                this.setFields(time);
-                realizandoOperacao = false;
-                Notifications.info("Time encontrado.");
-            }), failure -> {
-                //todo nao encontrado
-                cleanFields();
-                realizandoOperacao = false;
-                if (failure instanceof EntityNotFoundException) {
-                    Notifications.error(failure.getMessage());
-                    return;
-                }
-                Notifications.error("Não foi possível buscar o time.");
-                log.error("Não foi possível buscar o time", failure);
-            });
+            }).start();
         };
     }
 

@@ -4,7 +4,6 @@ import com.magistrados.graph.notification.Notifications;
 import com.magistrados.graph.screens.start.MenuInicial;
 import com.magistrados.models.Partida;
 import com.magistrados.services.PartidaService;
-import io.smallrye.mutiny.Uni;
 
 import javax.swing.*;
 import java.awt.*;

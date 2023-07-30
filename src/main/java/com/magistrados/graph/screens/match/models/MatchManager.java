@@ -19,6 +19,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public abstract class MatchManager extends JFrame {
 
@@ -152,17 +153,23 @@ public abstract class MatchManager extends JFrame {
 
     public void removerPontoTimeA() {
         this.currentSet.remPontosTimeA();
-        if (this.getBtnFinalizarSet() != null) {
+        if (this.getBtnFinalizarSet() != null && !checkWonSet(TeamID.TIME_B)) {
             this.resetBtnFinalizarSet();
+        } else if (checkWonSet(TeamID.TIME_B)) {
+            this.getConfirmarAvancarSet().accept(() -> this.gameSetWon(TeamID.TIME_B));
         }
     }
 
     public void removerPontoTimeB() {
         this.currentSet.remPontosTimeB();
-        if (this.getBtnFinalizarSet() != null) {
+        if (this.getBtnFinalizarSet() != null && !checkWonSet(TeamID.TIME_A))  {
             this.resetBtnFinalizarSet();
+        } else if (checkWonSet(TeamID.TIME_A)) {
+            this.getConfirmarAvancarSet().accept(() -> this.gameSetWon(TeamID.TIME_A));
         }
     }
+
+    public abstract Consumer<Runnable> getConfirmarAvancarSet();
 
     public int pointsDifference() {
         return Math.abs(this.currentSet.getPontosTimeA() - this.currentSet.getPontosTimeB());

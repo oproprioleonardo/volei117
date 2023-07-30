@@ -9,11 +9,14 @@ import com.magistrados.services.PartidaService;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class MatchViewerFrame extends MatchViewer {
 
     private static final Font font = new Font("Roboto", Font.BOLD, 20);
+    private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private static final Color BACKGROUND_COLOR = Color.decode("#171717");
     private static final Color BACKGROUND_DADOS_COLOR = new Color(51, 51, 51);
     private static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MatchManagerFrame.class);
@@ -202,7 +205,7 @@ public class MatchViewerFrame extends MatchViewer {
         timeBPanel.add(buttonsBPanel, BorderLayout.SOUTH);
 
         //Painel Dados da Partida
-        this.headerDadosPanel.add(new DefaultLabel(font, getPartida().getDateTime().toString()), BorderLayout.NORTH);
+        this.headerDadosPanel.add(new DefaultLabel(font, dateFormat.format(getPartida().getDateTime())), BorderLayout.NORTH);
         this.headerDadosPanel.add(new DefaultLabel(font, getPartida().getLocal()), BorderLayout.CENTER);
 
         this.updateSetsComponent();

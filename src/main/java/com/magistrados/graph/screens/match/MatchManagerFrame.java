@@ -15,8 +15,11 @@ import com.magistrados.services.TimeService;
 import io.smallrye.mutiny.Uni;
 
 import javax.swing.*;
+import javax.swing.text.DateFormatter;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
@@ -25,9 +28,11 @@ import java.util.function.Consumer;
 public class MatchManagerFrame extends MatchManager {
 
     private static final Font font = new Font("Roboto", Font.BOLD, 20);
+    private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private static final Color BACKGROUND_COLOR = Color.decode("#171717");
     private static final Color BACKGROUND_DADOS_COLOR = new Color(51, 51, 51);
     private static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MatchManagerFrame.class);
+    private Consumer<Runnable> confirmarAvancarSet;
     private boolean botoesTravados = false;
     private OperatorButton operator;
     private DefaultButton btnCancelar;
@@ -97,8 +102,8 @@ public class MatchManagerFrame extends MatchManager {
         //Layout
         centeringPanel.setLayout(new BoxLayout(centeringPanel, BoxLayout.X_AXIS));
         footerDadosPanel.setLayout(new BoxLayout(footerDadosPanel, BoxLayout.Y_AXIS));
-        footerDadosPanel.setMaximumSize(new Dimension(300, 200));
-        footerDadosPanel.setMinimumSize(new Dimension(300, 200));
+        footerDadosPanel.setMaximumSize(new Dimension(300, 350));
+        footerDadosPanel.setMinimumSize(new Dimension(300, 350));
         dadosPartidaPanel.setLayout(new BoxLayout(dadosPartidaPanel, BoxLayout.Y_AXIS));
 
 
@@ -128,7 +133,7 @@ public class MatchManagerFrame extends MatchManager {
         timeBPanel.add(footerBPanel, BorderLayout.SOUTH);
 
         //Painel Dados da Partida
-        this.headerDadosPanel.add(new DefaultLabel(font, getPartida().getDateTime().toString()), BorderLayout.NORTH);
+        this.headerDadosPanel.add(new DefaultLabel(font, dateFormat.format(getPartida().getDateTime())), BorderLayout.NORTH);
         this.headerDadosPanel.add(new DefaultLabel(font, getPartida().getLocal()), BorderLayout.CENTER);
 
         this.updateSetsComponent();
@@ -161,7 +166,7 @@ public class MatchManagerFrame extends MatchManager {
         this.headerAPanel.add(new DefaultLabel(font, getPartida().getTimeA().getNomeTime()));
         this.criarBotoesTime(getPartida().getTimeA(), buttonsAPanel);
 
-        final Consumer<Runnable> confirmarAvancarSet = runnable -> {
+        this.confirmarAvancarSet = runnable -> {
             travarTodosBotoes();
             ativarBotoesEssenciais();
 
@@ -349,4 +354,7 @@ public class MatchManagerFrame extends MatchManager {
     }
 
 
+    public Consumer<Runnable> getConfirmarAvancarSet() {
+        return confirmarAvancarSet;
+    }
 }

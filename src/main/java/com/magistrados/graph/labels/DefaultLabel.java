@@ -11,6 +11,8 @@ public class DefaultLabel extends JLabel {
         this.setText(text);
         this.setFont(font);
         this.setForeground(Color.WHITE);
+        this.setHorizontalAlignment(JLabel.CENTER);
+        this.setVerticalAlignment(JLabel.CENTER);
     }
 
     public DefaultLabel(String text, Font font, int alignment) {
@@ -32,6 +34,7 @@ public class DefaultLabel extends JLabel {
         this.setFont(new Font(font.getFontName(), font.getStyle(), size));
         this.setForeground(Color.WHITE);
         this.setHorizontalAlignment(JLabel.CENTER);
+        this.setVerticalAlignment(JLabel.CENTER);
     }
 
     public DefaultLabel(Font font, String text, Dimension dimension, int alignment, int size) {

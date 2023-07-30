@@ -72,7 +72,9 @@ public class StartMatchRequestFrame extends JFrame {
 
         //Criando JTextField
         campoIdTime1 = createInput(300, 40);
+        campoIdTime1.setText("2");
         campoIdTime2 = createInput(300, 40);
+        campoIdTime2.setText("3");
         campoData = createInput(300, 40, new SimpleDateFormat("dd/MM/yyyy").format(dateNow));
         campoHorario = createInput(300, 40, new SimpleDateFormat("HH:mm").format(dateNow));
         campoLocal = createInput(300, 40, "IFSP CBT - Ginásio");

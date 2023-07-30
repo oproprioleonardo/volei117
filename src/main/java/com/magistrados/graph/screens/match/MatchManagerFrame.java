@@ -26,6 +26,7 @@ public class MatchManagerFrame extends MatchManager {
 
     private static final Font font = new Font("Roboto", Font.BOLD, 20);
     private static final Color BACKGROUND_COLOR = Color.decode("#171717");
+    private static final Color BACKGROUND_DADOS_COLOR = new Color(51, 51, 51);
     private static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MatchManagerFrame.class);
     private boolean botoesTravados = false;
     private OperatorButton operator;
@@ -66,23 +67,23 @@ public class MatchManagerFrame extends MatchManager {
         footerAPanel.setBackground(BACKGROUND_COLOR);
 
         dadosPartidaPanel = new JPanel();
-        dadosPartidaPanel.setBackground(BACKGROUND_COLOR);
+        dadosPartidaPanel.setBackground(BACKGROUND_DADOS_COLOR);
         dadosPartidaPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
         headerDadosPanel = new JPanel(new BorderLayout());
         headerDadosPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 25, 0));
-        headerDadosPanel.setBackground(BACKGROUND_COLOR);
+        headerDadosPanel.setBackground(BACKGROUND_DADOS_COLOR);
         setsContPanel = new JPanel(new BorderLayout());
-        setsContPanel.setBackground(BACKGROUND_COLOR);
+        setsContPanel.setBackground(BACKGROUND_DADOS_COLOR);
         setsViewerPanel = new JPanel();
         setsViewerPanel.setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255), 6));
         setsViewerPanel.setSize(new Dimension(200, 250));
         setsViewerPanel.setLayout(new BoxLayout(setsViewerPanel, BoxLayout.Y_AXIS));
-        setsViewerPanel.setBackground(BACKGROUND_COLOR);
+        setsViewerPanel.setBackground(BACKGROUND_DADOS_COLOR);
         centeringPanel = new JPanel();
-        centeringPanel.setBackground(BACKGROUND_COLOR);
+        centeringPanel.setBackground(BACKGROUND_DADOS_COLOR);
         footerDadosPanel = new JPanel();
         footerDadosPanel.setBorder(BorderFactory.createEmptyBorder(25, 0, 10, 0));
-        footerDadosPanel.setBackground(BACKGROUND_COLOR);
+        footerDadosPanel.setBackground(BACKGROUND_DADOS_COLOR);
 
         timeBPanel = new JPanel(new BorderLayout());
         headerBPanel = new JPanel(new BorderLayout());
@@ -96,6 +97,8 @@ public class MatchManagerFrame extends MatchManager {
         //Layout
         centeringPanel.setLayout(new BoxLayout(centeringPanel, BoxLayout.X_AXIS));
         footerDadosPanel.setLayout(new BoxLayout(footerDadosPanel, BoxLayout.Y_AXIS));
+        footerDadosPanel.setMaximumSize(new Dimension(300, 200));
+        footerDadosPanel.setMinimumSize(new Dimension(300, 200));
         dadosPartidaPanel.setLayout(new BoxLayout(dadosPartidaPanel, BoxLayout.Y_AXIS));
 
 
@@ -264,7 +267,7 @@ public class MatchManagerFrame extends MatchManager {
         final JLabel titlePontos = new DefaultLabel(font, "Pontos", new Dimension(100, 45), SwingConstants.CENTER);
 
         vGroup.addGroup(
-                layout.createParallelGroup()
+                layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                         .addComponent(titleNomes)
                         .addComponent(titleBloqueios)
                         .addComponent(titleSaques)
@@ -293,7 +296,7 @@ public class MatchManagerFrame extends MatchManager {
             pontos.addComponent(btnPontos);
 
             vGroup.addGroup(
-                    layout.createParallelGroup()
+                    layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                             .addComponent(labelNome)
                             .addComponent(btnBloqueios)
                             .addComponent(btnSaques)
@@ -321,9 +324,9 @@ public class MatchManagerFrame extends MatchManager {
         for (GameSet set : getPartida().getGameSets()) {
             this.setsViewerPanel.add(Box.createRigidArea(new Dimension(0, 10)));
             final JPanel setsContPanel = new JPanel(new BorderLayout());
-            setsContPanel.setBackground(BACKGROUND_COLOR);
+            setsContPanel.setBackground(BACKGROUND_DADOS_COLOR);
             if (set.isIniciado() && !set.isFinalizado()) {
-                setsContPanel.setBorder(BorderFactory.createLineBorder(new Color(39, 77, 11), 3));
+                setsContPanel.setBorder(BorderFactory.createLineBorder(new Color(0, 225, 255), 3));
             } else setsContPanel.setBorder(null);
             setsContPanel.add(new DefaultLabel(font, "" + set.getPontosTimeA(), 16), BorderLayout.WEST);
             setsContPanel.add(new DefaultLabel(font, "X", 14), BorderLayout.CENTER);

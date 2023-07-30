@@ -12,6 +12,7 @@ public class DefaultInput extends JTextField {
 
     public DefaultInput(int sizeX, int sizeY, String... text) {
         Font font = new Font("Roboto", Font.PLAIN, 20);
+        this.setCaretColor(new Color(0, 178,255));
         this.setText(String.join(" ", text));
         this.setFont(font);
         this.setMinimumSize(new Dimension(sizeX, sizeY));

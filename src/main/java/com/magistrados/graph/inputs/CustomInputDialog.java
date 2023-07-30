@@ -1,8 +1,10 @@
 package com.magistrados.graph.inputs;
 
 import com.magistrados.graph.buttons.DefaultButton;
+import com.magistrados.graph.listeners.SmoothColorTransitionMouseListener;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,7 +48,7 @@ import java.awt.event.ActionListener;
 
             mainPanel = new JPanel(new BorderLayout());
 
-            this.setBackground(Color.decode("#171717"));
+            okButton.setBackground(Color.decode("#171717"));
 
             //Adicionando Paineis
             buttonPanel.add(okButton);
@@ -75,29 +77,58 @@ public class CustomInputDialog extends JDialog {
     private JButton okButton;
     private JButton cancelButton;
     private String inputValue;
+    private final Font font = new Font("Roboto", Font.PLAIN, 12);
+    public final Color BTN_COLOR = new Color(59, 89, 152);
+    public final Color BTN_HOVER_COLOR = new Color(91, 155, 213);
+    private final Border defaultBorder = BorderFactory.createLineBorder(new Color(74, 76, 80));
 
     public CustomInputDialog(JFrame parent) {
         super(parent, "Visualizar partida", true);
 
         textField = new JTextField(20);
+        textField.setFont(font);
+        textField.setFont(font);
+        textField.setForeground(Color.WHITE);
+        textField.setBackground(new Color(74, 76, 80));
+        textField.setOpaque(true);
+        textField.setBorder(defaultBorder);
 
         okButton = new JButton("OK");
+        okButton.setForeground(Color.WHITE);
+        okButton.setBackground(BTN_COLOR);
+        okButton.setFocusPainted(false);
+        okButton.setOpaque(true);
+        okButton.setBorder(BorderFactory.createEmptyBorder(10, 25, 10, 25));
+        okButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        okButton.addMouseListener(new SmoothColorTransitionMouseListener(okButton, BTN_HOVER_COLOR, BTN_COLOR));
         okButton.addActionListener(e -> {
             inputValue = textField.getText();
             dispose();
         });
 
         cancelButton = new JButton("Cancelar");
+        cancelButton.setForeground(Color.WHITE);
+        cancelButton.setBackground(BTN_COLOR);
+        cancelButton.setFocusPainted(false);
+        cancelButton.setOpaque(true);
+        cancelButton.setBorder(BorderFactory.createEmptyBorder(10, 25, 10, 25));
+        cancelButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        cancelButton.addMouseListener(new SmoothColorTransitionMouseListener(cancelButton, BTN_HOVER_COLOR, BTN_COLOR));
         cancelButton.addActionListener(e -> {
             inputValue = null; // Define o valor como null caso o usuário cancele
             dispose();
         });
 
         JPanel panel = new JPanel();
-        panel.add(new JLabel("Digite o ID da partida:"));
+        panel.setBackground(new Color(0,0,0));
+        JLabel idPartida = new JLabel("Digite o ID da partida:");
+        idPartida.setForeground(new Color(255,255,255));
+        panel.add(idPartida);
+        textField.setCaretColor(new Color(0, 178,255));
         panel.add(textField);
 
         JPanel buttonPanel = new JPanel();
+        buttonPanel.setBackground(new Color(0,0,0));
         buttonPanel.add(okButton);
         buttonPanel.add(cancelButton);
 

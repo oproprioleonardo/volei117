@@ -9,7 +9,7 @@ import com.magistrados.services.PartidaService;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
+
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
@@ -21,9 +21,6 @@ public class MatchViewerFrame extends MatchViewer {
     private static final Color BACKGROUND_DADOS_COLOR = new Color(51, 51, 51);
     private static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MatchManagerFrame.class);
     private boolean botoesTravados = false;
-    private OperatorButton operator;
-    private DefaultButton btnCancelar;
-    public DefaultButton btnConfirmarSet;
     private JPanel mainPanel;
     private JPanel timeAPanel;
     private JPanel headerAPanel;

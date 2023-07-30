@@ -111,4 +111,17 @@ public class MatchPlayerStats {
     public void setQuantidadeBloqueios(int bloqueios) {
         quantidadeBloqueios = bloqueios;
     }
+
+    @Override
+    public String toString() {
+        return "MatchPlayerStats{" +
+                "Id=" + Id +
+                ", playerId=" + playerId +
+                ", partidaId=" + partidaId +
+                ", quantidadeBloqueios=" + quantidadeBloqueios +
+                ", quantidadeSaques=" + quantidadeSaques +
+                ", quantidadeDefesas=" + quantidadeDefesas +
+                ", quantidadePontos=" + quantidadePontos +
+                '}';
+    }
 }

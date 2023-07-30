@@ -44,8 +44,8 @@ public class PsqlGameSetRepository implements GameSetRepository {
             }
 
             st.close();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -67,8 +67,8 @@ public class PsqlGameSetRepository implements GameSetRepository {
                 gameSet.setVencedor(rs.getString("vencedor"));
             }
             st.close();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return gameSet;
     }
@@ -86,8 +86,8 @@ public class PsqlGameSetRepository implements GameSetRepository {
             st.setLong(7, object.getId());
             st.executeUpdate();
             st.close();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -98,8 +98,8 @@ public class PsqlGameSetRepository implements GameSetRepository {
             st.setLong(1, object);
             st.executeUpdate();
             st.close();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -129,8 +129,8 @@ public class PsqlGameSetRepository implements GameSetRepository {
                 gameSets.add(gameSet);
             }
             st.close();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return gameSets;
     }

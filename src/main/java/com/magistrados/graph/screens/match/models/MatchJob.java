@@ -23,8 +23,8 @@ public class MatchJob {
     public void watch() {
         timer = new Timer();
         timer.schedule(new updateMatch(),
-                30000, // delay inicial de 30seg
-                30000); // atualiza partida a cada 30seg
+                0, // delay inicial de 0seg
+                10000); // atualiza partida a cada 30seg
     }
 
     public void stopWatch() {

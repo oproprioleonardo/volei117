@@ -72,4 +72,15 @@ public class Time {
     public void setJogadores(Set<Jogador> jogadores) {
         this.jogadores = jogadores;
     }
+
+    @Override
+    public String toString() {
+        return "Time{" +
+                "id=" + id +
+                ", nomeTime='" + nomeTime + '\'' +
+                ", vitorias=" + vitorias +
+                ", derrotas=" + derrotas +
+                ", jogadores=" + jogadores +
+                '}';
+    }
 }

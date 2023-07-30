@@ -34,8 +34,8 @@ public class PsqlTimeRepository implements TimeRepository {
             }
 
             st.close();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -55,8 +55,8 @@ public class PsqlTimeRepository implements TimeRepository {
             }
             rs.close();
             st.close();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return time;
     }
@@ -72,8 +72,8 @@ public class PsqlTimeRepository implements TimeRepository {
             st.setLong(4, time.getId());
             st.executeUpdate();
             st.close();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -84,8 +84,8 @@ public class PsqlTimeRepository implements TimeRepository {
             st.setLong(1, timeId);
             st.executeUpdate();
             st.close();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -111,8 +111,8 @@ public class PsqlTimeRepository implements TimeRepository {
             }
             rs.close();
             st.close();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return time;
     }

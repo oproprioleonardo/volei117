@@ -97,7 +97,7 @@ public class PsqlMatchPlayerStatsRepository implements MatchPlayerStatsRepositor
     public MatchPlayerStats findByPlayerIdAndMatchId(Long playerId, Long matchId) {
         final MatchPlayerStats jogadorStats = new MatchPlayerStats();
         try (final Connection con = this.connectionProvider.getConnection()) {
-            final String sql = "SELECT * FROM volei_match_player_stats WHERE id_jogador = ? && id_partida = ?";
+            final String sql = "SELECT * FROM volei_match_player_stats WHERE id_jogador = ? AND id_partida = ?";
             final PreparedStatement st = con.prepareStatement(sql);
             st.setLong(1, playerId);
             st.setLong(2, matchId);

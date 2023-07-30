@@ -186,4 +186,23 @@ public class Partida {
     public void setSetsA(Integer setsA) {
         this.setsA = setsA;
     }
+
+    @Override
+    public String toString() {
+        return "Partida{" +
+                "id=" + id +
+                ", dateTime=" + dateTime +
+                ", local='" + local + '\'' +
+                ", timeA=" + timeA +
+                ", timeB=" + timeB +
+                ", setsA=" + setsA +
+                ", setsB=" + setsB +
+                ", idTimeA=" + idTimeA +
+                ", idTimeB=" + idTimeB +
+                ", quantidadeSets=" + quantidadeSets +
+                ", gameSets=" + gameSets +
+                ", vencedor='" + vencedor + '\'' +
+                ", finalizada=" + finalizada +
+                '}';
+    }
 }

@@ -218,4 +218,21 @@ public class Jogador {
     public void remMatchPlayerStats(MatchPlayerStats matchPlayerStats) {
         this.matchPlayerStats.remove(matchPlayerStats);
     }
+
+    @Override
+    public String toString() {
+        return "Jogador{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", timeId=" + timeId +
+                ", numeroJogador=" + numeroJogador +
+                ", quantidadeBloqueios=" + quantidadeBloqueios +
+                ", quantidadeSaques=" + quantidadeSaques +
+                ", quantidadeDefesas=" + quantidadeDefesas +
+                ", quantidadePontos=" + quantidadePontos +
+                ", partidasJogadas=" + partidasJogadas +
+                ", time=" + time +
+                ", matchPlayerStats=" + matchPlayerStats +
+                '}';
+    }
 }

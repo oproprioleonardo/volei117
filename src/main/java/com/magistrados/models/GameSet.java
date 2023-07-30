@@ -121,4 +121,19 @@ public class GameSet {
     public void setIniciado(boolean iniciado) {
         this.iniciado = iniciado;
     }
+
+    @Override
+    public String toString() {
+        return "GameSet{" +
+                "id=" + id +
+                ", partida=" + partida +
+                ", idPartida=" + idPartida +
+                ", ordem=" + ordem +
+                ", pontosTimeA=" + pontosTimeA +
+                ", pontosTimeB=" + pontosTimeB +
+                ", iniciado=" + iniciado +
+                ", finalizado=" + finalizado +
+                ", vencedor='" + vencedor + '\'' +
+                '}';
+    }
 }

@@ -1,15 +1,22 @@
 package com.magistrados.graph.screens.match.models;
 
 import com.magistrados.graph.notification.Notifications;
+import com.magistrados.graph.screens.start.MenuInicial;
 import com.magistrados.models.Partida;
 import com.magistrados.services.PartidaService;
 import io.smallrye.mutiny.Uni;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MatchViewer {
+public abstract class MatchViewer extends JFrame {
+
+    private static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MatchViewer.class);
+
     private PartidaService partidaService;
     private Partida partida;
     private Timer timer;
@@ -17,54 +24,52 @@ public class MatchViewer {
     public MatchViewer(PartidaService partidaService, Partida partida) {
         this.partidaService = partidaService;
         this.partida = partida;
+
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                stopWatch();
+                dispose();
+            }
+        });
+        this.setResizable(false);
+        this.setLayout(new BorderLayout());
+        this.setLocationRelativeTo(null);
+        this.updateComponents();
+        this.pack();
+        watch();
     }
 
-    public void watch(){
+    public void watch() {
         timer = new Timer();
-        timer.schedule(new searchMatch(this.partida),
-                30000, // delay inicial de 30seg
-                30000); // atualiza partida a cada 30seg
+        timer.schedule(new TimerTask() {
+                           @Override
+                           public void run() {
+                               new Thread(() -> {
+                                   partida = partidaService.buscarPartidaOtimizado(partida.getId());
+                                   Notifications.info("Partida atualizada.");
+
+                                   SwingUtilities.invokeLater(() -> {
+                                       getContentPane().removeAll();
+                                       updateComponents();
+                                       pack();
+                                   });
+                               }).start();
+                           }
+                       },
+                0, // delay inicial de 0seg
+                15000); // atualiza partida a cada 30seg
     }
 
-    public void stopWatch(){
+    public abstract void updateComponents();
+
+    public Partida getPartida() {
+        return partida;
+    }
+
+    public void stopWatch() {
         timer.cancel();
     }
 
-    class searchMatch extends TimerTask {
-        private final Partida partida;
-
-        public searchMatch(Partida partida){
-            this.partida = partida;
-        }
-        @Override
-        public void run() {
-            final Uni<Partida> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
-                final Partida partida = partidaService.buscarPartida(this.partida.getId());
-                em.complete(partida);
-            }).start());
-
-            emitter.subscribe().with(partida -> SwingUtilities.invokeLater(() -> {
-                Notifications.info("Partida buscada");
-            }), failure -> {
-                Notifications.error("Erro ao buscar partida");
-            });
-        }
-    }
-
-    class updateMatch extends TimerTask {
-        @Override
-        public void run() {
-            Notifications.info("Salvando partida...");
-            final Uni<Void> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
-                partidaService.salvarPartida(partida);
-                em.complete(null);
-            }).start());
-
-            emitter.subscribe().with(partida -> SwingUtilities.invokeLater(() -> {
-                Notifications.info("Partida salva");
-            }), failure -> {
-                Notifications.error("Erro ao salvar partida");
-            });
-        }
-    }
 }

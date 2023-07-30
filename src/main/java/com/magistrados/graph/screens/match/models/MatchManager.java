@@ -11,7 +11,6 @@ import com.magistrados.services.GameSetService;
 import com.magistrados.services.MatchPlayerStatsService;
 import com.magistrados.services.PartidaService;
 import com.magistrados.services.TimeService;
-import io.smallrye.mutiny.Uni;
 
 import javax.swing.*;
 import java.awt.*;
@@ -128,12 +127,10 @@ public abstract class MatchManager extends JFrame {
 
             Notifications.info("Partida sendo finalizada...");
 
-            final Uni<String> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
+            new Thread(() -> {
                 this.partidaService.salvarPartida(partida);
-                em.complete("Partida finalizada com sucesso.");
-            }).start());
-
-            emitter.subscribe().with(Notifications::info);
+                Notifications.info("Partida finalizada com sucesso");
+            }).start();
         }
     }
 

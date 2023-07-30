@@ -12,7 +12,6 @@ import com.magistrados.services.GameSetService;
 import com.magistrados.services.MatchPlayerStatsService;
 import com.magistrados.services.PartidaService;
 import com.magistrados.services.TimeService;
-import io.smallrye.mutiny.Uni;
 
 import javax.swing.*;
 import javax.swing.text.DateFormatter;
@@ -144,15 +143,15 @@ public class MatchManagerFrame extends MatchManager {
 
             Notifications.info("A partida está sendo cancelada, aguarde...");
 
-            final Uni<String> emitter = Uni.createFrom().emitter((em) -> new Thread(() -> {
-                cancelarPartida();
-                em.complete("Partida cancelada com sucesso!");
-            }).start());
-
-            emitter.subscribe().with(s -> {
-                Notifications.info(s);
-                dispose();
-            });
+            new Thread(() -> {
+                try {
+                    cancelarPartida();
+                    Notifications.info("Partida cancelada com sucesso!");
+                    dispose();
+                }catch (Exception er){
+                    Notifications.error("Partida não cancelada.");
+                }
+            }).start();
         });
 
 

@@ -3,6 +3,7 @@ package com.magistrados.graph.screens.start;
 import com.google.gson.GsonBuilder;
 import com.magistrados.graph.buttons.DefaultButton;
 import com.magistrados.graph.inputs.CustomInputDialog;
+import com.magistrados.graph.notification.Notifications;
 import com.magistrados.graph.screens.match.MatchManagerFrame;
 import com.magistrados.graph.screens.match.MatchViewerFrame;
 import com.magistrados.graph.screens.player.PlayerManagerFrame;
@@ -61,12 +62,21 @@ public class MenuInicial extends JFrame {
 
             final String inputText = inputDialog.getInputValue();
             new Thread(() -> {
-                final Partida partida = partidaService.buscarPartidaOtimizado(Long.valueOf(inputText));
-                SwingUtilities.invokeLater(() -> {
-                    final MatchViewerFrame matchViewerFrame = new MatchViewerFrame(partidaService, partida);
-                    matchViewerFrame.setVisible(true);
+                try {
+                    final Partida partida = partidaService.buscarPartidaOtimizado(Long.valueOf(inputText));
+                    if (partida.isFinalizada()) {
+                        SwingUtilities.invokeLater(() -> {
+                            final MatchViewerFrame matchViewerFrame = new MatchViewerFrame(partidaService, partida);
+                            matchViewerFrame.setVisible(true);
 
-                });
+                        });
+                    } else {
+                        Notifications.warning("Partida não foi finalizada");
+                    }
+                }catch (Exception er){
+                    Notifications.error("Partida não encontrada");
+                    //er.printStackTrace();
+                }
             }).start();
 
         }, true);

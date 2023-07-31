@@ -71,7 +71,7 @@ public class MenuInicial extends JFrame {
 
                         });
                     } else {
-                        Notifications.warning("Partida já foi finalizada");
+                        Notifications.warning("Partida foi finalizada");
                     }
                 }catch (Exception er){
                     Notifications.error("Partida não encontrada");

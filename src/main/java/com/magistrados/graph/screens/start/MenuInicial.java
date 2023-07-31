@@ -64,14 +64,14 @@ public class MenuInicial extends JFrame {
             new Thread(() -> {
                 try {
                     final Partida partida = partidaService.buscarPartidaOtimizado(Long.valueOf(inputText));
-                    if (partida.isFinalizada()) {
+                    if (!partida.isFinalizada()) {
                         SwingUtilities.invokeLater(() -> {
                             final MatchViewerFrame matchViewerFrame = new MatchViewerFrame(partidaService, partida);
                             matchViewerFrame.setVisible(true);
 
                         });
                     } else {
-                        Notifications.warning("Partida não foi finalizada");
+                        Notifications.warning("Partida foi finalizada");
                     }
                 }catch (Exception er){
                     Notifications.error("Partida não encontrada");

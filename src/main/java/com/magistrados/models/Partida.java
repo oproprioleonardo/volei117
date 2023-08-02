@@ -149,6 +149,12 @@ public class Partida {
 
     public void setGameSets(List<GameSet> gameSets) {
         this.gameSets = gameSets;
+        this.gameSets.stream().filter(GameSet::isFinalizado).forEach(gameSet -> {
+            if (TeamID.valueOfByKey(gameSet.getVencedor()) == TeamID.TIME_A) 
+                addSetsA();
+            else if (TeamID.valueOfByKey(gameSet.getVencedor()) == TeamID.TIME_B)
+                addSetsB();
+        });
     }
 
     public String getVencedor() {

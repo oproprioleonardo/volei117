@@ -177,20 +177,12 @@ public class Partida {
         this.setsB++;
     }
 
-    public void setSetsB(Integer setsB) {
-        this.setsB = setsB;
-    }
-
     public void addSetsA() {
         this.setsA++;
     }
 
     public Integer getSetsA() {
         return setsA;
-    }
-
-    public void setSetsA(Integer setsA) {
-        this.setsA = setsA;
     }
 
     @Override

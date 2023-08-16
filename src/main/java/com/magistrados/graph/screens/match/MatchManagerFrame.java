@@ -4,6 +4,7 @@ import com.magistrados.graph.buttons.*;
 import com.magistrados.graph.labels.DefaultLabel;
 import com.magistrados.graph.notification.Notifications;
 import com.magistrados.graph.screens.match.models.MatchManager;
+import com.magistrados.graph.screens.match.models.enums.TeamID;
 import com.magistrados.models.GameSet;
 import com.magistrados.models.Jogador;
 import com.magistrados.models.MatchPlayerStats;
@@ -291,7 +292,8 @@ public class MatchManagerFrame extends MatchManager {
             final JButton btnBloqueios = new BloqueiosButton("(" + stats.getQuantidadeBloqueios() + ")", stats, operator);
             final JButton btnSaques = new SaquesButton("(" + stats.getQuantidadeSaques() + ")", stats, operator);
             final JButton btnDefesas = new DefesasButton("(" + stats.getQuantidadeDefesas() + ")", stats, operator);
-            final JButton btnPontos = new PontosButton("(" + stats.getQuantidadePontos() + ")", stats, operator);
+            final JButton btnPontos = new PontosButton("(" + stats.getQuantidadePontos() + ")", stats, operator, this,
+                    time.equals(getPartida().getTimeA()) ? TeamID.TIME_A : TeamID.TIME_B);
 
             nomes.addComponent(labelNome);
             bloqueios.addComponent(btnBloqueios);

@@ -21,9 +21,11 @@ Gerenciador de partidas de vôlei.
 ### Iniciar Partida
 <img src="https://www.dropbox.com/s/m2i1d9ee9b72a7y/volei117_iniciar_partida.png?raw=1" alt="Descrição da imagem" width="600" />
 
-### Em breve terá mais imagens.
+### Gerenciar partida
+<img src="https://www.dropbox.com/scl/fi/93f97wl963xuml4coowau/volei117_gen_partida.png?rlkey=rwbi6l9xvuipl9087int8vit2&raw=1" alt="Gerenciar partida" width="600"/>
 
-## Projeto em desenvolvimento.
+
+## Projeto finalizado.
 
 
 

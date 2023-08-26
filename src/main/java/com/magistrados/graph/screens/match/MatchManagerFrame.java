@@ -15,13 +15,10 @@ import com.magistrados.services.PartidaService;
 import com.magistrados.services.TimeService;
 
 import javax.swing.*;
-import javax.swing.text.DateFormatter;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -31,12 +28,10 @@ public class MatchManagerFrame extends MatchManager {
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private static final Color BACKGROUND_COLOR = Color.decode("#171717");
     private static final Color BACKGROUND_DADOS_COLOR = new Color(51, 51, 51);
-    private static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MatchManagerFrame.class);
+    public DefaultButton btnConfirmarSet;
     private Consumer<Runnable> confirmarAvancarSet;
-    private boolean botoesTravados = false;
     private OperatorButton operator;
     private DefaultButton btnCancelar;
-    public DefaultButton btnConfirmarSet;
     private JPanel mainPanel;
     private JPanel timeAPanel;
     private JPanel headerAPanel;
@@ -149,7 +144,7 @@ public class MatchManagerFrame extends MatchManager {
                     cancelarPartida();
                     Notifications.info("Partida cancelada com sucesso!");
                     dispose();
-                }catch (Exception er){
+                } catch (Exception er) {
                     Notifications.error("Partida não cancelada.");
                 }
             }).start();
@@ -190,7 +185,7 @@ public class MatchManagerFrame extends MatchManager {
                 adicionarPontoTimeA().ifPresent(confirmarAvancarSet);
             else removerPontoTimeA();
             this.updateSetsComponent();
-        }, false);
+        });
 
         //Painel do Time B
         this.headerBPanel.add(new DefaultLabel(font, getPartida().getTimeB().getNomeTime()));
@@ -200,7 +195,7 @@ public class MatchManagerFrame extends MatchManager {
                 adicionarPontoTimeB().ifPresent(confirmarAvancarSet);
             else removerPontoTimeB();
             this.updateSetsComponent();
-        }, false);
+        });
 
 
     }
@@ -216,7 +211,6 @@ public class MatchManagerFrame extends MatchManager {
 
     public void destravarTodosBotoes() {
         this.getButtonsFromFrame(this).forEach(btn -> btn.setEnabled(true));
-        botoesTravados = false;
     }
 
     @Override
@@ -231,7 +225,6 @@ public class MatchManagerFrame extends MatchManager {
 
     public void travarTodosBotoes() {
         this.getButtonsFromFrame(this).forEach(btn -> btn.setEnabled(false));
-        botoesTravados = true;
     }
 
     private java.util.List<JButton> getButtonsFromFrame(Component component) {
@@ -348,8 +341,7 @@ public class MatchManagerFrame extends MatchManager {
     }
 
 
-    private void createButton(JPanel panel, String text, ActionListener listener, boolean space) {
-        if (space) panel.add(Box.createRigidArea(new Dimension(0, 50)));
+    private void createButton(JPanel panel, String text, ActionListener listener) {
         final DefaultButton button = new DefaultButton(text, listener);
         panel.add(button);
     }

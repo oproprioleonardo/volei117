@@ -24,6 +24,7 @@ import java.awt.event.ActionListener;
 public class TeamManagerFrame extends JFrame {
 
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(TeamManagerFrame.class);
+    private final TimeService timeService;
     Font font = new Font("Roboto", Font.BOLD, 20);
     private boolean realizandoOperacao = false;
     private JPanel inputPanel;
@@ -32,7 +33,6 @@ public class TeamManagerFrame extends JFrame {
     private JPanel paddingPanel;
     private JPanel formPanel;
     private JPanel operationPanel;
-    private TimeService timeService;
     private JTextField campoIdTime;
     private JTextField campoNomeTime;
     private JTextField campoVitorias;
@@ -189,8 +189,6 @@ public class TeamManagerFrame extends JFrame {
             }
             realizandoOperacao = true;
 
-            Notifications.info("Uma requisição para deletar time foi enviada, aguarde.");
-
             new Thread(() -> {
                 try {
                     this.timeService.deletarTime(removeTeam);
@@ -224,7 +222,7 @@ public class TeamManagerFrame extends JFrame {
             }
             realizandoOperacao = true;
 
-            Notifications.info("Uma requisição para edição de time foi enviada, aguarde.");
+            Notifications.info("Uma requisição para edição do time foi enviada, aguarde.");
 
             new Thread(() -> {
                 try {
@@ -257,14 +255,13 @@ public class TeamManagerFrame extends JFrame {
             }
             realizandoOperacao = true;
 
-            Notifications.info("Uma requisição para criação de time foi enviada, aguarde.");
+            Notifications.info("Uma requisição para registrar o time foi enviada, aguarde o ID.");
 
             new Thread(() -> {
                 try {
                     final Time time = this.timeService.criarTime(createTeam);
                     this.campoIdTime.setText(time.getId().toString());
                     realizandoOperacao = false;
-                    Notifications.info("Time criado com sucesso!");
                 } catch (Exception ex) {
                     cleanFields();
                     realizandoOperacao = false;
@@ -289,14 +286,13 @@ public class TeamManagerFrame extends JFrame {
             }
             realizandoOperacao = true;
 
-            Notifications.info("Uma requisição para buscar time foi enviada, aguarde.");
+            Notifications.info("Uma requisição para buscar time foi enviada.");
 
             new Thread(() -> {
                 try {
                     final Time time = this.timeService.buscarTime(findTeam);
                     this.setFields(time);
                     realizandoOperacao = false;
-                    Notifications.info("Time encontrado.");
                 } catch (Exception ex) {
                     cleanFields();
                     realizandoOperacao = false;

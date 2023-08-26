@@ -1,16 +1,14 @@
 package com.magistrados.graph.screens.start;
 
-import com.google.gson.GsonBuilder;
 import com.magistrados.graph.buttons.DefaultButton;
 import com.magistrados.graph.inputs.CustomInputDialog;
 import com.magistrados.graph.notification.Notifications;
-import com.magistrados.graph.screens.match.MatchManagerFrame;
 import com.magistrados.graph.screens.match.MatchViewerFrame;
+import com.magistrados.graph.screens.match.StartMatchRequestFrame;
 import com.magistrados.graph.screens.player.PlayerManagerFrame;
 import com.magistrados.graph.screens.team.TeamManagerFrame;
 import com.magistrados.models.Partida;
 import com.magistrados.services.*;
-import com.magistrados.graph.screens.match.StartMatchRequestFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,21 +16,17 @@ import java.awt.event.ActionListener;
 
 public class MenuInicial extends JFrame {
 
-    private static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MenuInicial.class);
-
-    private JPanel mainPanel;
-
     public MenuInicial(PartidaService partidaService, MatchPlayerStatsService statsService, JogadorService jogadorService, TimeService timeService, GameSetService gameSetService) throws HeadlessException {
         super("Menu Inicial");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
 
         // Criando o painel principal com BorderLayout
-        mainPanel = new JPanel();
+        final JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
         // Criando painel com box layout para ficar um botão debaixo do outro
-        JPanel buttonPanel = new JPanel();
+        final JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         buttonPanel.setBackground(Color.decode("#171717"));
         // Criando botões
@@ -56,7 +50,6 @@ public class MenuInicial extends JFrame {
 
         this.createButton(buttonPanel, "Visualizar Partidas", e -> {
 
-
             final CustomInputDialog inputDialog = new CustomInputDialog(this);
             inputDialog.setVisible(true);
 
@@ -68,12 +61,11 @@ public class MenuInicial extends JFrame {
                         SwingUtilities.invokeLater(() -> {
                             final MatchViewerFrame matchViewerFrame = new MatchViewerFrame(partidaService, partida);
                             matchViewerFrame.setVisible(true);
-
                         });
                     } else {
                         Notifications.warning("Partida foi finalizada");
                     }
-                }catch (Exception er){
+                } catch (Exception er) {
                     Notifications.error("Partida não encontrada");
                     //er.printStackTrace();
                 }

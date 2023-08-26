@@ -4,7 +4,6 @@ import com.magistrados.graph.buttons.DefaultButton;
 import com.magistrados.graph.notification.Notifications;
 import com.magistrados.graph.screens.match.models.enums.TeamID;
 import com.magistrados.models.GameSet;
-import com.magistrados.models.Jogador;
 import com.magistrados.models.MatchPlayerStats;
 import com.magistrados.models.Partida;
 import com.magistrados.services.GameSetService;
@@ -159,7 +158,7 @@ public abstract class MatchManager extends JFrame {
 
     public void removerPontoTimeB() {
         this.currentSet.remPontosTimeB();
-        if (this.getBtnFinalizarSet() != null && !checkWonSet(TeamID.TIME_A))  {
+        if (this.getBtnFinalizarSet() != null && !checkWonSet(TeamID.TIME_A)) {
             this.resetBtnFinalizarSet();
         } else if (checkWonSet(TeamID.TIME_A)) {
             this.getConfirmarAvancarSet().accept(() -> this.gameSetWon(TeamID.TIME_A));
@@ -190,37 +189,5 @@ public abstract class MatchManager extends JFrame {
         return currentSet.getPontosTimeB() >= POINTS_MAX - 1 &&
                 currentSet.getPontosTimeA() >= POINTS_MAX - 1 &&
                 pointsDifference() != 2;
-    }
-
-    public void addSaque(Jogador jogador) {
-        jogador.matchStats(this.partida.getId()).addSaque();
-    }
-
-    public void removeSaque(Jogador jogador) {
-        jogador.matchStats(this.partida.getId()).removeSaque();
-    }
-
-    public void addDefesa(Jogador jogador) {
-        jogador.matchStats(this.partida.getId()).addDefesa();
-    }
-
-    public void removeDefesa(Jogador jogador) {
-        jogador.matchStats(this.partida.getId()).removeDefesa();
-    }
-
-    public void addPonto(Jogador jogador) {
-        jogador.matchStats(this.partida.getId()).addPonto();
-    }
-
-    public void removePonto(Jogador jogador) {
-        jogador.matchStats(this.partida.getId()).removePonto();
-    }
-
-    public void addBloqueio(Jogador jogador) {
-        jogador.matchStats(this.partida.getId()).addBloqueio();
-    }
-
-    public void removeBloqueio(Jogador jogador) {
-        jogador.matchStats(this.partida.getId()).removeBloqueio();
     }
 }

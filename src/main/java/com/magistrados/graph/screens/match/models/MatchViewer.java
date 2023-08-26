@@ -1,7 +1,6 @@
 package com.magistrados.graph.screens.match.models;
 
 import com.magistrados.graph.notification.Notifications;
-import com.magistrados.graph.screens.start.MenuInicial;
 import com.magistrados.models.Partida;
 import com.magistrados.services.PartidaService;
 
@@ -14,9 +13,7 @@ import java.util.TimerTask;
 
 public abstract class MatchViewer extends JFrame {
 
-    private static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MatchViewer.class);
-
-    private PartidaService partidaService;
+    private final PartidaService partidaService;
     private Partida partida;
     private Timer timer;
 

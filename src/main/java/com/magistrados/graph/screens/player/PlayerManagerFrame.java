@@ -255,8 +255,7 @@ public class PlayerManagerFrame extends JFrame {
 
             new Thread(() -> {
                 try {
-                    final Jogador jogador = this.jogadorService
-                            .editarJogador(Long.valueOf(this.campoIdJogador.getText()), editPlayer);
+                    this.jogadorService.editarJogador(Long.valueOf(this.campoIdJogador.getText()), editPlayer);
                     Notifications.info("Jogador editado com sucesso!");
                     realizandoOperacao = false;
                 } catch (Exception ex) {
@@ -372,12 +371,7 @@ public class PlayerManagerFrame extends JFrame {
                 } catch (EntityNotFoundException ex) {
                     realizandoOperacao = false;
                     cleanFields();
-                    if (ex instanceof EntityNotFoundException) {
-                        Notifications.error(ex.getMessage());
-                        return;
-                    }
-                    Notifications.error("Não foi possível buscar o jogador.");
-                    log.error("Erro ao buscar jogador.", ex);
+                    Notifications.error(ex.getMessage());
                 }
             }).start();
         };

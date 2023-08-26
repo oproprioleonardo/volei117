@@ -1,17 +1,15 @@
 package com.magistrados.graph.screens.match.models;
 
-import com.magistrados.graph.notification.Notifications;
 import com.magistrados.models.Partida;
 import com.magistrados.services.PartidaService;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class MatchJob {
-    private PartidaService partidaService;
-    private Partida partida;
+    private final PartidaService partidaService;
+    private final Partida partida;
     private Timer timer;
 
     public MatchJob(PartidaService partidaService, Partida partida) {

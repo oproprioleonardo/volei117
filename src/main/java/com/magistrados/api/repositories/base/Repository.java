@@ -1,9 +1,6 @@
 package com.magistrados.api.repositories.base;
 
-import java.util.Map;
-import java.util.Set;
-
-public interface CrudRepository<B, T> {
+public interface Repository<B, T> {
 
     void create(T object);
 

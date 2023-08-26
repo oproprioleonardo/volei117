@@ -8,7 +8,6 @@ import com.magistrados.services.PartidaService;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
@@ -19,8 +18,6 @@ public class MatchViewerFrame extends MatchViewer {
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private static final Color BACKGROUND_COLOR = Color.decode("#171717");
     private static final Color BACKGROUND_DADOS_COLOR = new Color(51, 51, 51);
-    private static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MatchManagerFrame.class);
-    private boolean botoesTravados = false;
     private JPanel mainPanel;
     private JPanel timeAPanel;
     private JPanel headerAPanel;
@@ -137,14 +134,6 @@ public class MatchViewerFrame extends MatchViewer {
         this.revalidate();
         this.repaint();
     }
-
-
-    private void createButton(JPanel panel, String text, ActionListener listener, boolean space) {
-        if (space) panel.add(Box.createRigidArea(new Dimension(0, 50)));
-        final DefaultButton button = new DefaultButton(text, listener);
-        panel.add(button);
-    }
-
 
     @Override
     public void updateComponents() {

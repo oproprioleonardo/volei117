@@ -1,7 +1,8 @@
 package com.magistrados.graph.screens.start;
 
-import com.magistrados.graph.buttons.DefaultButton;
-import com.magistrados.graph.inputs.CustomInputDialog;
+import com.magistrados.graph.Colors;
+import com.magistrados.graph.components.buttons.DefaultButton;
+import com.magistrados.graph.components.inputs.CustomInputDialog;
 import com.magistrados.graph.notification.Notifications;
 import com.magistrados.graph.screens.match.MatchViewerFrame;
 import com.magistrados.graph.screens.match.StartMatchRequestFrame;
@@ -28,19 +29,19 @@ public class MenuInicial extends JFrame {
         // Criando painel com box layout para ficar um botão debaixo do outro
         final JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-        buttonPanel.setBackground(Color.decode("#171717"));
+        buttonPanel.setBackground(Colors.BACKGROUND_COLOR);
         // Criando botões
-        this.createButton(buttonPanel, "Gerenciar Jogadores", e -> {
+        this.createButton(buttonPanel, "GERENCIAR JOGADORES", e -> {
             final JFrame gerenciarJogadores = new PlayerManagerFrame(jogadorService);
             gerenciarJogadores.setVisible(true);
 
         }, false);
-        this.createButton(buttonPanel, "Gerenciar Times", e -> {
+        this.createButton(buttonPanel, "GERENCIAR TIMES", e -> {
             final JFrame gerenciarTimes = new TeamManagerFrame(timeService);
             gerenciarTimes.setVisible(true);
 
         }, true);
-        this.createButton(buttonPanel, "Iniciar Partida", e -> {
+        this.createButton(buttonPanel, "INICIAR PARTIDA", e -> {
             final JFrame startPartidasFrameRequests = new StartMatchRequestFrame(partidaService, timeService, statsService, gameSetService);
             startPartidasFrameRequests.setVisible(true);
 
@@ -48,7 +49,7 @@ public class MenuInicial extends JFrame {
 
         // solicitar partida e só poder visualizar caso esteja em andamento.
 
-        this.createButton(buttonPanel, "Visualizar Partidas", e -> {
+        this.createButton(buttonPanel, "ASSISTIR PARTIDA", e -> {
 
             final CustomInputDialog inputDialog = new CustomInputDialog(this);
             inputDialog.setVisible(true);
@@ -77,7 +78,7 @@ public class MenuInicial extends JFrame {
         JPanel paddingPanel = new JPanel(new BorderLayout());
         paddingPanel.setBorder(BorderFactory.createEmptyBorder(100, 300, 100, 300));
         paddingPanel.add(buttonPanel, BorderLayout.CENTER);
-        paddingPanel.setBackground(Color.decode("#171717"));
+        paddingPanel.setBackground(Colors.BACKGROUND_COLOR);
 
         // Adicionando o painel de preenchimento (com os botões) ao centro do painel principal
         mainPanel.add(paddingPanel, BorderLayout.CENTER);

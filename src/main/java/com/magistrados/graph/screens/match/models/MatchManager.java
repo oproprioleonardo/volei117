@@ -1,6 +1,6 @@
 package com.magistrados.graph.screens.match.models;
 
-import com.magistrados.graph.buttons.DefaultButton;
+import com.magistrados.graph.components.buttons.DefaultButton;
 import com.magistrados.graph.notification.Notifications;
 import com.magistrados.graph.screens.match.models.enums.TeamID;
 import com.magistrados.models.GameSet;

@@ -9,7 +9,7 @@ import java.awt.event.MouseEvent;
 
 public class SmoothColorTransitionMouseListener extends MouseAdapter {
 
-    private static final int TRANSITION_DURATION = 200;
+    private static final int TRANSITION_DURATION = 100;
     private final JButton button;
     private final Timer timerEnter;
     private final Timer timerExit;

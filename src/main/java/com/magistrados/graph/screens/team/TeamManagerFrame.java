@@ -1,15 +1,16 @@
 package com.magistrados.graph.screens.team;
 
-import com.magistrados.api.validations.exceptions.ValidationException;
+import com.magistrados.graph.Colors;
+import com.magistrados.internal.validations.exceptions.ValidationException;
 import com.magistrados.exceptions.EntityNotFoundException;
-import com.magistrados.graph.buttons.DefaultButton;
-import com.magistrados.graph.inputs.DefaultInput;
-import com.magistrados.graph.labels.DefaultLabel;
+import com.magistrados.graph.components.buttons.DefaultButton;
+import com.magistrados.graph.components.inputs.DefaultInput;
+import com.magistrados.graph.components.labels.DefaultLabel;
 import com.magistrados.graph.notification.Notifications;
-import com.magistrados.internal.validators.create.CreateTeamValidator;
-import com.magistrados.internal.validators.edit.EditTeamValidator;
-import com.magistrados.internal.validators.find.FindTeamValidator;
-import com.magistrados.internal.validators.remove.RemoveTeamValidator;
+import com.magistrados.internal.validations.validators.create.CreateTeamValidator;
+import com.magistrados.internal.validations.validators.edit.EditTeamValidator;
+import com.magistrados.internal.validations.validators.find.FindTeamValidator;
+import com.magistrados.internal.validations.validators.remove.RemoveTeamValidator;
 import com.magistrados.models.Time;
 import com.magistrados.models.create.CreateTeam;
 import com.magistrados.models.edit.EditTeam;
@@ -74,27 +75,27 @@ public class TeamManagerFrame extends JFrame {
         // Criando um painel de preenchimento com EmptyBorder
         paddingPanel = new JPanel(new BorderLayout());
         paddingPanel.setBorder(BorderFactory.createEmptyBorder(50, 25, 50, 25));
-        paddingPanel.setBackground(Color.decode("#171717"));
+        paddingPanel.setBackground(Colors.BACKGROUND_COLOR);
 
         // Form panel
         formPanel = new JPanel(new BorderLayout());
         formPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 70));
-        formPanel.setBackground(Color.decode("#171717"));
+        formPanel.setBackground(Colors.BACKGROUND_COLOR);
 
         // Operations panel
         operationPanel = new JPanel(new BorderLayout());
         operationPanel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
-        operationPanel.setBackground(Color.decode("#171717"));
+        operationPanel.setBackground(Colors.BACKGROUND_COLOR);
 
         // Criando painel com box layout para ficar um botão debaixo do outro
         buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
-        buttonsPanel.setBackground(Color.decode("#171717"));
+        buttonsPanel.setBackground(Colors.BACKGROUND_COLOR);
 
         // Criando painel de inputs com group layout
         inputPanel = new JPanel();
         inputPanel.setLayout(new BorderLayout());
-        inputPanel.setBackground(Color.decode("#171717"));
+        inputPanel.setBackground(Colors.BACKGROUND_COLOR);
 
         // Criando botões CRUD
         this.createButton(buttonsPanel, "Adicionar Time", adicionarTimeListener(), false);

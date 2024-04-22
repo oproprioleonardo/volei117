@@ -1,6 +1,6 @@
 package com.magistrados.graph.notification;
 
-import com.magistrados.graph.buttons.DefaultButton;
+import com.magistrados.graph.components.buttons.DefaultButton;
 
 import javax.swing.*;
 import java.awt.*;

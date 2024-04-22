@@ -1,11 +1,12 @@
 package com.magistrados.graph.screens.match;
 
-import com.magistrados.api.validations.exceptions.ValidationException;
-import com.magistrados.graph.buttons.DefaultButton;
-import com.magistrados.graph.inputs.DefaultInput;
-import com.magistrados.graph.labels.DefaultLabel;
+import com.magistrados.graph.Colors;
+import com.magistrados.internal.validations.exceptions.ValidationException;
+import com.magistrados.graph.components.buttons.DefaultButton;
+import com.magistrados.graph.components.inputs.DefaultInput;
+import com.magistrados.graph.components.labels.DefaultLabel;
 import com.magistrados.graph.notification.Notifications;
-import com.magistrados.internal.validators.create.CreateMatchValidator;
+import com.magistrados.internal.validations.validators.create.CreateMatchValidator;
 import com.magistrados.models.create.CreateMatch;
 import com.magistrados.services.GameSetService;
 import com.magistrados.services.MatchPlayerStatsService;
@@ -78,19 +79,19 @@ public class StartMatchRequestFrame extends JFrame {
 
         //Criando Painéis
         mainPanel = new JPanel();
-        mainPanel.setBackground(Color.decode("#171717"));
+        mainPanel.setBackground(Colors.BACKGROUND_COLOR);
 
         buttonEmptySpacePanel = new JPanel();
-        buttonEmptySpacePanel.setBackground(Color.decode("#171717"));
+        buttonEmptySpacePanel.setBackground(Colors.BACKGROUND_COLOR);
 
         buttonsPanel = new JPanel();
-        buttonsPanel.setBackground(Color.decode("#171717"));
+        buttonsPanel.setBackground(Colors.BACKGROUND_COLOR);
 
         paddingPanel = new JPanel();
-        paddingPanel.setBackground(Color.decode("#171717"));
+        paddingPanel.setBackground(Colors.BACKGROUND_COLOR);
 
         inputPanel = new JPanel();
-        inputPanel.setBackground(Color.decode("#171717"));
+        inputPanel.setBackground(Colors.BACKGROUND_COLOR);
 
 
         // Configurações do Layout

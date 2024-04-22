@@ -1,7 +1,8 @@
 package com.magistrados.graph.screens.match;
 
-import com.magistrados.graph.buttons.*;
-import com.magistrados.graph.labels.DefaultLabel;
+import com.magistrados.graph.Colors;
+import com.magistrados.graph.components.buttons.*;
+import com.magistrados.graph.components.labels.DefaultLabel;
 import com.magistrados.graph.notification.Notifications;
 import com.magistrados.graph.screens.match.models.MatchManager;
 import com.magistrados.graph.screens.match.models.enums.TeamID;
@@ -24,9 +25,8 @@ import java.util.function.Consumer;
 
 public class MatchManagerFrame extends MatchManager {
 
-    private static final Font font = new Font("Roboto", Font.BOLD, 20);
+    private static final Font font = new Font("Inter", Font.BOLD, 20);
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-    private static final Color BACKGROUND_COLOR = Color.decode("#171717");
     private static final Color BACKGROUND_DADOS_COLOR = new Color(51, 51, 51);
     public DefaultButton btnConfirmarSet;
     private Consumer<Runnable> confirmarAvancarSet;
@@ -51,20 +51,21 @@ public class MatchManagerFrame extends MatchManager {
 
     public MatchManagerFrame(PartidaService partidaService, TimeService timeService, MatchPlayerStatsService statsService, GameSetService gameSetService) {
         super(partidaService, timeService, statsService, gameSetService);
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
     @Override
     public void initComponents() {
         //Criando JPanels
         mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBackground(BACKGROUND_COLOR);
+        mainPanel.setBackground(Colors.BACKGROUND_COLOR);
         timeAPanel = new JPanel(new BorderLayout());
         headerAPanel = new JPanel(new BorderLayout());
-        headerAPanel.setBackground(BACKGROUND_COLOR);
+        headerAPanel.setBackground(Colors.BACKGROUND_COLOR);
         buttonsAPanel = new JPanel(new BorderLayout());
-        buttonsAPanel.setBackground(BACKGROUND_COLOR);
+        buttonsAPanel.setBackground(Colors.BACKGROUND_COLOR);
         footerAPanel = new JPanel(new BorderLayout());
-        footerAPanel.setBackground(BACKGROUND_COLOR);
+        footerAPanel.setBackground(Colors.BACKGROUND_COLOR);
 
         dadosPartidaPanel = new JPanel();
         dadosPartidaPanel.setBackground(BACKGROUND_DADOS_COLOR);
@@ -87,11 +88,11 @@ public class MatchManagerFrame extends MatchManager {
 
         timeBPanel = new JPanel(new BorderLayout());
         headerBPanel = new JPanel(new BorderLayout());
-        headerBPanel.setBackground(BACKGROUND_COLOR);
+        headerBPanel.setBackground(Colors.BACKGROUND_COLOR);
         buttonsBPanel = new JPanel(new BorderLayout());
-        buttonsBPanel.setBackground(BACKGROUND_COLOR);
+        buttonsBPanel.setBackground(Colors.BACKGROUND_COLOR);
         footerBPanel = new JPanel(new BorderLayout());
-        footerBPanel.setBackground(BACKGROUND_COLOR);
+        footerBPanel.setBackground(Colors.BACKGROUND_COLOR);
 
 
         //Layout

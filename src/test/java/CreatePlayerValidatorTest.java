@@ -1,5 +1,5 @@
-import com.magistrados.api.validations.exceptions.ValidationException;
-import com.magistrados.internal.validators.create.CreatePlayerValidator;
+import com.magistrados.internal.validations.exceptions.ValidationException;
+import com.magistrados.internal.validations.validators.create.CreatePlayerValidator;
 import com.magistrados.models.create.CreatePlayer;
 import org.junit.jupiter.api.Test;
 

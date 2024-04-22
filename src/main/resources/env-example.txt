@@ -1,0 +1,5 @@
+DB_ID=1
+PASSWORD=senha
+USER=postgres
+HOST=localhost:5432
+DATABASE=postgres

@@ -1,14 +1,13 @@
 package com.magistrados.graph.screens.match;
 
-import com.magistrados.graph.buttons.*;
-import com.magistrados.graph.labels.DefaultLabel;
+import com.magistrados.graph.components.buttons.ViewerButton;
+import com.magistrados.graph.components.labels.DefaultLabel;
 import com.magistrados.graph.screens.match.models.MatchViewer;
 import com.magistrados.models.*;
 import com.magistrados.services.PartidaService;
 
 import javax.swing.*;
 import java.awt.*;
-
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
@@ -29,7 +28,6 @@ public class MatchViewerFrame extends MatchViewer {
     private JPanel timeBPanel;
     private JPanel headerBPanel;
     private JPanel buttonsBPanel;
-
 
 
     public MatchViewerFrame(PartidaService partidaService, Partida partida) {
